@@ -1,2 +1,2 @@
-tc-v0.0.0-release
-git@github.com:sample-organization/sample-package.git
+0.1
+git@github.com:tenantcloud/tcctl.git
