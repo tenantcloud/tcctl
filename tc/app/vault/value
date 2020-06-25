@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+function get_env_value() {
+    if [[ -f "$2" ]]; then
+        VARIABLE=$1
+        FILENAME=$2
+        echo $(sed -n -e "s/^\s*$VARIABLE\s*=//p" $FILENAME)
+    fi
+}
+
+get_env_value $1 $2

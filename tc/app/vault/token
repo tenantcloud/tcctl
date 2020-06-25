@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+VAULT_CONFIG_FILE=~/.vault-configuration
+
+function vault_get_token()  {
+  source $VAULT_CONFIG_FILE
+  MSG="Get token from vault server"
+  VAULT_TOKEN=$(vault login -method=userpass username=${VAULT_NAME} password=${VAULT_PASSWORD} \
+                | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p) \
+    && vaultctl message "Success. $MSG" \
+    || vaultctl messageError "Error. $MSG"
+}
+
+vault_get_token

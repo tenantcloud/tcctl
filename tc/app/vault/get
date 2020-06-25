@@ -1,2 +1,17 @@
 #!/usr/bin/env bash
-echo -e "\033[36mTODO\033[39m: Implement this command"
+
+VAULT_CONFIG_FILE=~/.vault-configuration
+
+function vault_get() {
+  source $VAULT_CONFIG_FILE
+  vaultctl token
+  VAULT_SECRETS=$1
+  ENV_FILE=$2
+  MSG="Get from vault"
+  vault kv get $VAULT_SECRETS | sed 's/\ \{1,\}/=/g' | sed 1,11d > /tmp/.env.vault
+  vaultctl diff .env \
+    && vaultctl message "Success. $MSG" \
+    || vaultctl messageError "Error. $MSG"
+}
+
+vault_get $1 $2
