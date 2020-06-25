@@ -1,2 +1,3 @@
-tc-ctl-0.1-release
+master
 git@github.com:tenantcloud/tcctl.git
+
