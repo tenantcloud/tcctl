@@ -4,13 +4,13 @@ VAULT_CONFIG_FILE=~/.vault-configuration
 
 function vault_put() {
   source $VAULT_CONFIG_FILE
-  tcctl token
+  tcctl vault token
   VAULT_SECRETS=$1
   ENV_FILE=$2
   MSG="Put to vault"
   vault kv put $VAULT_SECRETS $(egrep -v '^#' $ENV_FILE | xargs) \
-    && tcctl message "Success. $MSG" \
-    || tcctl messageError "Error. $MSG"
+    && tcctl vault message "Success. $MSG" \
+    || tcctl vault messageError "Error. $MSG"
 }
 
 vault_put $1 $2
