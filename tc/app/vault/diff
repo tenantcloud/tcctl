@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 function vault_diff() {
-  MSG="Сomparison completed"
   ENV_FILE=$1
   DIFF=$(diff -y --suppress-common-lines /tmp/.env.vault $ENV_FILE | column -t)
   echo "$DIFF"

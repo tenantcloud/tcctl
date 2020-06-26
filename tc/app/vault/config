@@ -10,9 +10,7 @@ function vault_config() {
   echo 'export VAULT_ADDR='$VAULT_ADDR > $VAULT_CONFIG_FILE
   echo 'export VAULT_NAME='$VAULT_NAME >> $VAULT_CONFIG_FILE
   echo 'export VAULT_PASSWORD='$VAULT_PASSWORD >> $VAULT_CONFIG_FILE
-  source $VAULT_CONFIG_FILE \
-    && vaultctl message "Success. $MSG" \
-    || vaultctl messageError "Error. $MSG"
+  source $VAULT_CONFIG_FILE
 }
 
 vault_config $1 $2 $3

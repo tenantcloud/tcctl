@@ -9,9 +9,9 @@ function vault_get() {
   ENV_FILE=$2
   MSG="Get from vault"
   vault kv get $VAULT_SECRETS | sed 's/\ \{1,\}/=/g' | sed 1,11d > /tmp/.env.vault
-  vaultctl diff .env \
-    && vaultctl message "Success. $MSG" \
-    || vaultctl messageError "Error. $MSG"
+  tcctl diff .env \
+    && tcctl message "Success. $MSG" \
+    || tcctl messageError "Error. $MSG"
 }
 
 vault_get $1 $2

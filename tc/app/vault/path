@@ -8,9 +8,7 @@ function vault_check_path() {
   MSG="Get path from vault server"
   VAULT_SECRETS=$1
   VAULT_PATH=$(vault kv get $VAULT_SECRETS | sed 1,8d | head -1)
-  echo $VAULT_PATH \
-    && vaultctl message "Success. $MSG" \
-    || vaultctl messageError "Error. $MSG"
+  echo $VAULT_PATH
 }
 
 vault_check_path $1
