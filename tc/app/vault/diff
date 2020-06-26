@@ -2,8 +2,9 @@
 
 function vault_diff() {
   ENV_FILE=$1
-  DIFF=$(diff -y --suppress-common-lines /tmp/.env.vault $ENV_FILE | column -t)
+  ENV_TEMP=$2
+  DIFF=$(diff -y --suppress-common-lines $ENV_TEMP $ENV_FILE | column -t)
   echo "$DIFF"
 }
 
-vault_diff $1
+vault_diff $1 $2

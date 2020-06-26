@@ -7,11 +7,12 @@ function vault_get() {
   tcctl vault token
   VAULT_SECRETS=$1
   ENV_FILE=$2
+  ENV_TEMP=$3
   MSG="Get from vault"
-  vault kv get $VAULT_SECRETS | sed 's/\ \{1,\}/=/g' | sed 1,11d > /tmp/.env.vault
-  tcctl vault diff .env \
+  vault kv get $VAULT_SECRETS | sed 's/\ \{1,\}/=/g' | sed 1,11d > $ENV_TEMP
+  tcctl vault diff $ENV_FILE $ENV_TEMP \
     && tcctl vault message "Success. $MSG" \
     || tcctl vault messageError "Error. $MSG"
 }
 
-vault_get $1 $2
+vault_get $1 $2 $3
