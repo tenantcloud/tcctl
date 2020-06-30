@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-VAULT_CONFIG_FILE=~/.vault-configuration
-
 function vault_check_path() {
-  source $VAULT_CONFIG_FILE
   tcctl vault token
   MSG="Get path from vault server"
   VAULT_SECRETS=$1
