@@ -3,9 +3,9 @@
 function vault_diff() {
   ENV_FILE=$1
   ENV_TEMP=$2
-  DIFF=$(diff -y --suppress-common-lines $ENV_TEMP $ENV_FILE | column -t)
-  echo "$DIFF"
-  tcctl vault remove $ENV_TEMP
+  diff -y --suppress-common-lines $ENV_TEMP $ENV_FILE | column -t \
+  || tcctl vault messageError "Error. $MSG"
+
 }
 
 vault_diff $1 $2

@@ -6,8 +6,7 @@ function vault_put() {
   ENV_FILE=$2
   MSG="Put to vault"
   vault kv put $VAULT_SECRETS $(egrep -v '^#' $ENV_FILE | xargs) \
-    && tcctl vault message "Success. $MSG" \
-    || tcctl vault messageError "Error. $MSG"
+  || tcctl vault messageError "Error. $MSG"
 }
 
 vault_put $1 $2

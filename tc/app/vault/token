@@ -7,8 +7,7 @@ function vault_get_token()  {
   MSG="Get token from vault server"
   VAULT_TOKEN=$(vault login -method=userpass username=${VAULT_NAME} password=${VAULT_PASSWORD} \
                 | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p) \
-    && tcctl vault message "Success. $MSG" \
-    || tcctl vault messageError "Error. $MSG"
+  || tcctl vault messageError "Error. $MSG"
 }
 
 vault_get_token
