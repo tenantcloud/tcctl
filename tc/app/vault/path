@@ -4,8 +4,8 @@ function vault_check_path() {
   tcctl vault token
   MSG="Get path from vault server"
   VAULT_SECRETS=$1
-  VAULT_PATH=$(vault kv get $VAULT_SECRETS | sed 1,8d | head -1)
-  echo $VAULT_PATH
+  vault kv get $VAULT_SECRETS | sed 1,8d | head -1 \
+  || tcctl vault messageError "Error. $MSG"
 }
 
 vault_check_path $1
