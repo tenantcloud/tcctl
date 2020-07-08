@@ -21,6 +21,7 @@ function message_info() {
 function message_warning() {
   __exit_code_number=$?
   [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
+  unset _error_code
   echo "= WARNING ======================================================================"
   __show_date_hostname
   __draw_line -
@@ -32,6 +33,7 @@ function message_warning() {
 function message_error() {
   __exit_code_number=$?
   [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
+  unset _error_code
   echo "= ERROR ========================================================================"
   __show_date_hostname
   __draw_line -
