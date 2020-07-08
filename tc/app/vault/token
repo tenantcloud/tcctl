@@ -1,13 +1,18 @@
 #!/usr/bin/env bash
 
 VAULT_CONFIG_FILE=~/.vault-configuration
+source "$CLI_DIR/tc/framework/functions"
 
 function vault_get_token()  {
   source $VAULT_CONFIG_FILE
-  MSG="Get token from vault server"
-  VAULT_TOKEN=$(vault login -method=userpass username=${VAULT_NAME} password=${VAULT_PASSWORD} \
-                | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p) \
-  || tcctl vault messageError "Error. $MSG"
+  __output=$( vault login -method=userpass username=$VAULT_NAME password=$VAULT_PASSWORD )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl vault token $@\033[39m\n"
+  __MSG+="$__output"
+  if [ $_error_code -eq "0" ]; then
+      VAULT_TOKEN=$( echo $__output | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p )
+  else
+      message_error "$__MSG"
+  fi
 }
-
 vault_get_token
