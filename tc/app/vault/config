@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+VAULT_CONFIG_FILE=~/.vault-configuration
+
+function vault_config() {
+  VAULT_ADDR=$1
+  VAULT_NAME=$2
+  VAULT_PASSWORD=$3
+  MSG="Add vault_env to profile"
+  echo 'export VAULT_ADDR='$VAULT_ADDR > $VAULT_CONFIG_FILE
+  echo 'export VAULT_NAME='$VAULT_NAME >> $VAULT_CONFIG_FILE
+  echo 'export VAULT_PASSWORD='$VAULT_PASSWORD >> $VAULT_CONFIG_FILE
+  source $VAULT_CONFIG_FILE
+}
+
+vault_config $1 $2 $3

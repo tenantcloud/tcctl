@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+function vault_remove_temp_env() {
+  ENV_TEMP=$1
+  rm -rf $ENV_TEMP
+}
+
+vault_remove_temp_env $1

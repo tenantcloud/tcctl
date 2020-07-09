@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+source "$CLI_DIR/tc/framework/functions"
+
+function get_env_value() {
+  if [[ -f "$2" ]]; then
+      VARIABLE=$1
+      FILENAME=$2
+      __output=$( sed -n -e "s/^\s*$VARIABLE\s*=//p" $FILENAME )
+      export _error_code=$?
+      __MSG="Command: \033[36mtcctl vault value $@\033[39m\n"
+      __MSG+="$__output"
+  if [ $_error_code -eq "0" ]; then
+      echo $__output
+  else
+      message_error "$__MSG"
+  fi
+  fi
+}
+
+get_env_value $1 $2
