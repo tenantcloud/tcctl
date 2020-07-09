@@ -1,1 +1,9 @@
-TODO: Add help for this directory
+The commands with which we work with the vault server
+
+tcctl vault config
+tcctl vault token
+tcctl vault path
+tcctl vault get_value
+tcctl vault get
+tcctl vault put
+tcctl vault diff

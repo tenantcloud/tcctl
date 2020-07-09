@@ -1,2 +1,20 @@
 #!/usr/bin/env bash
-echo -e "\033[36mTODO\033[39m: Implement this command"
+
+source "$CLI_DIR/tc/framework/functions"
+
+function vault_get() {
+  tcctl vault token
+  VAULT_SECRET=$1
+  ENV_TEMP=$2
+  __output=$( vault kv get $VAULT_SECRET 2>&1 )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl vault get $@\033[39m\n"
+  __MSG+="$__output"
+  if [ $_error_code -eq "0" ]; then
+      vault kv get $VAULT_SECRET | sed 's/\ \{1,\}/=/g' | sed 1,11d > $ENV_TEMP
+  else
+      message_error "$__MSG"
+  fi
+}
+
+vault_get $1 $2

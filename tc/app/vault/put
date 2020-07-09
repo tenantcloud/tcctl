@@ -1,2 +1,20 @@
 #!/usr/bin/env bash
-echo -e "\033[36mTODO\033[39m: Implement this command"
+
+source "$CLI_DIR/tc/framework/functions"
+
+function vault_put() {
+  tcctl vault token
+  VAULT_SECRETS=$1
+  ENV_FILE=$2
+  __output=$( vault kv put $VAULT_SECRETS $(egrep -v '^#' $ENV_FILE) 2>&1 )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl vault put $@\033[39m\n"
+  __MSG+="$__output"
+  if [ $_error_code -eq "0" ]; then
+      _vault_kv_put=$( echo $__output | xargs )
+  else
+      message_error "$__MSG"
+  fi
+}
+
+vault_put $1 $2

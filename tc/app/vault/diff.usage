@@ -1,1 +1,8 @@
-ARGS...
+for example:
+
+tcctl vault diff .env .env-tmp
+
+where:
+
+.env                    - project file in which we work
+.env-tmp                - temporary file from the current project branch which is saved at the vault server

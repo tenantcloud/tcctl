@@ -1,1 +1,12 @@
-ARGS...
+for example:
+
+tcctl vault get projects_name/dev/projects_brahch .env-tmp - for use by developers
+
+tcctl vault get projects_name/APP_ENV .env-tmp - for use by servers
+
+where:
+
+projects_name           - project name in git repository
+projects_brahch         - current project branch
+.env-tmp                - temporary file from the current project branch which is saved at the vault server
+APP_ENV                 - the value of the variable from the .env project file

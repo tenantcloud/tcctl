@@ -1,0 +1,2 @@
+The command which generates a temporary user token regarding its credentials
+and the one only works after execution tcctl vault config
