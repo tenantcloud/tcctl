@@ -1,3 +1,13 @@
 ARGS  - The arguments you wish to provide to this command
 
-TODO: Fill out the help information for this command.
+The command which put the keys to the vault server
+
+for example:
+
+tcctl vault put projects_name/dev/projects_brahch - for use by developers
+
+tcctl vault put projects_name/APP_ENV - for use by servers
+
+projects_name           - project name in git repository
+projects_brahch         - current project branch
+APP_ENV                 - the value of the variable from the .env project file

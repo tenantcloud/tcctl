@@ -1,3 +1,12 @@
 ARGS  - The arguments you wish to provide to this command
 
-TODO: Fill out the help information for this command.
+The command which get value of the variable from the .env project file
+
+for example:
+
+tcctl vault get_value APP_ENV .env
+
+where:
+
+APP_ENV                 - the variable from the .env project file
+.env                    - project file in which we work

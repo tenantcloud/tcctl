@@ -1,3 +1,12 @@
 ARGS  - The arguments you wish to provide to this command
 
-TODO: Fill out the help information for this command.
+The command which compares the keys between the server and the project
+
+for example:
+
+tcctl vault diff .env .env-tmp
+
+where:
+
+.env                    - project file in which we work
+.env-tmp                - temporary file from the current project branch which is saved at the vault server
