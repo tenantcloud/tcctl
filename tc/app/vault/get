@@ -6,7 +6,7 @@ function vault_get() {
   tcctl vault token
   VAULT_SECRET=$1
   ENV_TEMP=$2
-  __output=$(vault kv get $VAULT_SECRET)
+  __output=$(vault kv get $VAULT_SECRET 2>&1)
   export _error_code=$?
   __MSG="Command: \033[36mtcctl vault get $@\033[39m\n"
   __MSG+="$__output"

@@ -6,7 +6,7 @@ function vault_put() {
   tcctl vault token
   VAULT_SECRETS=$1
   ENV_FILE=$2
-  __output=$( vault kv put $VAULT_SECRETS $(egrep -v '^#' $ENV_FILE ) )
+  __output=$( vault kv put $VAULT_SECRETS $(egrep -v '^#' $ENV_FILE) 2>&1)
   export _error_code=$?
   __MSG="Command: \033[36mtcctl vault put $@\033[39m\n"
   __MSG+="$__output"
