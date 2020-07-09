@@ -1,15 +1,1 @@
-ARGS  - The arguments you wish to provide to this command
-
 A command that checks for the existence of a secret kv path on the vault server
-
-for example:
-
-tcctl vault path projects_name/dev/projects_brahch - for use by developers
-
-tcctl vault path projects_name/APP_ENV - for use by servers
-
-where:
-
-projects_name           - project name in git repository
-projects_brahch         - current project branch
-APP_ENV                 - the value of the variable from the .env project file
