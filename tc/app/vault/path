@@ -5,7 +5,7 @@ source "$CLI_DIR/tc/framework/functions"
 function vault_check_path() {
   tcctl vault token
   VAULT_SECRET_PATH=$1
-  __output=$( vault kv get $VAULT_SECRET_PATH 2>&1)
+  __output=$( vault kv get $VAULT_SECRET_PATH 2>&1 )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl vault path $@\033[39m\n"
   __MSG+="$__output"
