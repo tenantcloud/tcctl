@@ -1,3 +1,2 @@
-master
-git@github.com:tenantcloud/tcctl.git
-
+0.1
+https://github.com/tenantcloud/tcctl.git

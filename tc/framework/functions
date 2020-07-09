@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+__draw_line() {
+  __count=$2
+  __symbol_count=${__count:=80}
+  echo $( for i in $(seq 1 1 $__symbol_count) ; do printf "$1"; done )
+}
+
+__show_date_hostname() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] on $(hostname)"
+}
+
+function message_info() {
+  echo "= INFO ========================================================================="
+  __show_date_hostname
+  __draw_line -
+  printf "$1\n"
+  __draw_line -
+}
+
+function message_warning() {
+  __exit_code_number=$?
+  [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
+  unset _error_code
+  echo "= WARNING ======================================================================"
+  __show_date_hostname
+  __draw_line -
+  echo "Exit code $__exit_code_number"
+  printf "$1\n"
+  __draw_line -
+}
+
+function message_error() {
+  __exit_code_number=$?
+  [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
+  unset _error_code
+  echo "= ERROR ========================================================================"
+  __show_date_hostname
+  __draw_line -
+  echo "Exit code $__exit_code_number"
+  printf "$1\n"
+  __draw_line -
+  exit $__exit_code_number
+}
+
+
