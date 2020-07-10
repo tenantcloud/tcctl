@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+source "$CLI_DIR/tc/framework/functions"
+
+__output=$( $@ 2>&1 )
+export _error_code=$?
+__MSG="Command: \033[36mcmd $@\033[39m\n"
+__MSG+="$__output"
+if [ $_error_code -eq "0" ]; then
+  message_info "$__MSG"
+else
+  message_error "$__MSG"
+fi
