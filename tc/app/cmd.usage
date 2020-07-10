@@ -1,5 +1,2 @@
-for example:
 
-tcctl cmd composer install
-tcctl cmd yarn ci
-...
+{cli command}

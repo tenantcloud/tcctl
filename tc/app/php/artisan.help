@@ -1,1 +1,9 @@
-To show all commands, run without arguments
+The commands with which we run typical laravel project deployment tasks
+
+Importantly:
+
+Through this pass functionality only non-interactive command
+
+for example:
+
+tcctl php artisan {cli command}

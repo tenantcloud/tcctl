@@ -1,11 +1,2 @@
-for example:
 
-tcctl vault path projects_name/dev/projects_brahch - for use by developers
-
-tcctl vault path projects_name/APP_ENV - for use by servers
-
-where:
-
-projects_name           - project name in git repository
-projects_brahch         - current project branch
-APP_ENV                 - the value of the variable from the .env project file
+{cli command}

@@ -1,8 +1,2 @@
-for example:
 
-tcctl vault get_value APP_ENV .env
-
-where:
-
-APP_ENV                 - the variable from the .env project file
-.env                    - project file in which we work
+{cli command}
