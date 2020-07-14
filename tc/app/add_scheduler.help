@@ -1,0 +1,11 @@
+The commands with which we can add crontab artisan task
+
+for example:
+
+tcctl add_scheduler PROJECT_DIR_NAME PROJECT_NAME OS
+
+where:
+
+PROJECT_DIR_NAME        - full path to the project directory
+PROJECT_NAME            - project name
+OS                      - type of OS

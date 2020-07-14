@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+function add_scheduler() {
+  PROJECT_DIR_NAME=$1
+  PROJECT_NAME=$2
+  OS=$3
+  SCHEDULE_COMMAND="$PROJECT_DIR_NAME/artisan schedule:run >> /dev/null 2>&1 > $HOME/.log/scheduled-$PROJECT_NAME.log 2>&1"
+  if [[ $OS == Linux ]] && [[ $(cat /etc/crontab | egrep -v "^(#|$)" | grep -q "$SCHEDULE_COMMAND"; echo $?) == 1 ]]
+  then
+    __output_1=$( echo "# Add scheduler for horizon-$PROJECT_NAME" )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl add_scheduler $2 1\033[39m\n"
+    __MSG+="$__output_1"
+    if [[ $_error_code -eq "0" ]]; then
+      echo "# Add scheduler for horizon-$PROJECT_NAME" | sudo tee -a /etc/crontab > /dev/null 2>&1
+    else
+      message_error "$__MSG"
+    fi
+    __output_2=$( echo "* * * * * $USER $(which php) $SCHEDULE_COMMAND" )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl add_scheduler $2 2\033[39m\n"
+    __MSG+="$__output_2"
+    if [[ $_error_code -eq "0" ]]; then
+      echo "* * * * * $USER $(which php) $SCHEDULE_COMMAND" | sudo tee -a /etc/crontab > /dev/null 2>&1
+    else
+      message_error "$__MSG"
+    fi
+  elif [[ $OS == Darwin ]] && [[ $(crontab -l | grep -q "$SCHEDULE_COMMAND"; echo $?) == 1 ]]
+  then
+    __output=$( echo "* * * * * $(which php) $SCHEDULE_COMMAND" )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl add_scheduler $2\033[39m\n"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      echo "* * * * * $(which php) $SCHEDULE_COMMAND" | crontab -
+    else
+      message_error "$__MSG"
+    fi
+  fi
+}
+
+add_scheduler $1 $2 $3
