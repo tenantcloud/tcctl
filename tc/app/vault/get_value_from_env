@@ -11,9 +11,13 @@ function get_value_from_env() {
       __MSG="Command: \033[36mtcctl vault get_value_from_env $@\033[39m\n"
       __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
+    if [[ -z "$__output" ]]; then
+      exit 1
+    else
       echo $__output
+    fi
   else
-      message_error "$__MSG"
+    message_error "$__MSG"
   fi
   fi
 }
