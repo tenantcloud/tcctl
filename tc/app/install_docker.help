@@ -1,6 +1,0 @@
-The command which start deploy dashboard or promo project with docker
-
-for example:
-
-tcctl install_docker dashboard
-tcctl install_docker promo
