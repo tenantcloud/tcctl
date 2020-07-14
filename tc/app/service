@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+function update_restart_service() {
+  SUDO_COMMAND=""
+  SERVICE_NAME=$1
+  OS=$2
+  [[ $OS == Linux ]] && SUDO_COMMAND="sudo "
+  __output_update=$( $SUDO_COMMAND $SERVICE_NAME update )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl service $@ update\033[39m\n"
+  __MSG+="$__output_update"
+  if [[ $_error_code -eq "0" ]]; then
+      echo $__output_update | column -t
+  else
+      message_error "$__MSG"
+  fi
+  __output_restart=$( $SUDO_COMMAND $SERVICE_NAME restart all )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl service $@ restart\033[39m\n"
+  __MSG+="$__output_restart"
+  if [[ $_error_code -eq "0" ]]; then
+      echo $__output_restart | column -t
+  else
+      message_error "$__MSG"
+  fi
+}
+
+update_restart_service $1 $2
