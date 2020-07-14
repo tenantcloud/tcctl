@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+source "$CLI_DIR/tc/framework/functions"
+
+if [[ $@ == 'dashboard' ]]; then
+  if [ ! -d $HOME/.log ]; then
+    mkdir $HOME/.log
+  fi
+  add_vars
+  add_scheduler
+  add_horizon
+  tcctl cmd composer install
+  tcctl cmd yarn ci
+  tcctl cmd yarn release
+  tcctl cmd yarn symlink
+  tcctl cmd php artisan migrate --seed --force
+  supervisor_restart
+elif [[ $@ == 'promo' ]]; then
+  tcctl cmd composer install
+  tcctl cmd yarn ci
+  tcctl cmd yarn release
+  tcctl cmd yarn symlink
+else echo "Please enter dashboard or promo value, for example - tcctl install_local dashboard"
+fi
