@@ -2,13 +2,13 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-function get_value() {
+function get_value_from_env() {
   if [[ -f "$2" ]]; then
       VARIABLE=$1
       FILENAME=$2
       __output=$( sed -n -e "s/^\s*$VARIABLE\s*=//p" $FILENAME )
       export _error_code=$?
-      __MSG="Command: \033[36mtcctl vault get_value $@\033[39m\n"
+      __MSG="Command: \033[36mtcctl vault get_value_from_env $@\033[39m\n"
       __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
       echo $__output
@@ -18,4 +18,4 @@ function get_value() {
   fi
 }
 
-get_value $1 $2
+get_value_from_env $1 $2

@@ -43,53 +43,13 @@ function message_error() {
   exit $__exit_code_number
 }
 
-function add_vars() {
+function get_project_dir_name() {
   OS=$(uname -s)
   echo $OS
-  PROJECT_DIR="$(dirname "$0")"/../../../
+  PROJECT_DIR="$(dirname "$0")"/../
   cd $PROJECT_DIR
   PROJECT_DIR_NAME=$(pwd)
   PROJECT_NAME=$(echo ${PWD##*/} | sed 's/\./-/g' )
-  APP_ENV=$(tcctl vault get_value APP_ENV .env)
+  APP_ENV=$(tcctl vault get_value_from_env APP_ENV .env)
   echo "APP_ENV=$APP_ENV"
-}
-
-function add_scheduler() {
-  SCHEDULE_COMMAND="$PROJECT_DIR_NAME/artisan schedule:run >> /dev/null 2>&1 > $HOME/.log/scheduled-$PROJECT_NAME.log 2>&1"
-  if [[ $OS == Linux ]] && [[ $(cat /etc/crontab | egrep -v "^(#|$)" | grep -q "$SCHEDULE_COMMAND"; echo $?) == 1 ]]
-  then
-    echo "# Add scheduler for horizon-$PROJECT_NAME" | sudo tee -a /etc/crontab > /dev/null 2>&1
-    echo "* * * * * $USER $(which php) $SCHEDULE_COMMAND" | sudo tee -a /etc/crontab > /dev/null 2>&1
-  elif [[ $OS == Darwin ]] && [[ $(crontab -l | grep -q "$SCHEDULE_COMMAND"; echo $?) == 1 ]]
-  then
-    echo "* * * * * $(which php) $SCHEDULE_COMMAND" | crontab -
-  fi
-}
-
-function add_horizon() {
-  if [[ $OS == Linux ]] ; then
-    HORIZON_FILE="/etc/supervisor/conf.d/horizon-$PROJECT_NAME.conf"
-    SED_COMMAND="sudo sed -i"
-    PHP_PATH="php"
-  elif [[ $OS == Darwin ]] ; then
-    HORIZON_FILE="/usr/local/etc/supervisor.d/horizon-$PROJECT_NAME.ini"
-    SED_COMMAND="sed -i .backup"
-    PHP=$(php -v | head -n 1 | cut -d " " -f 2 | cut -c 1-3)
-    PHP_PATH="/usr/local/opt/php@$PHP/bin/php"
-  fi
-  [[ $OS == Linux ]] && [[ ! -f $HORIZON_FILE ]] && SUDO_COMMAND="sudo "
-  `echo $SUDO_COMMAND` cp $PROJECT_DIR/docs/installation/supervisor/horizon.conf $HORIZON_FILE
-  `echo $SED_COMMAND` "s+program:+program:horizon-$PROJECT_NAME+g" $HORIZON_FILE
-  `echo $SED_COMMAND` "s+command=+command=$PHP_PATH artisan horizon+g" $HORIZON_FILE
-  `echo $SED_COMMAND` "s+directory=+directory=$PROJECT_DIR_NAME+g" $HORIZON_FILE
-  `echo $SED_COMMAND` "s+user=+user=$USER+g" $HORIZON_FILE
-  `echo $SED_COMMAND` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon-$PROJECT_NAME.log+g" $HORIZON_FILE
-  [ -f $HORIZON_FILE.backup ] && rm $HORIZON_FILE.backup
-}
-
-function supervisor_restart() {
-  SUDO_COMMAND=""
-  [[ $OS == Linux ]] && SUDO_COMMAND="sudo "
-  `echo $SUDO_COMMAND` supervisorctl update
-  `echo $SUDO_COMMAND` supervisorctl restart "horizon-$PROJECT_NAME:*"
 }
