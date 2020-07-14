@@ -1,2 +1,2 @@
-0.1
+Development
 https://github.com/tenantcloud/tcctl.git
