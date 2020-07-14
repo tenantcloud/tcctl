@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source "$CLI_DIR/tc/framework/functions"
+
 function update_restart_service() {
   SUDO_COMMAND=""
   SERVICE_NAME=$1
@@ -7,7 +9,7 @@ function update_restart_service() {
   [[ $OS == Linux ]] && SUDO_COMMAND="sudo "
   __output_update=$( $SUDO_COMMAND $SERVICE_NAME update )
   export _error_code=$?
-  __MSG="Command: \033[36mtcctl service $@ update\033[39m\n"
+  __MSG="Command: \033[36mtcctl service $1 update\033[39m\n"
   __MSG+="$__output_update"
   if [[ $_error_code -eq "0" ]]; then
       echo $__output_update | column -t
@@ -16,7 +18,7 @@ function update_restart_service() {
   fi
   __output_restart=$( $SUDO_COMMAND $SERVICE_NAME restart all )
   export _error_code=$?
-  __MSG="Command: \033[36mtcctl service $@ restart\033[39m\n"
+  __MSG="Command: \033[36mtcctl service $1 restart\033[39m\n"
   __MSG+="$__output_restart"
   if [[ $_error_code -eq "0" ]]; then
       echo $__output_restart | column -t
