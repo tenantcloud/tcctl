@@ -3,8 +3,8 @@
 source "./cli/tc/framework/functions"
 
 function check_deployment_type() {
-  BRANCH=$(git branch | grep \* | cut -d ' ' -f2)
-  REPOSITORY_URL=$(git config --get remote.origin.url)
+  BRANCH=$(tcctl cmd git branch | grep \* | cut -d ' ' -f2)
+  REPOSITORY_URL=$(tcctl cmd git config --get remote.origin.url | sed -n '5p')
   REPOSITORY_TMP_DIR="/tmp/$(date +%Y%m%d-%H%M%S)"
   __output_1=$( git clone --depth 1 $REPOSITORY_URL -b $BRANCH $REPOSITORY_TMP_DIR )
   export _error_code=$?

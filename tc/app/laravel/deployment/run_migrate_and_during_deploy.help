@@ -2,4 +2,4 @@ The commands with which we can run migration and during deploy command
 
 for example:
 
-tcctl laravel deployment run_migrate_and_during_deploy_command
+tcctl laravel deployment run_migrate_and_during_deploy

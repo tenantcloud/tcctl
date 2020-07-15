@@ -1,0 +1,10 @@
+The commands with which we can update our project
+
+for example:
+
+tcctl laravel deployment update OS APP_ENV
+
+where:
+
+OS                      - type of OS
+APP_ENV                 - the value of the variable from the .env project file
