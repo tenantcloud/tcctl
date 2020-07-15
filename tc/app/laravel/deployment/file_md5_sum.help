@@ -1,0 +1,10 @@
+The commands with which we can сheck MD5 sum of file
+
+for example:
+
+tcctl laravel deployment file_md5_sum filename OS
+
+where:
+
+filename                - name of file
+OS                      - type of OS

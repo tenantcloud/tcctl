@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+source "./cli/tc/framework/functions"
+
+function file_md5_sum() {
+  FILE=$1
+  OS=$2
+  if [[ $OS == "Linux" ]]; then
+    __output=$( md5sum $1 )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl laravel deployment $1 md5sum\033[39m\n"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      FILE_MD5_SUM=$($__output | awk '{print $1}')
+    else
+      message_error "$__MSG"
+    fi
+  fi
+  if [[ $OS == "Darwin" ]]; then
+    __output=$( md5 $1 )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl laravel deployment $1 md5_sum\033[39m\n"
+    __MSG+="$__output"
+    echo $_error_code
+    if [[ $_error_code -eq "0" ]]; then
+      FILE_MD5_SUM=$(md5 $1 | awk '{print $4}')
+    else
+      message_error "$__MSG"
+    fi
+  fi
+  echo $FILE_MD5_SUM
+
+}
+
+file_md5_sum $1 $2

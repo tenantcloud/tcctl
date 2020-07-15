@@ -1,0 +1,4 @@
+The commands with which we can run deployment checks
+
+tcctl laravel deployment file_md5_sum
+tcctl laravel deployment type
