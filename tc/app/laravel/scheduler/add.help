@@ -1,8 +1,8 @@
-The command with which we can add php artisan horizon process
+The commands with which we can add crontab artisan task
 
 for example:
 
-tcctl add_horizon PROJECT_DIR_NAME PROJECT_NAME OS
+tcctl laravel scheduler add PROJECT_DIR_NAME PROJECT_NAME OS
 
 where:
 

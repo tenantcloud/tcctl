@@ -1,8 +1,8 @@
-The commands with which we can update and restart servicectl
+The commands with which we can update servicectl
 
 for example:
 
-tcctl service servicectl OS
+tcctl service update servicectl OS
 
 where:
 

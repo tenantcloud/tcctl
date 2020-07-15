@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-source "$CLI_DIR/tc/framework/functions"
-
 function add_scheduler() {
   PROJECT_DIR_NAME=$1
   PROJECT_NAME=$2

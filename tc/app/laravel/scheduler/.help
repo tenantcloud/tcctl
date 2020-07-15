@@ -1,0 +1,3 @@
+The commands with which we add artisan schedule to crontab
+
+tcctl laravel scheduler add

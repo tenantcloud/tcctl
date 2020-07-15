@@ -1,0 +1,10 @@
+The commands with which we can restart servicectl
+
+for example:
+
+tcctl service restart servicectl OS
+
+where:
+
+servicectl              - the name of service which we want to update and restart
+OS                      - type of OS
