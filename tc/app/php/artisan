@@ -11,4 +11,3 @@ if [ $_error_code -eq "0" ]; then
 else
   message_error "$__MSG"
 fi
-
