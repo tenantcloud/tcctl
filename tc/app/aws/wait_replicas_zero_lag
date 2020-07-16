@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+source "./cli/tc/framework/functions"
+
+function wait_replicas_zero_lag() {
+  DB_IDENTIFIER=$1
+  __output=$( get_replicas_name ${DB_IDENTIFIER} )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws get $1 name\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    REPLICA_DB_INSTANCES_NAME=$( $__output | grep -e "^${DB_IDENTIFIER}-replica.*" )
+    if [[ -z "$REPLICA_DB_INSTANCES_NAME" ]]; then
+      slack chat send "We were unable to find replica's DB instances and STOP deployment process on $(hostname)" "${SLACK_CHANNEL}"
+      exit
+    else
+    SECONDS=1200
+    END_TIME=$(( $(date +%s) + SECONDS ))
+    LAG=""
+    while [[ $LAG != "0" ]]
+    do
+      LAG=$(aws cloudwatch get-metric-statistics \
+            --namespace "AWS/RDS" \
+            --metric-name "ReplicaLag" \
+            --start-time "$(date -d '1 min ago' +'%Y-%m-%d %H:%M:%S')" \
+            --end-time "$(date +'%Y-%m-%d %H:%M:%S')" \
+            --period 3600 \
+            --statistics Average \
+            --dimensions  Name=DBInstanceIdentifier,Value=$REPLICA_DB_INSTANCES_NAME | jq -r '.Datapoints[].Average')
+      LEFT_TIME=$(( END_TIME - $(date +%s) ))
+      if [[ ("$LAG" -gt "$SECONDS") || ("$LEFT_TIME" -lt "0") ]]; then
+        slack chat send "We can't deploy on $(hostname). We waited ${SECONDS} seconds. Replica LAG: $LAG" "${SLACK_CHANNEL}"
+        exit;
+      fi
+      echo -ne "Replica: $REPLICA_DB_INSTANCES_NAME has LAG: $LAG Time: $LEFT_TIME         \r"
+      sleep 1
+    done
+    echo
+    echo "Replica $REPLICA_DB_INSTANCES_NAME LAG is 0"
+    fi
+  else
+    message_error "$__MSG"
+  fi
+}
+
+wait_replicas_zero_lag $1

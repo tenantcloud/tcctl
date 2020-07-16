@@ -1,0 +1,5 @@
+The commands with which we can run finish all queues
+
+for example:
+
+tcctl laravel deployment finish_all_queues

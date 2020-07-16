@@ -1,0 +1,5 @@
+The commands with which we can see list of changed frontend files
+
+for example:
+
+tcctl laravel deployment changed_frontend_files

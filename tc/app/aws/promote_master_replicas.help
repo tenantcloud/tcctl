@@ -1,0 +1,9 @@
+The commands with which we can promote master replicas
+
+for example:
+
+tcctl aws promote_master_replicas DB_MASTER_NAME
+
+where:
+
+DB_MASTER_NAME          - master DB name from .env
