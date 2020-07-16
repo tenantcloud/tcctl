@@ -43,13 +43,14 @@ function message_error() {
   exit $__exit_code_number
 }
 
-function get_project_dir_name() {
-  OS=$(uname -s)
-  echo $OS
+function cd_project_dir() {
   PROJECT_DIR="$(dirname "$0")"/../
   cd $PROJECT_DIR
   PROJECT_DIR_NAME=$(pwd)
   PROJECT_NAME=$(echo ${PWD##*/} | sed 's/\./-/g' )
-  APP_ENV=$(tcctl vault get_value_from_env APP_ENV .env)
-  echo "APP_ENV=$APP_ENV"
+}
+
+function get_os() {
+  OS=$(uname -s)
+  echo $OS
 }

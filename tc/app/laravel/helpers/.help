@@ -1,0 +1,7 @@
+The helper functions and commands for all projects
+
+tcctl laravel helpers get_value_from_env
+tcctl laravel helpers run_migrate_and_during_deploy
+tcctl laravel helpers check_deployment_type
+tcctl laravel helpers file_md5_sum
+tcctl laravel helpers update_project

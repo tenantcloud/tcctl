@@ -17,55 +17,55 @@ function add_horizon() {
     PHP_PATH="/usr/local/opt/php@$PHP/bin/php"
   fi
   [[ $OS == Linux ]] && [[ ! -f $HORIZON_FILE ]] && SUDO_COMMAND="sudo "
-  __output_1=$( `echo $SUDO_COMMAND` cp $PROJECT_DIR_NAME/docs/installation/supervisor/horizon.conf $HORIZON_FILE )
+  __output=$( `echo $SUDO_COMMAND` cp $PROJECT_DIR_NAME/docs/installation/supervisor/horizon.conf $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add_horizon $2 cp\033[39m\n"
-  __MSG+="$__output_1"
+  __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     message_info "$__MSG"
   else
     message_error "$__MSG"
   fi
-  __output_2=$( `echo $SED_COMMAND` "s+program:+program:horizon-$PROJECT_NAME+g" $HORIZON_FILE )
+  __output=$( `echo $SED_COMMAND` "s+program:+program:horizon-$PROJECT_NAME+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add_horizon $2 program\033[39m\n"
-  __MSG+="$__output_2"
+  __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     message_info "$__MSG"
   else
     message_error "$__MSG"
   fi
-  __output_3=$( `echo $SED_COMMAND` "s+command=+command=$PHP_PATH artisan horizon+g" $HORIZON_FILE )
+  __output=$( `echo $SED_COMMAND` "s+command=+command=$PHP_PATH artisan horizon+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add_horizon $2 command\033[39m\n"
-  __MSG+="$__output_3"
+  __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     message_info "$__MSG"
   else
     message_error "$__MSG"
   fi
-  __output_4=$( `echo $SED_COMMAND` "s+directory=+directory=$PROJECT_DIR_NAME+g" $HORIZON_FILE )
+  __output=$( `echo $SED_COMMAND` "s+directory=+directory=$PROJECT_DIR_NAME+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add_horizon $2 directory\033[39m\n"
-  __MSG+="$__output_4"
+  __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     message_info "$__MSG"
   else
     message_error "$__MSG"
   fi
-  __output_5=$( `echo $SED_COMMAND` "s+user=+user=$USER+g" $HORIZON_FILE )
+  __output=$( `echo $SED_COMMAND` "s+user=+user=$USER+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add_horizon $2 user\033[39m\n"
-  __MSG+="$__output_5"
+  __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     message_info "$__MSG"
   else
     message_error "$__MSG"
   fi
-  __output_6=$( `echo $SED_COMMAND` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon-$PROJECT_NAME.log+g" $HORIZON_FILE )
+  __output=$( `echo $SED_COMMAND` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon-$PROJECT_NAME.log+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add_horizon $2 stdout_logfile\033[39m\n"
-  __MSG+="$__output_6"
+  __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     message_info "$__MSG"
   else

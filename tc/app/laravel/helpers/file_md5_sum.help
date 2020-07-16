@@ -1,0 +1,9 @@
+The commands with which we can сheck MD5 sum of file
+
+for example:
+
+tcctl laravel helpers file_md5_sum filename
+
+where:
+
+filename                - name of file

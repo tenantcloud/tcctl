@@ -2,7 +2,7 @@ The command which get value of the variable from the .env project file
 
 for example:
 
-tcctl vault get_value APP_ENV .env
+tcctl laravel helpers get_value_from_env APP_ENV .env
 
 where:
 

@@ -1,9 +1,5 @@
 The commands with which we can run deployment checks, migrate and update tasks
 
-tcctl laravel deployment file_md5_sum
-tcctl laravel deployment type
-tcctl laravel deployment run_migrate_and_during_deploy
-tcctl laravel deployment update
 tcctl laravel deployment finish_all_queues
 tcctl laravel deployment changed_frontend_files
 tcctl laravel deployment get_source_branch

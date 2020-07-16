@@ -3,7 +3,6 @@ The commands with which we work with the vault server
 tcctl vault config
 tcctl vault token
 tcctl vault path
-tcctl vault get_value_from_env
 tcctl vault get
 tcctl vault put
 tcctl vault diff
