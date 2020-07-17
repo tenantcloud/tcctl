@@ -7,7 +7,7 @@ function restart_service() {
   OS=$( get_os )
   if [[ $OS == Linux ]]; then
     SUDO_COMMAND="sudo "
-    __output=$( $SUDO_COMMAND systemctl restart $SERVICE_NAME )
+    __output=$( $SUDO_COMMAND $SERVICE_NAME restart all )
     export _error_code=$?
     __MSG="Command: \033[36mtcctl service $1 restart\033[39m\n"
     __MSG+="$__output"
