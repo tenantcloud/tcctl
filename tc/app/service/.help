@@ -1,5 +1,7 @@
-The commands with which we can update or restart servicectl
+The commands with which we can update or restart systemctl services
 
-tcctl service status
-tcctl service update
 tcctl service restart
+tcctl service start
+tcctl service status
+tcctl service stop
+tcctl service update

@@ -1,6 +1,0 @@
-The commands with which we checks if there are migrations and commands
-that should be executed during the upgrade
-
-for example:
-
-tcctl laravel deployment type

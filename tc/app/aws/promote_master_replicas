@@ -18,7 +18,7 @@ function promote_master_replicas() {
             --backup-retention-period 1
     done
   else
-    message_error "$__MSG"
+    _message_error "$__MSG"
   fi
 }
 

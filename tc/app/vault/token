@@ -10,9 +10,10 @@ function vault_get_token()  {
   __MSG="Command: \033[36mtcctl vault token $@\033[39m\n"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
-      VAULT_TOKEN=$( echo $__output | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p )
+    VAULT_TOKEN=$( echo $__output | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p )
   else
-      message_error "$__MSG"
+    _message_error "$__MSG"
   fi
 }
+
 vault_get_token

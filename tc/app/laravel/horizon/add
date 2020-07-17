@@ -3,9 +3,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 function add_horizon() {
-  PROJECT_DIR_NAME=$( get_project_dir_name )
-  PROJECT_NAME=$( get_project_name )
-  OS=$( get_os )
+  OS=$( _get_os )
   if [[ $OS == Linux ]] ; then
     HORIZON_FILE="/etc/supervisor/conf.d/horizon-$PROJECT_NAME.conf"
     SED_COMMAND="sudo sed -i"
@@ -17,59 +15,59 @@ function add_horizon() {
     PHP_PATH="/usr/local/opt/php@$PHP/bin/php"
   fi
   [[ $OS == Linux ]] && [[ ! -f $HORIZON_FILE ]] && SUDO_COMMAND="sudo "
-  __output=$( `echo $SUDO_COMMAND` cp $PROJECT_DIR_NAME/docs/installation/supervisor/horizon.conf $HORIZON_FILE )
+  __output=$( `echo $SUDO_COMMAND` cp $PROJECT_PATH/docs/installation/supervisor/horizon.conf $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add $2 horizon conf\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    message_info "$__MSG"
+    _message_info "$__MSG"
   else
-    message_error "$__MSG"
+    _message_error "$__MSG"
   fi
   __output=$( `echo $SED_COMMAND` "s+program:+program:horizon-$PROJECT_NAME+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add_horizon $2 program\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    message_info "$__MSG"
+    _message_info "$__MSG"
   else
-    message_error "$__MSG"
+    _message_error "$__MSG"
   fi
   __output=$( `echo $SED_COMMAND` "s+command=+command=$PHP_PATH artisan horizon+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add $2 horizon command\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    message_info "$__MSG"
+    _message_info "$__MSG"
   else
-    message_error "$__MSG"
+    _message_error "$__MSG"
   fi
-  __output=$( `echo $SED_COMMAND` "s+directory=+directory=$PROJECT_DIR_NAME+g" $HORIZON_FILE )
+  __output=$( `echo $SED_COMMAND` "s+directory=+directory=$PROJECT_PATH+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add $2 horizon directory\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    message_info "$__MSG"
+    _message_info "$__MSG"
   else
-    message_error "$__MSG"
+    _message_error "$__MSG"
   fi
   __output=$( `echo $SED_COMMAND` "s+user=+user=$USER+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add $2 horizon user\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    message_info "$__MSG"
+    _message_info "$__MSG"
   else
-    message_error "$__MSG"
+    _message_error "$__MSG"
   fi
   __output=$( `echo $SED_COMMAND` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon-$PROJECT_NAME.log+g" $HORIZON_FILE )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl add $2 horizon stdout_logfile\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    message_info "$__MSG"
+    _message_info "$__MSG"
   else
-    message_error "$__MSG"
+    _message_error "$__MSG"
   fi
   [ -f $HORIZON_FILE.backup ] && rm $HORIZON_FILE.backup
 }

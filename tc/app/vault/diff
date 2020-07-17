@@ -10,9 +10,9 @@ function vault_diff() {
   __MSG="Command: \033[36mtcctl vault diff $@\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-      echo $__output | column -t
+    echo "$__output" | column -t
   else
-      message_error "$__MSG"
+    _message_error "$__MSG"
   fi
 }
 

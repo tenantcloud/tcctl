@@ -9,5 +9,5 @@ __MSG+="$__output"
 if [ $_error_code -eq "0" ]; then
   echo "$__output"
 else
-  message_error "$__MSG"
+  _message_error "$__MSG"
 fi

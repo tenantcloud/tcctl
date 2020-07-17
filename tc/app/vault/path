@@ -10,9 +10,9 @@ function vault_check_path() {
   __MSG="Command: \033[36mtcctl vault path $@\033[39m\n"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
-      echo "true"
+    echo "true"
   else
-      echo "false"
+    echo "false"
   fi
 }
 

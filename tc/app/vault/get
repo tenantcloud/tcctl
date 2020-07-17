@@ -11,9 +11,9 @@ function vault_get() {
   __MSG="Command: \033[36mtcctl vault get $@\033[39m\n"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
-      vault kv get $VAULT_SECRET | sed 's/\ \{1,\}/=/g' | sed 1,11d > $ENV_TEMP
+    vault kv get $VAULT_SECRET | sed 's/\ \{1,\}/=/g' | sed 1,11d > $ENV_TEMP
   else
-      message_error "$__MSG"
+    _message_error "$__MSG"
   fi
 }
 

@@ -4,7 +4,7 @@ source "$CLI_DIR/tc/framework/functions"
 
 function restart_service() {
   SERVICE_NAME=$1
-  OS=$( get_os )
+  OS=$( _get_os )
   if [[ $OS == Linux ]]; then
     SUDO_COMMAND="sudo "
     __output=$( $SUDO_COMMAND $SERVICE_NAME restart all )
@@ -12,20 +12,19 @@ function restart_service() {
     __MSG="Command: \033[36mtcctl service $1 restart\033[39m\n"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      echo $__output | column -t
+      echo "$__output" | column -t
     else
-      message_error "$__MSG"
+      _message_error "$__MSG"
     fi
   elif [[ $OS == Darwin ]]; then
-    SUDO_COMMAND=""
-    __output=$( $SUDO_COMMAND $SERVICE_NAME restart all )
+    __output=$( $SERVICE_NAME restart all )
     export _error_code=$?
     __MSG="Command: \033[36mtcctl service $1 restart\033[39m\n"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      echo $__output | column -t
+      echo "$__output" | column -t
     else
-      message_error "$__MSG"
+      _message_error "$__MSG"
     fi
   fi
 }

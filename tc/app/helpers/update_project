@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-source "./cli/tc/framework/functions"
-
 function update_project() {
-  APP_ENV=$( tcctl laravel helpers get_value_from_env APP_ENV .env )
-  COMPOSER_LOCK=$( tcctl laravel helpers file_md5_sum composer.lock )
-  PACKAGE_LOCK=$( tcctl laravel helpers file_md5_sum yarn.lock )
+  APP_ENV=$( tcctl helpers env get APP_ENV )
+  COMPOSER_LOCK=$( tcctl helpers file_md5_sum composer.lock )
+  PACKAGE_LOCK=$( tcctl helpers file_md5_sum yarn.lock )
   BRANCH=$(tcctl cmd run git branch | grep \* | cut -d ' ' -f2)
   if [[ ! -d "vendor" ]]; then
     echo "We need to install composer to run the following commands"
@@ -34,7 +32,7 @@ function update_project() {
   tcctl cmd run git pull origin $BRANCH --tags
   tcctl cmd run composer install --no-interaction --prefer-dist --optimize-autoloader
 
-  if [[ $PACKAGE_LOCK != "$( tcctl laravel helpers file_md5_sum yarn.lock )" && $APP_ENV != "production" && $APP_ENV != "staging" ]]; then
+  if [[ $PACKAGE_LOCK != "$( tcctl helpers file_md5_sum yarn.lock )" && $APP_ENV != "production" && $APP_ENV != "staging" ]]; then
     tcctl cmd run yarn ci
   fi
 }
