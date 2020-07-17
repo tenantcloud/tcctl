@@ -4,7 +4,7 @@ source "./cli/tc/framework/functions"
 
 function check_deployment_type() {
   BRANCH=$(tcctl cmd run git branch | grep \* | cut -d ' ' -f2)
-  REPOSITORY_URL=$(tcctl cmd run git config --get remote.origin.url | sed -n '5p')
+  REPOSITORY_URL=$(tcctl cmd run git config --get remote.origin.url)
   REPOSITORY_TMP_DIR="/tmp/$(date +%Y%m%d-%H%M%S)"
   __output=$( git clone --depth 1 $REPOSITORY_URL -b $BRANCH $REPOSITORY_TMP_DIR )
   export _error_code=$?

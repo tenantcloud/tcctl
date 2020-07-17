@@ -1,4 +1,5 @@
 The commands with which we can update or restart servicectl
 
+tcctl service status
 tcctl service update
 tcctl service restart

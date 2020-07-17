@@ -2,9 +2,8 @@ The commands with which we can update servicectl
 
 for example:
 
-tcctl service update servicectl OS
+tcctl service update service_name
 
 where:
 
-servicectl              - the name of service which we want to update and restart
-OS                      - type of OS
+service_name            - the name of service which we want to update and restart

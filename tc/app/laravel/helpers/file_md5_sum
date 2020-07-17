@@ -11,7 +11,7 @@ function file_md5_sum() {
     __MSG="Command: \033[36mtcctl laravel deployment $1 md5sum\033[39m\n"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      FILE_MD5_SUM=$($__output | awk '{print $1}')
+      FILE_MD5_SUM=$( md5sum $1 | awk '{print $1}' )
     else
       message_error "$__MSG"
     fi
@@ -23,7 +23,7 @@ function file_md5_sum() {
     __MSG+="$__output"
     echo $_error_code
     if [[ $_error_code -eq "0" ]]; then
-      FILE_MD5_SUM=$(md5 $1 | awk '{print $4}')
+      FILE_MD5_SUM=$( md5 $1 | awk '{print $4}' )
     else
       message_error "$__MSG"
     fi

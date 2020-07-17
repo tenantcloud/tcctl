@@ -8,13 +8,13 @@ function create_master_replicas() {
   for (( i = 1; i <= $REPLICA_DB_INSTANCES_COUNT; i++ )); do
     if [[ $i = "1" ]]; then
       DB_REPLICA_NAME=${DB_IDENTIFIER}-replica-$(date +%Y%m%d-%H%M%S)
-      __output_1=$( aws rds create-db-instance-read-replica \
+      __output=$( aws rds create-db-instance-read-replica \
               --db-instance-identifier $DB_REPLICA_NAME \
               --source-db-instance-identifier $DB_IDENTIFIER \
               --db-instance-class $DB_INSTANCE_TYPE )
       export _error_code=$?
       __MSG="Command: \033[36mtcctl aws create read replica $DB_REPLICA_NAME\033[39m\n"
-      __MSG+="$__output_1"
+      __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
         message_info "$__MSG"
       else
@@ -23,13 +23,13 @@ function create_master_replicas() {
     fi
     if [[ $i = "2" ]]; then
       DB_BACKUP_NAME=${DB_IDENTIFIER}-backup-$(date +%Y%m%d-%H%M%S)
-      __output_2=$(aws rds create-db-instance-read-replica \
+      __output=$(aws rds create-db-instance-read-replica \
               --db-instance-identifier $DB_BACKUP_NAME \
               --source-db-instance-identifier $DB_IDENTIFIER \
               --db-instance-class $DB_INSTANCE_TYPE )
       export _error_code=$?
       __MSG="Command: \033[36mtcctl aws create backup read replica: $DB_BACKUP_NAME\033[39m\n"
-      __MSG+="$__output_2"
+      __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
         message_info "$__MSG"
         DB_URL_SUFFIX=$(cat .env | grep "^DB_HOST=" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')

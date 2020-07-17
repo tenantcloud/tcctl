@@ -8,7 +8,7 @@ function get_value_from_env() {
       FILENAME=$2
       __output=$( sed -n -e "s/^\s*$VARIABLE\s*=//p" $FILENAME )
       export _error_code=$?
-      __MSG="Command: \033[36mtcctl helpers get value from env $1\033[39m\n"
+      __MSG="Command: \033[36mtcctl helpers get value from $1\033[39m\n"
       __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
     if [[ -z "$__output" ]]; then

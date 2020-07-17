@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function get_source_branch() {
-  PR_COMMIT=$(tcctl cmd run git log -1 | sed -n 6p | awk '{ print $3 }')
+  PR_COMMIT=$(tcctl cmd run git log -1 | sed -n 2p | awk '{ print $3 }')
   PR_BRANCH=$(tcctl cmd run git log ${PR_COMMIT}..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $4 }')
   echo $PR_BRANCH
 }

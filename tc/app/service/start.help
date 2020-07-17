@@ -1,8 +1,8 @@
-The commands with which we can restart servicectl
+The commands with which we can start of service
 
 for example:
 
-tcctl service restart service_name
+tcctl service start service_name
 
 where:
 
