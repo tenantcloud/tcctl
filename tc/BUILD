@@ -1,2 +1,2 @@
 development
-https://github.com/tenantcloud/tcctl.git
+git@github.com:tenantcloud/tcctl.git
