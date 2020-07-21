@@ -4,12 +4,12 @@ source "./cli/tc/framework/functions"
 
 function wait_replicas_zero_lag() {
   DB_IDENTIFIER=$1
-  __output=$( get_replicas_name ${DB_IDENTIFIER} )
+	  __output=$( tcctl aws get_replicas_name ${DB_IDENTIFIER} )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl aws get $1 name\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    REPLICA_DB_INSTANCES_NAME=$( $__output | grep -e "^${DB_IDENTIFIER}-replica.*" )
+    REPLICA_DB_INSTANCES_NAME=$( tcctl aws get_replicas_name ${DB_IDENTIFIER} | grep -e "^${DB_IDENTIFIER}-replica.*" )
     if [[ -z "$REPLICA_DB_INSTANCES_NAME" ]]; then
       slack chat send "We were unable to find replica's DB instances and STOP deployment process on $(hostname)" "${SLACK_CHANNEL}"
       exit

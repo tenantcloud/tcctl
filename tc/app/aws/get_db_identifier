@@ -10,7 +10,7 @@ function get_db_identifier() {
     __MSG="Command: \033[36mtcctl aws $1 get_db_identifier\033[39m\n"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      echo $NAME | awk -F '.' '{print $1}'
+      echo $__output | awk -F '.' '{print $1}'
     else
       _message_error "$__MSG"
     fi
