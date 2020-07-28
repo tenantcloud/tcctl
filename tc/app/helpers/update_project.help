@@ -2,4 +2,4 @@ The commands with which we can update our project
 
 for example:
 
-tcctl laravel helpers update_project
+tcctl helpers update_project

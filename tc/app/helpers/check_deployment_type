@@ -8,7 +8,7 @@ function check_deployment_type() {
   REPOSITORY_TMP_DIR="/tmp/$(date +%Y%m%d-%H%M%S)"
   __output=$( git clone --depth 1 $REPOSITORY_URL -b $BRANCH $REPOSITORY_TMP_DIR )
   export _error_code=$?
-  __MSG="Command: \033[36mtcctl laravel deployment $REPOSITORY_URL clone to tmp dir\033[39m\n"
+  __MSG="Command: \033[36mtcctl helpers $REPOSITORY_URL clone to tmp dir\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     _message_info "$__MSG"
@@ -19,7 +19,7 @@ function check_deployment_type() {
                     --base-path=${REPOSITORY_TMP_DIR} \
                     --non-verbose )
   export _error_code=$?
-  __MSG="Command: \033[36mtcctl laravel deployment $REPOSITORY_URL check migrations state\033[39m\n"
+  __MSG="Command: \033[36mtcctl helpers $REPOSITORY_URL check migrations state\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     _message_info "$__MSG"

@@ -3,4 +3,4 @@ that should be executed during the upgrade
 
 for example:
 
-tcctl laravel helpers check_deployment_type
+tcctl helpers check_deployment_type

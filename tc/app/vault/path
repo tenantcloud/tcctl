@@ -3,6 +3,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 function vault_check_path() {
+  tcctl helpers check_bin_file vault
   tcctl vault token
   VAULT_SECRET_PATH=$1
   __output=$( vault kv get $VAULT_SECRET_PATH 2>&1 )

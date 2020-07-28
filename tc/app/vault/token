@@ -4,6 +4,7 @@ VAULT_CONFIG_FILE=~/.vault-configuration
 source "$CLI_DIR/tc/framework/functions"
 
 function vault_get_token()  {
+  tcctl helpers check_bin_file vault
   source $VAULT_CONFIG_FILE
   __output=$( vault login -method=userpass username=$VAULT_NAME password=$VAULT_PASSWORD )
   export _error_code=$?

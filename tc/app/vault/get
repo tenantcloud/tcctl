@@ -3,6 +3,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 function vault_get() {
+  tcctl helpers check_bin_file vault
   tcctl vault token
   VAULT_SECRET=$1
   ENV_TEMP=$2
