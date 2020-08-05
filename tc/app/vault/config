@@ -1,16 +1,19 @@
 #!/usr/bin/env bash
 
 VAULT_CONFIG_FILE=~/.vault-configuration
+COMMAND_SHELL=~/.zshrc
 
 function vault_config() {
+  tcctl helpers check_bin_file vault
   VAULT_ADDR=$1
   VAULT_NAME=$2
   VAULT_PASSWORD=$3
-  MSG="Add vault_env to profile"
-  echo 'export VAULT_ADDR='$VAULT_ADDR > $VAULT_CONFIG_FILE
+  echo 'export VAULT_ADDR='$VAULT_ADDR >> $VAULT_CONFIG_FILE
   echo 'export VAULT_NAME='$VAULT_NAME >> $VAULT_CONFIG_FILE
   echo 'export VAULT_PASSWORD='$VAULT_PASSWORD >> $VAULT_CONFIG_FILE
+  echo "source $VAULT_CONFIG_FILE" >> $COMMAND_SHELL
   source $VAULT_CONFIG_FILE
+  echo "Add vault credentials to profile is successfully"
 }
 
 vault_config $1 $2 $3

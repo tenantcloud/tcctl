@@ -3,6 +3,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 function vault_diff() {
+  tcctl helpers check_bin_file vault
   ENV_FILE=$1
   ENV_TEMP=$2
   __output=$( diff -y --suppress-common-lines $ENV_FILE $ENV_TEMP )
@@ -10,9 +11,9 @@ function vault_diff() {
   __MSG="Command: \033[36mtcctl vault diff $@\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-      echo $__output | column -t
+    echo "$__output" | column -t
   else
-      message_error "$__MSG"
+    _message_error "$__MSG"
   fi
 }
 

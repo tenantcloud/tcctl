@@ -1,0 +1,5 @@
+The commands with which we can run deployment checks, migrate and update tasks
+
+tcctl laravel deployment finish_all_queues
+tcctl laravel deployment changed_frontend_files
+tcctl laravel deployment get_source_branch

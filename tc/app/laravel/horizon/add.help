@@ -1,0 +1,5 @@
+The commands with which we can add horizon config
+
+for example:
+
+tcctl laravel horizon add

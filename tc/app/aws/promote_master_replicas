@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+source "./cli/tc/framework/functions"
+
+function promote_master_replicas() {
+  DB_IDENTIFIER=$1
+  __output=$( aws rds describe-db-instances --db-instance-identifier $DB_IDENTIFIER )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws $1 describe-db-instances\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    REPLICA_DB_INSTANCES=$( $__output | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
+    export REPLICA_DB_INSTANCES_COUNT=$(echo $REPLICA_DB_INSTANCES | wc -w)
+    for i in $REPLICA_DB_INSTANCES; do
+      echo "Promote read replica $i to Instance"
+      aws rds promote-read-replica \
+            --db-instance-identifier $i \
+            --backup-retention-period 1
+    done
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+promote_master_replicas $1

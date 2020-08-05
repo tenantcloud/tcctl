@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+function changed_frontend_files() {
+  fe_files="resources/assets/ "
+  fe_files+="resources/task/ "
+  fe_files+="tsconfig.json "
+  fe_files+="webpack.config.js "
+  fe_files+="yarn.lock "
+  status=false
+  files_list=("$@")
+  for i in "${files_list[@]}";
+  do
+    for j in $fe_files;
+    do
+      if [[ $i == $j* ]]; then
+        status=true
+        echo $j
+      fi
+    done
+  done
+  echo $status
+}
+
+changed_frontend_files

@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+source "./cli/tc/framework/functions"
+
+function check_deployment_type() {
+  BRANCH=$(tcctl cmd run git branch | grep \* | cut -d ' ' -f2)
+  REPOSITORY_URL=$(tcctl cmd run git config --get remote.origin.url)
+  REPOSITORY_TMP_DIR="/tmp/$(date +%Y%m%d-%H%M%S)"
+  __output=$( git clone --depth 1 $REPOSITORY_URL -b $BRANCH $REPOSITORY_TMP_DIR )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl helpers $REPOSITORY_URL clone to tmp dir\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _message_info "$__MSG"
+  else
+    _message_error "$__MSG"
+  fi
+  __output=$( php artisan tc:devops:migrations_state \
+                    --base-path=${REPOSITORY_TMP_DIR} \
+                    --non-verbose )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl helpers $REPOSITORY_URL check migrations state\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _message_info "$__MSG"
+    DEPLOY_TASKS="$__output"
+    if [[ $DEPLOY_TASKS -gt "0" ]]; then
+      echo "We find $DEPLOY_TASKS tasks (migration + once_run command)"
+      export FULL_DEPLOY=true
+    else
+      echo "No miration or once_run command on deploy ($DEPLOY_TASKS)"
+    fi
+  else
+    _message_error "$__MSG"
+  fi
+  rm -rf $REPOSITORY_TMP_DIR
+}
+
+check_deployment_type

@@ -1,0 +1,9 @@
+The commands with which we can start of service
+
+for example:
+
+tcctl service start service_name
+
+where:
+
+service_name            - the name of service which we want to update and restart

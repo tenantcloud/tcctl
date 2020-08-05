@@ -6,4 +6,4 @@ Through this pass functionality only non-interactive command
 
 for example:
 
-tcctl cmd {cli command}
+tcctl cmd run {cli command}

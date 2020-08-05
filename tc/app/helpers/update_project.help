@@ -1,0 +1,5 @@
+The commands with which we can update our project
+
+for example:
+
+tcctl helpers update_project

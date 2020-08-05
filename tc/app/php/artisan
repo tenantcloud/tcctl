@@ -7,8 +7,7 @@ export _error_code=$?
 __MSG="Command: \033[36mphp artisan $@\033[39m\n"
 __MSG+="$__output"
 if [ $_error_code -eq "0" ]; then
-  message_info "$__MSG"
+  echo "$__output"
 else
-  message_error "$__MSG"
+  _message_error "$__MSG"
 fi
-

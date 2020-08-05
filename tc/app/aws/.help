@@ -1,0 +1,7 @@
+The commands with which we can run aws tasks
+
+tcctl aws promote_master_replicas
+tcctl aws create_master_replicas
+tcctl aws get_db_identifier
+tcctl aws get_replicas_name
+tcctl aws wait_replicas_zero_lag
