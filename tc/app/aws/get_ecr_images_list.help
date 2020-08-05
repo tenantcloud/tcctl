@@ -1,0 +1,10 @@
+The commands show images on AWS ECR
+
+for example:
+
+tcctl aws get_ecr_images_list --profile ecr --repository tc/repo
+
+where:
+
+--profile          - profile name in ~/.aws/credentials
+--repository       - repository name in AWS ECR

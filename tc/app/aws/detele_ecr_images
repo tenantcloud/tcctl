@@ -1,0 +1,70 @@
+#!/bin/bash
+
+source "./tc/framework/functions"
+
+set +e
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --profile)
+    PROFILE="$2"
+    shift
+    shift
+    ;;
+    --repository)
+    REPOSITORY="$2"
+    shift
+    shift
+    ;;
+    --leave-last-image)
+    LEAVE_LAST_IMAGE="$2"
+    shift
+    shift
+    ;;
+    *)
+    ;;
+esac
+done
+
+get_ecr_images_count
+parse_ecr_image_count
+
+echo "Images tags will be deleted..."
+
+function old_image_digest() {
+  __output=$( aws ecr describe-images --repository-name ${REPOSITORY} \
+	  --profile ${PROFILE} --output text | grep -w $i | awk {'print $2'} )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr describe-images\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    export oldImageDigest=`aws ecr describe-images --repository-name ${REPOSITORY} \
+	  --profile ${PROFILE} --output text | grep -w $i | awk {'print $2'}`
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+function old_image_tags() {
+  __output=$( aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
+	  --output text --image-ids imageDigest=${oldImageDigest} )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr describe-images\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    export oldImageTags=`aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
+	  --output text --image-ids imageDigest=${oldImageDigest}`
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+for i in `cat /tmp/oldImageTimeStamp.txt`
+do
+  old_image_digest
+  old_image_tags
+  echo $oldImageTags | awk {'print $8'}
+done

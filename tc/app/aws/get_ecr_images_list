@@ -1,0 +1,46 @@
+#!/bin/bash
+
+source "./tc/framework/functions"
+
+set +e
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --profile)
+    PROFILE="$2"
+    shift
+    shift
+    ;;
+    --repository)
+    REPOSITORY="$2"
+    shift
+    shift
+    ;;
+    *)
+    ;;
+esac
+done
+
+function get_ecr_images_list() {
+  __output=$( aws ecr describe-images \
+	  --repository-name ${REPOSITORY} \
+	  --profile ${PROFILE} \
+	  | jq -r '.imageDetails[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' | sort | awk {'print $3'} )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    ImagesList=$( aws ecr describe-images \
+          --repository-name ${REPOSITORY} \
+          --profile ${PROFILE} \
+          | jq -r '.imageDetails[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' | sort | awk {'print $3'} )
+    echo $ImagesList
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+get_ecr_images_list
