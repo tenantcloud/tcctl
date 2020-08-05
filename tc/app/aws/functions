@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+function _describe_ecr_images() {
+  __output=$( aws ecr describe-images \
+	  --repository-name ${REPOSITORY} \
+	  --profile ${PROFILE} )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _ecr_images_list=$__output
+    # _message_info "$__MSG"
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+function _get_ecr_images_count() {
+  __output=$( aws ecr describe-images --repository-name ${REPOSITORY} \
+          --profile ${PROFILE} --output text \
+          | awk {'print $3'} | grep -v ^$ | sort |wc -l )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr describe-images for _get_ecr_images_count\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    export _image_count=$__output
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+function _parse_ecr_image_count() {
+  __output=$( aws ecr describe-images --repository-name ${REPOSITORY} \
+          --profile ${PROFILE} --output text \
+          | awk {'print $3'} | grep -v ^$ | sort | head -n $(( $_image_count - $LEAVE_LAST_IMAGE )) )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr describe-images for _parse_ecr_image_count\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    array=$__output
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+function _get_old_image_digest() {
+  __output=$( aws ecr describe-images --repository-name ${REPOSITORY} \
+	  --profile ${PROFILE} --output text | grep -w $i | awk {'print $2'} )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr describe-images for _get_old_image_digest\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _old_image_digest=$__output
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+function _get_old_image_tags() {
+  __output=$( aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
+	  --output text --image-ids imageDigest=${_old_image_digest} )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr describe-images for _get_old_image_tags\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _old_image_tags=$__output
+  else
+    _message_error "$__MSG"
+  fi
+}
