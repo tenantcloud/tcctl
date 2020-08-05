@@ -1,6 +1,7 @@
 #!/bin/bash
 
 source "./tc/framework/functions"
+source "./tc/app/aws/functions"
 
 set +e
 
@@ -24,23 +25,20 @@ case $key in
 esac
 done
 
-function get_ecr_images_list() {
-  __output=$( aws ecr describe-images \
-	  --repository-name ${REPOSITORY} \
-	  --profile ${PROFILE} \
-	  | jq -r '.imageDetails[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' | sort | awk {'print $3'} )
+_describe_ecr_images
+
+function _get_ecr_images_list() {
+  __output=$(echo $_ecr_images_list \
+  | jq -r '.imageDetails[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
+  | sort | awk {'print $3'} )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    ImagesList=$( aws ecr describe-images \
-          --repository-name ${REPOSITORY} \
-          --profile ${PROFILE} \
-          | jq -r '.imageDetails[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' | sort | awk {'print $3'} )
-    echo $ImagesList
+    _message_info "$__MSG"
   else
     _message_error "$__MSG"
   fi
 }
 
-get_ecr_images_list
+_get_ecr_images_list
