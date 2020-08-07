@@ -1,11 +1,18 @@
 #!/usr/bin/env bash
 
-source "$CLI_DIR/tc/framework/functions"
+# shellcheck source=../../framework/functions
+# shellcheck disable=SC1091
+source "${CLI_DIR}/tc/framework/functions"
 
-__output=$( php artisan $@ 2>&1 )
+for __param in "$@"; do
+  __parameters+="$__param "
+done
+
+__output=$( php artisan "$__parameters" 2>&1 )
 export _error_code=$?
-__MSG="Command: \033[36mphp artisan $@\033[39m\n"
+__MSG="Command: \033[36mphp artisan $__parameters\033[39m\n"
 __MSG+="$__output"
+
 if [ $_error_code -eq "0" ]; then
   message_info "$__MSG"
 else
