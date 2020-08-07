@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+source "./cli/tc/framework/functions"
+
+function get_replicas_name() {
+  DB_IDENTIFIER=$1
+  __output=$( aws rds describe-db-instances --db-instance-identifier $DB_IDENTIFIER )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws $1 describe-db-instances\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    REPLICA_DB_INSTANCES=$( aws rds describe-db-instances --db-instance-identifier $DB_IDENTIFIER | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
+    for i in $REPLICA_DB_INSTANCES; do
+      echo "$i"
+    done
+  else
+    _message_error "$__MSG"
+  fi
+}
+
+get_replicas_name $1

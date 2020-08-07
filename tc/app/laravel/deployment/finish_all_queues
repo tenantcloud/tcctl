@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+function finish_all_queues() {
+  echo "Finish All queues after site was down"
+  PROCCESS_COUNT=8
+  SESSION_NAME="QUEUESFINISH"
+  tcctl cmd run byobu -2 new-session -d -s $SESSION_NAME
+  for ((i=1;i<=$PROCCESS_COUNT;i++));
+  do
+      tcctl cmd run byobu new-window -t $SESSION_NAME "php artisan queue:work --force --queue=high,default,export,reports,promo,low,notification,convert-to-pdf,cron,deploy"
+  done
+  tcctl php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
+  tcctl cmd run byobu kill-session -t $SESSION_NAME
+}
+
+finish_all_queues

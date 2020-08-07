@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+source "$CLI_DIR/tc/framework/functions"
+
+function update_service() {
+  SERVICE_NAME=$1
+  OS=$( _get_os )
+  if [[ $OS == Linux ]]; then
+    SUDO_COMMAND="sudo "
+    __output=$( $SUDO_COMMAND $SERVICE_NAME update )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl service $1 update\033[39m\n"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      echo $( $SUDO_COMMAND $SERVICE_NAME force-reload | column -t )
+    else
+      _message_error "$__MSG"
+    fi
+  elif [[ $OS == Darwin ]]; then
+    SUDO_COMMAND=""
+    __output=$( $SUDO_COMMAND $SERVICE_NAME update )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl service $1 update\033[39m\n"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      echo $( $SUDO_COMMAND $SERVICE_NAME update | column -t )
+    else
+      _message_error "$__MSG"
+    fi
+  fi
+}
+
+update_service $1

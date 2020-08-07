@@ -10,7 +10,7 @@ __show_date_hostname() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] on $(hostname)"
 }
 
-function message_info() {
+function _message_info() {
   echo "= INFO ========================================================================="
   __show_date_hostname
   __draw_line -
@@ -18,7 +18,7 @@ function message_info() {
   __draw_line -
 }
 
-function message_warning() {
+function _message_warning() {
   __exit_code_number=$?
   [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
   unset _error_code
@@ -30,7 +30,7 @@ function message_warning() {
   __draw_line -
 }
 
-function message_error() {
+function _message_error() {
   __exit_code_number=$?
   [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
   unset _error_code
@@ -43,4 +43,17 @@ function message_error() {
   exit $__exit_code_number
 }
 
+function _get_project_path() {
+  PROJECT_PATH=$(pwd)
+  echo "$PROJECT_PATH"
+}
 
+function _get_project_name() {
+  PROJECT_NAME=$(echo ${PWD##*/} | sed 's/\./-/g' )
+  echo "$PROJECT_NAME"
+}
+
+function _get_os() {
+  OS=$(uname -s)
+  echo $OS
+}

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+function update_project() {
+  APP_ENV=$( tcctl helpers env get APP_ENV )
+  COMPOSER_LOCK=$( tcctl helpers file_md5_sum composer.lock )
+  PACKAGE_LOCK=$( tcctl helpers file_md5_sum yarn.lock )
+  BRANCH=$(tcctl cmd run git branch | grep \* | cut -d ' ' -f2)
+  if [[ ! -d "vendor" ]]; then
+    echo "We need to install composer to run the following commands"
+    tcctl cmd run composer install --no-interaction --prefer-dist --optimize-autoloader
+    tcctl cmd run yarn ci
+  fi
+  tcctl php artisan tc:devops:queues_state --terminate-when-empty=true
+  tcctl php artisan horizon:pause
+
+  tcctl php artisan config:clear
+  tcctl php artisan route:clear
+  tcctl php artisan view:clear
+  tcctl php artisan event:clear
+  tcctl php artisan clear-compiled
+
+  if [[ -z "$(tcctl cmd run git status --short)" ]]; then
+    echo "working tree clean"
+  else
+    echo "working tree isn't clean"
+    tcctl cmd run git status --short
+    tcctl cmd run git reset --hard HEAD
+    tcctl cmd run git clean -f -d
+    echo "We fix it ;)"
+  fi
+
+  tcctl cmd run git pull origin $BRANCH --tags
+  tcctl cmd run composer install --no-interaction --prefer-dist --optimize-autoloader
+
+  if [[ $PACKAGE_LOCK != "$( tcctl helpers file_md5_sum yarn.lock )" && $APP_ENV != "production" && $APP_ENV != "staging" ]]; then
+    tcctl cmd run yarn ci
+  fi
+}
+
+update_project

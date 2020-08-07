@@ -1,0 +1,7 @@
+The helper functions and commands for all projects
+
+tcctl helpers run_migrate_and_during_deploy
+tcctl helpers check_deployment_type
+tcctl helpers file_md5_sum
+tcctl helpers update_project
+tcctl helpers check_bin_file

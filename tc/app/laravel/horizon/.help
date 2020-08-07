@@ -1,0 +1,3 @@
+The commands with which we add php artisan horizon to supervisor
+
+tcctl laravel horizon add

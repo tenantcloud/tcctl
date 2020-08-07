@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+source "$CLI_DIR/tc/framework/functions"
+
+function check_bin_file() {
+  __output=$( test -f /usr/local/bin/$1 )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl helpers check $1 bin file\033[39m\n"
+  __MSG+="$__output"
+  if [ $_error_code -eq "0" ]; then
+    _message_info "$__MSG"
+  else
+    echo "$1 bin file is missing"
+    _message_error "$__MSG"
+  fi
+
+}
+
+check_bin_file $1

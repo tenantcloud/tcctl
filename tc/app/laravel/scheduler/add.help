@@ -1,0 +1,5 @@
+The commands with which we can add crontab artisan task
+
+for example:
+
+tcctl laravel scheduler add
