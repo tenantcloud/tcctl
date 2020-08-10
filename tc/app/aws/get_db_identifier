@@ -1,20 +1,23 @@
 #!/usr/bin/env bash
 
-source "./cli/tc/framework/functions"
+# shellcheck disable=SC1091
+# shellcheck source=../../framework/functions
+source "${CLI_DIR}/tc/framework/functions"
 
 function get_db_identifier() {
-  NAME=$1
-  if [[ -z $(echo $NAME | grep ".*\.amazonaws.com" ) ]]; then
-    __output=$( dig cname $NAME +short )
+  NAME="$1"
+  if [[ -z $( echo $NAME | grep ".*\.amazonaws.com" ) ]]; then
+    __output="$( dig cname "$NAME" +short )"
     export _error_code=$?
     __MSG="Command: \033[36mtcctl aws $1 get_db_identifier\033[39m\n"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      echo $__output | awk -F '.' '{print $1}'
+      echo "$__output" | awk -F '.' '{print $1}'
     else
       _message_error "$__MSG"
     fi
   fi
 }
 
-get_db_identifier $1
+get_db_identifier "$1"
+
