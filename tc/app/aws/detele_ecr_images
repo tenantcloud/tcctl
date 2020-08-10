@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck source=./tc/framework/functions
+# shellcheck source=./tc/app/aws/functions
+# shellcheck disable=SC1091,SC2154,SC2034
+
 source "./tc/framework/functions"
 source "./tc/app/aws/functions"
 
@@ -30,20 +34,13 @@ case $key in
 esac
 done
 
-_get_ecr_images_count
-_parse_ecr_image_count
+_get_old_image_tags
+_get_old_image_digest
 
-__MSG="\033[36mImages with next tags will be removed from AWS ECR ${REPOSITORY} repository\033[39m\n"
-_message_info "$__MSG"
-
-for l in "${array[@]}"
+for l in "${_array[@]}"
 do
   for i in $l
   do
-    oldImageDigest=`aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
-    --output text | grep -w $i | awk {'print $2'}`
-    oldImageTags=`aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
-    --output text --image-ids imageDigest=${oldImageDigest}`
-    echo $oldImageTags | awk {'print $8'}
+    _delete_old_ecr_images
   done
 done

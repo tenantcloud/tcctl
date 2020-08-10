@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck source=./tc/framework/functions
+# shellcheck source=./tc/app/aws/functions
+# shellcheck disable=SC1091
+
 source "./tc/framework/functions"
 source "./tc/app/aws/functions"
 
@@ -35,28 +39,27 @@ case $key in
 esac
 done
 
-_get_ecr_images_count
-_parse_ecr_image_count
+_get_old_image_tags | sed "/$EXCLUDE_TAG/d"
 
-__MSG="\033[36mImages with next tags will be removed from AWS ECR ${REPOSITORY} repository\033[39m\n\
-Excluded tag: $EXCLUDE_TAG"
-_message_info "$__MSG"
+function _get_ecr_images_list_exclude() {
+  __output=$( _get_ecr_images_list | jq -r ".[].imageDigest" | sed "/$_exclude_tag_image_digest/d" )
+  export _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _array="$__output"
+  else
+    _message_error "$__MSG"
+  fi
+}
 
-if [ ! -z "$EXCLUDE_TAG" ]
-then
-  tag_delete=$(aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
-  --image-ids imageTag=$EXCLUDE_TAG --output text | awk {'print $3'})
-  array=( "${array[@]/$tag_delete}" )
-fi
+_get_exclude_tag_image_digest
+_get_ecr_images_list_exclude
 
-for l in "${array[@]}"
+for l in "${_array[@]}"
 do
   for i in $l
   do
-    oldImageDigest=`aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
-    --output text | grep -w $i | awk {'print $2'}`
-    oldImageTags=`aws ecr describe-images --repository-name ${REPOSITORY} --profile ${PROFILE} \
-    --output text --image-ids imageDigest=${oldImageDigest}`
-    echo $oldImageTags | awk {'print $8'}
+    _delete_old_ecr_images
   done
 done

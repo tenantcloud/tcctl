@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# shellcheck source=./tc/framework/functions
+# shellcheck source=./tc/app/aws/functions
+# shellcheck disable=SC1091,SC2034
+
 source "./tc/framework/functions"
 source "./tc/app/aws/functions"
 
@@ -25,12 +29,10 @@ case $key in
 esac
 done
 
-_describe_ecr_images
-
 function _get_ecr_images_list() {
-  __output=$(echo $_ecr_images_list \
+  __output=$( _describe_ecr_images \
   | jq -r '.imageDetails[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
-  | sort | awk {'print $3'} )
+  | sort | awk '{print $3}' )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
   __MSG+="$__output"
@@ -41,4 +43,5 @@ function _get_ecr_images_list() {
   fi
 }
 
-_get_ecr_images_list
+
+_get_ecr_images_list "$REPOSITORY" "$PROFILE"
