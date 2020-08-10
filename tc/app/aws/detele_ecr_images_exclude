@@ -4,8 +4,8 @@
 # shellcheck source=./tc/app/aws/functions
 # shellcheck disable=SC1091
 
-source "./tc/framework/functions"
-source "./tc/app/aws/functions"
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/aws/functions"
 
 set +e
 
