@@ -2,9 +2,9 @@ The command which get the keys from the vault server
 
 for example:
 
-tcctl vault get --project projects_name/dev/projects_brahch --env-tmp .env-tmp - for use by developers
+tcctl vault get --secret-project projects_name/dev/projects_brahch --env-tmp .env-tmp - for use by developers
 
-tcctl vault get --project projects_name/APP_ENV --env-tmp .env-tmp - for use by servers
+tcctl vault get --secret-project projects_name/APP_ENV --env-tmp .env-tmp - for use by servers
 
 where:
 

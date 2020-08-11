@@ -13,8 +13,8 @@ do
 key="$1"
 
 case $key in
-    --project)
-    PROJECT="$2"
+    --secret-project)
+    SECRET_PROJECT="$2"
     shift 2
     ;;
     --env)
@@ -42,4 +42,4 @@ function vault_put() {
   fi
 }
 
-vault_put "$PROJECT" "$ENV"
+vault_put "$SECRET_PROJECT" "$ENV"

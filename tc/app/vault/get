@@ -13,8 +13,8 @@ do
 key="$1"
 
 case $key in
-    --project)
-    PROJECT="$2"
+    --secret-project)
+    SECRET_PROJECT="$2"
     shift 2
     ;;
     --env-tmp)
@@ -42,4 +42,4 @@ function vault_get() {
   fi
 }
 
-vault_get "$PROJECT" "$ENV_TEMP"
+vault_get "$SECRET_PROJECT" "$ENV_TEMP"

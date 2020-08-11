@@ -13,8 +13,8 @@ do
 key="$1"
 
 case $key in
-    --path)
-    PROJECT_PATH="$2"
+    --secret-path)
+    SECRET_PATH="$2"
     shift 2
     ;;
     *)
@@ -37,4 +37,4 @@ function vault_check_path() {
   fi
 }
 
-vault_check_path "$PROJECT_PATH"
+vault_check_path "$SECRET_PATH"
