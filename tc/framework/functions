@@ -43,17 +43,47 @@ function _message_error() {
   exit $__exit_code_number
 }
 
+# Function show message (info, error, warning)
+# Usage: _message "message" "error" "128"
+#        _message "message"
+function _message {
+  __message_body="$1"
+  [[ -z $2 ]] && __message_type="info" || __message_type="$2"
+  [[ -z $3 ]] && __message_error_code="0" || __message_error_code="$3"
+
+  case "$__message_type" in
+    error)
+      echo "= ERROR ========================================================================"
+    ;;
+    warning)
+      echo "= WARNING ======================================================================"
+    ;;
+    *)
+      echo "= INFO ========================================================================="
+    ;;
+  esac
+
+  __show_date_hostname
+  __draw_line -
+
+  [[ $__message_type != "info" ]] && echo "Exit code $__message_error_code"
+  printf "%s\n" "$__message_body"
+  
+  __draw_line -
+
+  [[ $__message_type == "error" ]] && exit "$__message_error_code"
+}
+
 function _get_project_path() {
-  PROJECT_PATH=$(pwd)
-  echo "$PROJECT_PATH"
+  pwd
 }
 
 function _get_project_name() {
-  PROJECT_NAME=$(echo ${PWD##*/} | sed 's/\./-/g' )
-  echo "$PROJECT_NAME"
+  __path="${PWD##*/}"
+  echo "${__path//./-}"
 }
 
 function _get_os() {
   OS=$(uname -s)
-  echo $OS
+  echo "$OS"
 }
