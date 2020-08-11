@@ -1,20 +1,44 @@
 #!/usr/bin/env bash
 
+# shellcheck source="$CLI_DIR/tc/framework/functions"
+# shellcheck source="$CLI_DIR/tc/app/aws/functions"
+# shellcheck disable=SC2124
+
 source "$CLI_DIR/tc/framework/functions"
+
+set +e
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --env)
+    ENV="$2"
+    shift 2
+    ;;
+    --env-tmp)
+    ENV_TEMP="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function vault_diff() {
   tcctl helpers check_bin_file vault
   ENV_FILE=$1
   ENV_TEMP=$2
-  __output=$( diff -y --suppress-common-lines $ENV_FILE $ENV_TEMP )
+  __output=$( diff -y --suppress-common-lines "$ENV_FILE" "$ENV_TEMP" )
   export _error_code=$?
   __MSG="Command: \033[36mtcctl vault diff $@\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     echo "$__output" | column -t
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-vault_diff $1 $2
+vault_diff "$ENV" "$ENV_TEMP"

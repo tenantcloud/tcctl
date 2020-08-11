@@ -2,7 +2,7 @@ The command which configures user permissions and the vault server address
 
 for example:
 
-tcctl vault config http://127.0.0.1:8200 username userpassword
+tcctl vault config --vault_addr http://127.0.0.1:8200 --vault_name username --vault_password userpassword
 
 where:
 

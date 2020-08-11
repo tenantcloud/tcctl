@@ -1,19 +1,47 @@
 #!/usr/bin/env bash
 
+# shellcheck source="$CLI_DIR/tc/framework/functions"
+# shellcheck source="$CLI_DIR/tc/app/aws/functions"
+# shellcheck disable=SC2124,SC2129
+
 VAULT_CONFIG_FILE=~/.vault-configuration
 COMMAND_SHELL=~/.zshrc
+
+set +e
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --vault_addr)
+    VAULT_ADDR="$2"
+    shift 2
+    ;;
+    --vault_name)
+    VAULT_NAME="$2"
+    shift 2
+    ;;
+    --vault_password)
+    VAULT_PASSWORD="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function vault_config() {
   tcctl helpers check_bin_file vault
   VAULT_ADDR=$1
   VAULT_NAME=$2
   VAULT_PASSWORD=$3
-  echo 'export VAULT_ADDR='$VAULT_ADDR >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_NAME='$VAULT_NAME >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_PASSWORD='$VAULT_PASSWORD >> $VAULT_CONFIG_FILE
+  echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
+  echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
+  echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
   echo "source $VAULT_CONFIG_FILE" >> $COMMAND_SHELL
   source $VAULT_CONFIG_FILE
   echo "Add vault credentials to profile is successfully"
 }
 
-vault_config $1 $2 $3
+vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"

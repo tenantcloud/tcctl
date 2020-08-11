@@ -2,9 +2,9 @@ A command that checks for the existence of a secret kv path on the vault server
 
 for example:
 
-tcctl vault path projects_name/dev/projects_brahch - for use by developers
+tcctl vault path --path projects_name/dev/projects_brahch - for use by developers
 
-tcctl vault path projects_name/APP_ENV - for use by servers
+tcctl vault path --path projects_name/APP_ENV - for use by servers
 
 where:
 
