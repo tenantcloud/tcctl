@@ -4,8 +4,11 @@
 # shellcheck source="$CLI_DIR/tc/app/aws/functions"
 # shellcheck disable=SC2124,SC2129
 
+source "$CLI_DIR/tc/framework/functions"
+
 VAULT_CONFIG_FILE=~/.vault-configuration
 COMMAND_SHELL=~/.zshrc
+VAULT_ADDR="${VAULT_ADDR=:-http://127.0.0.1:8200}"
 
 set +e
 
@@ -14,15 +17,15 @@ do
 key="$1"
 
 case $key in
-    --vault_addr)
+    --vault-addr)
     VAULT_ADDR="$2"
     shift 2
     ;;
-    --vault_name)
+    --vault-name)
     VAULT_NAME="$2"
     shift 2
     ;;
-    --vault_password)
+    --vault-password)
     VAULT_PASSWORD="$2"
     shift 2
     ;;
@@ -31,17 +34,24 @@ case $key in
 esac
 done
 
-function vault_config() {
-  tcctl helpers check_bin_file vault
-  VAULT_ADDR=$1
-  VAULT_NAME=$2
-  VAULT_PASSWORD=$3
-  echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
-  echo "source $VAULT_CONFIG_FILE" >> $COMMAND_SHELL
-  source $VAULT_CONFIG_FILE
-  echo "Add vault credentials to profile is successfully"
-}
-
-vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
+if [ -z "$VAULT_NAME" ]; then
+  __MSG="Command: \033[36mtcctl vault config\033[39m missed --vault-name"
+  _message_error "$__MSG"
+elif [ -z "$VAULT_PASSWORD" ]; then
+  __MSG="Command: \033[36mtcctl vault config\033[39m missed --vault-password"
+  _message_error "$__MSG"
+else
+  function vault_config() {
+    tcctl helpers check_bin_file vault
+    VAULT_ADDR=$1
+    VAULT_NAME=$2
+    VAULT_PASSWORD=$3
+    echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
+    echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
+    echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
+    echo "source $VAULT_CONFIG_FILE" >> $COMMAND_SHELL
+    source $VAULT_CONFIG_FILE
+    echo "Add vault credentials to profile is successfully"
+  }
+  vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
+fi

@@ -22,19 +22,23 @@ case $key in
 esac
 done
 
-function vault_check_path() {
-  tcctl helpers check_bin_file vault
-  tcctl vault token
-  VAULT_SECRET_PATH="$1"
-  __output=$( vault kv get "$VAULT_SECRET_PATH" 2>&1 )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl vault path $@\033[39m\n"
-  __MSG+="$__output"
-  if [ $_error_code -eq "0" ]; then
-    echo "true"
-  else
-    echo "false"
-  fi
-}
-
-vault_check_path "$SECRET_PATH"
+if [ -z "$SECRET_PATH" ]; then
+  __MSG="Command: \033[36mtcctl vault path\033[39m missed --secret-path"
+  _message_error "$__MSG"
+else
+  function vault_check_path() {
+    tcctl helpers check_bin_file vault
+    tcctl vault token
+    SECRET_PATH="$1"
+    __output=$( vault kv get "$SECRET_PATH" 2>&1 )
+    export _error_code=$?
+    __MSG="Command: \033[36mtcctl vault path $@\033[39m\n"
+    __MSG+="$__output"
+    if [ $_error_code -eq "0" ]; then
+      echo "true"
+    else
+      echo "false"
+    fi
+  }
+  vault_check_path "$SECRET_PATH"
+fi
