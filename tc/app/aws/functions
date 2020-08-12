@@ -1,39 +1,38 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091,SC2154,SC2034
+# shellcheck disable=SC1091,SC2154,SC2034,SC2120
 
 # Function show all AWS ECR images
 function _describe_ecr_images() {
   __output=$( aws ecr describe-images \
-	  --repository-name "${REPOSITORY}" \
-	  --profile "${PROFILE}" --output json )
-  export _error_code=$?
+	  --repository-name "${1}" \
+	  --profile "${2}" --output json | jq -r '.imageDetails | sort_by(.imagePushedAt)' )
+  _error_code=$?
   __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     echo "$__output"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$__output"
   fi
 }
 
 # Function parse AWS ECR and remove N last element from json
-function _get_ecr_images_list() {
-  __output=$( _describe_ecr_images \
-  | jq -r '.imageDetails | sort_by(.imagePushedAt)' | jq -r "del(.[-$LEAVE_LAST_IMAGE:])" )
-  export _error_code=$?
+function _delete_last_n_images_from_json() {
+  __output=$( echo "$1" | jq -r "del(.[-${2}:])" )
+  _error_code=$?
   __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     echo "$__output"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$__output"
   fi
 }
 
 # Function show sotred images tags from _get_ecr_images_list output
 function _get_old_image_tags() {
-  __output=$( _get_ecr_images_list \
+  __output=$( echo "$1" \
   | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
   | awk '{print $3}' )
   export _error_code=$?
@@ -48,7 +47,7 @@ function _get_old_image_tags() {
 
 # Function create array with image digest from _get_ecr_images_list output
 function _get_old_image_digest() {
-  __output=$( _get_ecr_images_list \
+  __output=$( echo "$1" \
   | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
   | awk '{print $2}' )
   export _error_code=$?
@@ -56,22 +55,8 @@ function _get_old_image_digest() {
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     # _message_info "$__MSG"
-    _array="$__output"
-  else
-    _message_error "$__MSG"
-  fi
-}
-
-# Function get image digest for delete exclude tag
-function _get_exclude_tag_image_digest() {
-  __output=$( _get_ecr_images_list \
-  | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
-  | grep "$EXCLUDE_TAG" | awk '{print $2}' )
-  export _error_code=$?
-  __MSG="\033[36mImages with next tags will be removed from AWS ECR ${REPOSITORY} repository\033[39m\n"
-  __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
-    export _exclude_tag_image_digest="$__output"
+    # _array="$__output"
+    echo "$__output"
   else
     _message_error "$__MSG"
   fi
