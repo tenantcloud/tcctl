@@ -2,7 +2,7 @@ The commands with which we can check status of service
 
 for example:
 
-tcctl service status service_name
+tcctl service status --service-name service_name
 
 where:
 
