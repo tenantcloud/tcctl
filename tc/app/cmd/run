@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
+
 source "$CLI_DIR/tc/framework/functions"
 
-__output=$( $@ 2>&1 )
+for __param in "$@"; do
+  __parameters+="$__param "
+done
+
+__output=$( "$__parameters" 2>&1 )
 export _error_code=$?
-__MSG="Command: \033[36mcmd run $@\033[39m\n"
+__MSG="Command: cmd run $__parameters"
 __MSG+="$__output"
+
 if [ $_error_code -eq "0" ]; then
   echo "$__output"
 else
-  _message_error "$__MSG"
+  _message "$__MSG" "error" "$_error_code"
 fi

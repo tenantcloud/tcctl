@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2004
+
 function run_migrate_and_during_deploy() {
   tcctl php artisan migrate --force
   PROCCESS_COUNT=8

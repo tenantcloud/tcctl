@@ -2,7 +2,7 @@ The commands with which we can check availability the package bin file
 
 for example:
 
-tcctl helpers check_bin_file filename
+tcctl helpers check_bin_file --filename filename
 
 where:
 
