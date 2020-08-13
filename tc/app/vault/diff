@@ -26,26 +26,27 @@ case $key in
 esac
 done
 
+function vault_diff() {
+  tcctl helpers check_bin_file vault
+  ENV1=$1
+  ENV2=$2
+  __output=$( diff -y --suppress-common-lines "$ENV1" "$ENV2" )
+  export _error_code=$?
+  __MSG="Command: tcctl vault diff $@"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    echo "$__output" | column -t
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
 if [ -z "$ENV1" ]; then
-  __MSG="Command: \033[36mtcctl vault diff\033[39m missed --env-1"
-  _message_error "$__MSG"
+  __MSG="Command: tcctl vault diff missed --env-1"
+  _message "$__MSG" "error" "$_error_code"
 elif [ -z "$ENV2" ]; then
-  __MSG="Command: \033[36mtcctl vault diff\033[39m missed --env-2"
-  _message_error "$__MSG"
+  __MSG="Command: tcctl vault diff missed --env-2"
+  _message "$__MSG" "error" "$_error_code"
 else
-  function vault_diff() {
-    tcctl helpers check_bin_file vault
-    ENV1=$1
-    ENV2=$2
-    __output=$( diff -y --suppress-common-lines "$ENV1" "$ENV2" )
-    export _error_code=$?
-    __MSG="Command: \033[36mtcctl vault diff $@\033[39m\n"
-    __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
-      echo "$__output" | column -t
-    else
-      _message "$__MSG" "error" "$_error_code"
-    fi
-  }
   vault_diff "$ENV1" "$ENV2"
 fi

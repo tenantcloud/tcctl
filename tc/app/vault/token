@@ -14,7 +14,7 @@ function vault_get_token()  {
   source $VAULT_CONFIG_FILE
   __output=$( vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD" )
   export _error_code=$?
-  __MSG="Command: \033[36mtcctl vault token $@\033[39m\n"
+  __MSG="Command: tcctl vault token $@"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
     VAULT_TOKEN=$( echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p )

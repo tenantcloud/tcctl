@@ -22,35 +22,36 @@ case $key in
 esac
 done
 
-if [ -z "$SERVICE_NAME" ]; then
-  __MSG="Command: \033[36mtcctl service restart\033[39m missed --service-name"
-  _message_error "$__MSG"
-else
-  function restart_service() {
+function restart_service() {
     SERVICE_NAME=$1
     OS=$( _get_os )
     if [[ $OS == Linux ]]; then
       SUDO_COMMAND="sudo "
       __output=$( $SUDO_COMMAND "$SERVICE_NAME" restart all )
       export _error_code=$?
-      __MSG="Command: \033[36mtcctl service $1 restart\033[39m\n"
+      __MSG="Command: tcctl service $1 restart"
       __MSG+="$__output"
       if [[ $_error_code -eq "0" ]]; then
         echo "$__output" | column -t
       else
-        _message_error "$__MSG"
+        _message "$__MSG" "error" "$_error_code"
       fi
     elif [[ $OS == Darwin ]]; then
       __output=$( $SERVICE_NAME restart all )
       export _error_code=$?
-      __MSG="Command: \033[36mtcctl service $1 restart\033[39m\n"
+      __MSG="Command: tcctl service $1 restart"
       __MSG+="$__output"
       if [[ $_error_code -eq "0" ]]; then
         echo "$__output" | column -t
       else
-        _message_error "$__MSG"
+        _message "$__MSG" "error" "$_error_code"
       fi
     fi
-  }
+}
+
+if [ -z "$SERVICE_NAME" ]; then
+  __MSG="Command: tcctl service restart missed --service-name"
+  _message "$__MSG" "error" "$_error_code"
+else
   restart_service "$SERVICE_NAME"
 fi
