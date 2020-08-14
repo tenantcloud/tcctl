@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1091
+
 set -e
 
 # cli_dir returns absolute (non-symlink) path to the directory containing
@@ -34,16 +36,12 @@ function main() {
     CLI_DIR="$(cli_dir)"
     export CLI_DIR
 
-    # shellcheck disable=SC1091
     # shellcheck source=tc/framework/cli
     source "$CLI_DIR/tc/framework/cli"
-    # shellcheck disable=SC1091
     # shellcheck source=tc/framework/complete
     source "$CLI_DIR/tc/framework/complete"
-    # shellcheck disable=SC1091
     # shellcheck source=tc/framework/help
     source "$CLI_DIR/tc/framework/help"
-    # shellcheck disable=SC1091
     # shellcheck source=tc/framework/utils
     source "$CLI_DIR/tc/framework/utils"
 
