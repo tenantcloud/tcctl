@@ -2,7 +2,7 @@ The command which get value of the variable from the .env project file
 
 for example:
 
-tcctl helpers env get --key APP_ENV --env .env
+tcctl helpers env get --vault-key APP_ENV --param-env .env
 
 where:
 

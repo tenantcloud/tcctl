@@ -2,7 +2,7 @@ The command which put the keys to the vault server
 
 for example:
 
-tcctl vault put --secret-project projects_name/dev/projects_brahch --env .env - for use by developers
+tcctl vault put --secret-project projects_name/dev/projects_brahch --param-env .env - for use by developers
 
 tcctl vault put --secret-project projects_name/APP_ENV --env .env - for use by servers
 

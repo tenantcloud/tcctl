@@ -4,7 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-ENV="${ENV:-.env}"
+PARAM_ENV="${PARAM_ENV:-.env}"
 
 set +e
 
@@ -13,12 +13,12 @@ do
 key="$1"
 
 case $key in
-    --key)
-    KEY="$2"
+    --vault-key)
+    VAULT_KEY="$2"
     shift 2
     ;;
-    --env)
-    ENV="$2"
+    --param-env)
+    PARAM_ENV="$2"
     shift 2
     ;;
     *)
@@ -27,12 +27,12 @@ esac
 done
 
 function get_value_from_env() {
-  KEY=$1
-  ENV=$2
+  VAULT_KEY=$1
+  PARAM_ENV=$2
   if [[ ! -f "$2" ]]; then
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( sed -n -e "s/^\s*$KEY\s*=//p" "$ENV" )
+  __output=$( sed -n -e "s/^\s*$VAULT_KEY\s*=//p" "$PARAM_ENV" )
   export _error_code=$?
   __MSG="Command: tcctl helpers get value from $1"
   __MSG+="$__output"
@@ -48,9 +48,9 @@ function get_value_from_env() {
   fi
 }
 
-if [ -z "$KEY" ]; then
+if [ -z "$VAULT_KEY" ]; then
   __MSG="Command: tcctl helpers env get missed --key"
   _message "$__MSG" "error" "$_error_code"
 else
-  get_value_from_env "$KEY" "$ENV"
+  get_value_from_env "$VAULT_KEY" "$PARAM_ENV"
 fi

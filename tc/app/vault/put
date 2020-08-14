@@ -17,8 +17,8 @@ case $key in
     SECRET_PROJECT="$2"
     shift 2
     ;;
-    --env)
-    ENV="$2"
+    --param-env)
+    PARAM_ENV="$2"
     shift 2
     ;;
     *)
@@ -30,8 +30,8 @@ function vault_put() {
   tcctl helpers check_bin_file vault
   tcctl vault token
   VAULT_SECRETS=$1
-  ENV_FILE=$2
-  __output=$( vault kv put "$VAULT_SECRETS" $(egrep -v '^#' "$ENV_FILE") 2>&1 )
+  PARAM_ENV=$2
+  __output=$( vault kv put "$VAULT_SECRETS" $(egrep -v '^#' "$PARAM_ENV") 2>&1 )
   export _error_code=$?
   __MSG="Command: tcctl vault put $@"
   __MSG+="$__output"
@@ -45,9 +45,9 @@ function vault_put() {
 if [ -z "$SECRET_PROJECT" ]; then
   __MSG="Command: tcctl vault put missed --secret-project"
   _message_error "$__MSG"
-elif [ -z "$ENV" ]; then
-  __MSG="Command: tcctl vault put missed --env"
+elif [ -z "$PARAM_ENV" ]; then
+  __MSG="Command: tcctl vault put missed --param-env"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_put "$SECRET_PROJECT" "$ENV"
+  vault_put "$SECRET_PROJECT" "$PARAM_ENV"
 fi
