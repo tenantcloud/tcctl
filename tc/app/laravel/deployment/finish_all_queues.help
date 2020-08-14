@@ -2,4 +2,8 @@ The commands with which we can run finish all queues
 
 for example:
 
-tcctl laravel deployment finish_all_queues
+tcctl laravel deployment finish_all_queues --proccess_count number
+
+where:
+
+number                  - number of byobu sessions
