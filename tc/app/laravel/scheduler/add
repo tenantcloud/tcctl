@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# shellcheck source="$CLI_DIR/tc/framework/functions"
-# shellcheck source="$CLI_DIR/tc/app/aws/functions"
 # shellcheck disable=SC1090,SC2196,SC2120
 
 source "$CLI_DIR/tc/framework/functions"
@@ -12,33 +10,33 @@ function add_scheduler() {
   if [[ $OS == Linux ]] && [[ $( /etc/crontab | egrep -v "^(#|$)" | grep -q "$SCHEDULE_COMMAND"; echo $?) == 1 ]]
   then
     __output_1=$( "# Add scheduler for horizon-$PROJECT_NAME" )
-    export _error_code=$?
+    _error_code=$?
     __MSG="Command: \033[36mtcctl add $2 cron scheduler\033[39m\n"
     __MSG+="$__output_1"
     if [[ $_error_code -eq "0" ]]; then
       echo "# Add scheduler for horizon-$PROJECT_NAME" | sudo tee -a /etc/crontab > /dev/null 2>&1
     else
-      _message_error "$__MSG"
+      _message "$__MSG" "error" "$_error_code"
     fi
     __output_2=$( "* * * * * $USER $(command -v php) $SCHEDULE_COMMAND" )
-    export _error_code=$?
+    _error_code=$?
     __MSG="Command: \033[36mtcctl add $2 cron scheduler\033[39m\n"
     __MSG+="$__output_2"
     if [[ $_error_code -eq "0" ]]; then
       echo "* * * * * $USER $(command -v php) $SCHEDULE_COMMAND" | sudo tee -a /etc/crontab > /dev/null 2>&1
     else
-      _message_error "$__MSG"
+      _message "$__MSG" "error" "$_error_code"
     fi
   elif [[ $OS == Darwin ]] && [[ $(crontab -l | grep -q "$SCHEDULE_COMMAND"; echo $?) == 1 ]]
   then
     __output=$( "* * * * * $(command -v php) $SCHEDULE_COMMAND" )
-    export _error_code=$?
+    _error_code=$?
     __MSG="Command: \033[36mtcctl add $2 cron scheduler\033[39m\n"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
       echo "* * * * * $(command -v php) $SCHEDULE_COMMAND" | crontab -
     else
-      _message_error "$__MSG"
+      _message "$__MSG" "error" "$_error_code"
     fi
   fi
 }

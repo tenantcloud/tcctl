@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# shellcheck source="$CLI_DIR/tc/framework/functions"
-# shellcheck source="$CLI_DIR/tc/app/aws/functions"
 # shellcheck disable=SC1090
 
 source "$CLI_DIR/tc/framework/functions"

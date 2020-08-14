@@ -9,7 +9,7 @@ for __param in "$@"; do
 done
 
 __output=$( "$__parameters" 2>&1 )
-export _error_code=$?
+_error_code=$?
 __MSG="Command: cmd run $__parameters"
 __MSG+="$__output"
 

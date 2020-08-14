@@ -24,7 +24,7 @@ function file_md5_sum() {
   OS=$( _get_os )
   if [[ $OS == "Linux" ]]; then
     __output=$( md5sum "$1" )
-    export _error_code=$?
+    _error_code=$?
     __MSG="Command: tcctl helpers $1 md5sum"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
@@ -35,7 +35,7 @@ function file_md5_sum() {
   fi
   if [[ $OS == "Darwin" ]]; then
     __output=$( md5 "$1" )
-    export _error_code=$?
+    _error_code=$?
     __MSG="Command: tcctl helpers $1 md5_sum"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then

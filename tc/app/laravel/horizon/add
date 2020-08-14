@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck source="$CLI_DIR/tc/framework/functions"
-# shellcheck source="$CLI_DIR/tc/app/aws/functions"
-# shellcheck disable=SC1090,SC2196,SC2120,SC2034
+#shellcheck disable=SC1090,SC2196,SC2120,SC2034
 
 source "$CLI_DIR/tc/framework/functions"
 
@@ -24,7 +22,7 @@ function add_horizon() {
   __MSG="Command: tcctl add horizon-$PROJECT_NAME conf"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message "$__MSG" "$_error_code"
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -33,7 +31,7 @@ function add_horizon() {
   __MSG="Command: tcctl add horizon-$PROJECT_NAME program"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message "$__MSG" "$_error_code"
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -42,7 +40,7 @@ function add_horizon() {
   __MSG="Command: tcctl add horizon-$PROJECT_NAME command"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message "$__MSG" "$_error_code"
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -51,7 +49,7 @@ function add_horizon() {
   __MSG="Command: tcctl add horizon-$PROJECT_NAME directory"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message "$__MSG" "$_error_code"
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -60,7 +58,7 @@ function add_horizon() {
   __MSG="Command: tcctl add horizon-$PROJECT_NAME user"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message "$__MSG" "$_error_code"
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -69,7 +67,7 @@ function add_horizon() {
   __MSG="Command: tcctl add horizon-$PROJECT_NAME stdout_logfile"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message "$__MSG" "$_error_code"
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi

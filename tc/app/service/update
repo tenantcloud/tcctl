@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-# shellcheck source="$CLI_DIR/tc/framework/functions"
-# shellcheck source="$CLI_DIR/tc/app/aws/functions"
 # shellcheck disable=SC1090
 
 source "$CLI_DIR/tc/framework/functions"
@@ -28,7 +26,7 @@ function update_service() {
   if [[ $OS == Linux ]]; then
     SUDO_COMMAND="sudo "
     __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
-    export _error_code=$?
+    _error_code=$?
     __MSG="Command: tcctl service $1 update"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
@@ -39,7 +37,7 @@ function update_service() {
   elif [[ $OS == Darwin ]]; then
     SUDO_COMMAND=""
     __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
-    export _error_code=$?
+    _error_code=$?
     __MSG="Command: tcctl service $1 update"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then

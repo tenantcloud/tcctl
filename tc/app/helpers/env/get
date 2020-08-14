@@ -33,7 +33,7 @@ function get_value_from_env() {
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( sed -n -e "s/^\s*$VAULT_KEY\s*=//p" "$PARAM_ENV" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl helpers get value from $1"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then

@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck source="$CLI_DIR/tc/framework/functions"
-# shellcheck source="$CLI_DIR/tc/app/aws/functions"
-# shellcheck disable=SC2124
+# shellcheck disable=SC2124,SC1090
 
 source "$CLI_DIR/tc/framework/functions"
 
@@ -32,7 +30,7 @@ function vault_get() {
   VAULT_SECRET=$1
   ENV_TEMP=$2
   __output=$( vault kv get "$VAULT_SECRET" 2>&1 )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl vault get $@"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
