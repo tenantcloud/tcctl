@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091
+# shellcheck disable=SC1091,SC1090
 
 set -e
 
@@ -36,13 +36,9 @@ function main() {
     CLI_DIR="$(cli_dir)"
     export CLI_DIR
 
-    # shellcheck source=tc/framework/cli
     source "$CLI_DIR/tc/framework/cli"
-    # shellcheck source=tc/framework/complete
     source "$CLI_DIR/tc/framework/complete"
-    # shellcheck source=tc/framework/help
     source "$CLI_DIR/tc/framework/help"
-    # shellcheck source=tc/framework/utils
     source "$CLI_DIR/tc/framework/utils"
 
     cli "$@"
