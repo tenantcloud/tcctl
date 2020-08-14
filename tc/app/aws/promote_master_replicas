@@ -1,25 +1,48 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2155
+
 source "./cli/tc/framework/functions"
 
+set +e
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --db-master-name)
+    DB_MASTER_NAME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
 function promote_master_replicas() {
-  DB_IDENTIFIER=$1
-  __output=$( aws rds describe-db-instances --db-instance-identifier $DB_IDENTIFIER )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl aws $1 describe-db-instances\033[39m\n"
+  DB_MASTER_NAME=$1
+  __output=$( aws rds describe-db-instances --db-instance-identifier "$DB_MASTER_NAME" )
+  _error_code=$?
+  __MSG="Command: tcctl aws $1 describe-db-instances"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     REPLICA_DB_INSTANCES=$( $__output | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
-    export REPLICA_DB_INSTANCES_COUNT=$(echo $REPLICA_DB_INSTANCES | wc -w)
+    export REPLICA_DB_INSTANCES_COUNT=$(echo "$REPLICA_DB_INSTANCES" | wc -w)
     for i in $REPLICA_DB_INSTANCES; do
-      echo "Promote read replica $i to Instance"
+      echo "Promote read replica $i to instance"
       aws rds promote-read-replica \
-            --db-instance-identifier $i \
+            --db-instance-identifier "$i" \
             --backup-retention-period 1
     done
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-promote_master_replicas $1
+if [ -z "$DB_MASTER_NAME" ]; then
+  __MSG="Command: tcctl aws promote_master_replicas missed --db-master-name"
+  _message "$__MSG" "error" "$_error_code"
+else
+  promote_master_replicas "$DB_MASTER_NAME"
+fi

@@ -2,9 +2,9 @@ The commands with which we can create master replicas
 
 for example:
 
-tcctl aws create_master_replicas DB_MASTER_NAME rds_instance_type
+tcctl aws create_master_replicas --db-master-name DB_MASTER_NAME --db-instance-type rds_instance_type
 
 where:
 
-DB_MASTER_NAME          - master DB name from .env
+DB_MASTER_NAME          - the value of the variable DB_HOST from the .env project file
 rds_instance_type       - type of rds instance

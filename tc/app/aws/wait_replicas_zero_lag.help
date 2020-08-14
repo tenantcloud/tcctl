@@ -2,8 +2,8 @@ The commands with which we can wait replicas to zero lag
 
 for example:
 
-tcctl aws wait_replicas_zero_lag DB_MASTER_NAME
+tcctl aws wait_replicas_zero_lag --db-master-name DB_MASTER_NAME
 
 where:
 
-DB_MASTER_NAME          - master DB name from .env
+DB_MASTER_NAME          - the value of the variable DB_HOST from the .env project file

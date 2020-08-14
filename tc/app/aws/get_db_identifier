@@ -1,23 +1,43 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091
-# shellcheck source=../../framework/functions
-source "${CLI_DIR}/tc/framework/functions"
+# shellcheck disable=SC1090,SC2143
+
+source "$CLI_DIR/tc/framework/functions"
+
+set +e
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --db-master-name)
+    DB_MASTER_NAME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function get_db_identifier() {
-  NAME="$1"
-  if [[ -z $( echo $NAME | grep ".*\.amazonaws.com" ) ]]; then
-    __output="$( dig cname "$NAME" +short )"
-    export _error_code=$?
-    __MSG="Command: \033[36mtcctl aws $1 get_db_identifier\033[39m\n"
+  DB_MASTER_NAME="$1"
+  if [[ -z $( echo "$DB_MASTER_NAME" | grep ".*\.amazonaws.com" ) ]]; then
+    __output="$( dig cname "$DB_MASTER_NAME" +short )"
+    _error_code=$?
+    __MSG="Command: tcctl aws $1 get_db_identifier"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
       echo "$__output" | awk -F '.' '{print $1}'
     else
-      _message_error "$__MSG"
+      _message "$__MSG" "error" "$_error_code"
     fi
   fi
 }
 
-get_db_identifier "$1"
-
+if [ -z "$DB_MASTER_NAME" ]; then
+  __MSG="Command: tcctl aws get_db_identifier missed --db-master-name"
+  _message "$__MSG" "error" "$_error_code"
+else
+  get_db_identifier "$DB_MASTER_NAME"
+fi

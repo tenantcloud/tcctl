@@ -2,8 +2,8 @@ The commands with which we can get db identifier
 
 for example:
 
-tcctl aws get_db_identifier DB_HOST
+tcctl aws get_db_identifier --db-master-name DB_MASTER_NAME
 
 where:
 
-DB_HOST                 - the value of the variable from the .env project file
+DB_MASTER_NAME          - the value of the variable DB_HOST from the .env project file
