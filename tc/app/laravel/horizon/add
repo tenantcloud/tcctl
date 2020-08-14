@@ -18,7 +18,7 @@ function add_horizon() {
   fi
   [[ $OS == Linux ]] && [[ ! -f $HORIZON_FILE ]] && SUDO_COMMAND="sudo "
   __output=$( "$SUDO_COMMAND" cp "$PROJECT_PATH"/docs/installation/supervisor/horizon.conf "$HORIZON_FILE" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl add horizon-$PROJECT_NAME conf"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
@@ -27,7 +27,7 @@ function add_horizon() {
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( "$SED_COMMAND" "s+program:+program:horizon-$PROJECT_NAME+g" "$HORIZON_FILE" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl add horizon-$PROJECT_NAME program"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
@@ -36,7 +36,7 @@ function add_horizon() {
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( "$SED_COMMAND" "s+command=+command=$PHP_PATH artisan horizon+g" "$HORIZON_FILE" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl add horizon-$PROJECT_NAME command"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
@@ -45,7 +45,7 @@ function add_horizon() {
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( "$SED_COMMAND" "s+directory=+directory=$PROJECT_PATH+g" "$HORIZON_FILE" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl add horizon-$PROJECT_NAME directory"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
@@ -54,7 +54,7 @@ function add_horizon() {
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( "$SED_COMMAND" "s+user=+user=$USER+g" "$HORIZON_FILE" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl add horizon-$PROJECT_NAME user"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
@@ -63,7 +63,7 @@ function add_horizon() {
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( "$SED_COMMAND" "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon-$PROJECT_NAME.log+g" "$HORIZON_FILE" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl add horizon-$PROJECT_NAME stdout_logfile"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
