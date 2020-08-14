@@ -22,7 +22,7 @@ done
 
 function check_bin_file() {
   __output=$(command -v "$1")
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl helpers check_bin_file $1 => "
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
