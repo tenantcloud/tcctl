@@ -9,7 +9,7 @@ function check_deployment_type() {
   REPOSITORY_URL=$(tcctl cmd run git config --get remote.origin.url)
   REPOSITORY_TMP_DIR="/tmp/$(date +%Y%m%d-%H%M%S)"
   __output=$( git clone --depth 1 "$REPOSITORY_URL" -b "$BRANCH $REPOSITORY_TMP_DIR" )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl helpers $REPOSITORY_URL clone to tmp dir"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
@@ -20,7 +20,7 @@ function check_deployment_type() {
   __output=$( php artisan tc:devops:migrations_state \
                     --base-path="${REPOSITORY_TMP_DIR}" \
                     --non-verbose )
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl helpers $REPOSITORY_URL check migrations state"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
