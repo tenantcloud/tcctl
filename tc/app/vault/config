@@ -42,7 +42,7 @@ function vault_config() {
   echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
   echo "source $VAULT_CONFIG_FILE" >> $COMMAND_SHELL
   source $VAULT_CONFIG_FILE
-  export _error_code=$?
+  _error_code=$?
   __MSG="Command: tcctl vault config $@"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then

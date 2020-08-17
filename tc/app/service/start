@@ -26,7 +26,7 @@ function start_service() {
     if [[ $OS == Linux ]]; then
       SUDO_COMMAND="sudo "
       __output=$( $SUDO_COMMAND service "$SERVICE_NAME" start )
-      export _error_code=$?
+      _error_code=$?
       __MSG="Command: tcctl service $1 start"
       __MSG+="$__output"
       if [[ $_error_code -eq "0" ]]; then
@@ -36,7 +36,7 @@ function start_service() {
       fi
     elif [[ $OS == Darwin ]]; then
       __output=$( $SERVICE_NAME start all )
-      export _error_code=$?
+      _error_code=$?
       __MSG="Command: tcctl service $1 start"
       __MSG+="$__output"
       if [[ $_error_code -eq "0" ]]; then
