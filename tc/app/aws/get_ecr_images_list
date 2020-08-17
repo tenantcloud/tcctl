@@ -9,7 +9,7 @@ source "$CLI_DIR/tc/app/aws/functions"
 
 set +e
 
-PROFILE="${PROFILE:-ecr}"
+PROFILE="ecr"
 
 while [[ $# -gt 0 ]]
 do
@@ -29,22 +29,36 @@ case $key in
 esac
 done
 
-if [ -z "$REPOSITORY" ]; then
-  __MSG="Command: \033[36mtcctl aws get_ecr_images_list\033[39m missed --repository key"
-  _message_error "$__MSG"
-else
-  function _get_all_ecr_images_list() {
-    __output=$( _describe_ecr_images "$REPOSITORY" "$PROFILE" \
+# Function show all AWS ECR images
+function _get_all_ecr_images_tags() {
+  __output=$( echo "$1" \
     | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[]' \
     | sort | awk '{print $3}' )
-    export _error_code=$?
-    __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
-    __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
-      _message_info "$__MSG"
-    else
-      _message_error "$__MSG"
-    fi
-  }
+  _error_code=$?
+  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+function _get_all_ecr_images_list() {
+  __output=$( _get_all_ecr_images_tags "$(_describe_ecr_images "$REPOSITORY" "$PROFILE")" )
+  _error_code="$?"
+  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _message_info "$__MSG"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+if [ -z "$REPOSITORY" ]; then
+  __MSG="Command: \033[36mtcctl aws get_ecr_images_list\033[39m missed --repository key"
+  _message "$__MSG" "error" "$__output"
+else
   _get_all_ecr_images_list
 fi

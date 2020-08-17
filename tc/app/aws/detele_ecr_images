@@ -9,8 +9,8 @@ source "$CLI_DIR/tc/app/aws/functions"
 
 set +e
 
-PROFILE="${PROFILE:-default}"
-LEAVE_LAST_IMAGE="${LEAVE_LAST_IMAGE:-5}"
+PROFILE="default"
+LEAVE_LAST_IMAGE="5"
 
 while [[ $# -gt 0 ]]
 do
@@ -38,30 +38,17 @@ case $key in
 esac
 done
 
-# Function get exclude image tag
-function _get_exclude_tag_image_digest() {
-  __output=$( echo "$1" \
-  | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
-  | grep "$EXCLUDE_TAG" | awk '{print $2}' )
-  export _error_code=$?
-  __MSG="\033[36mImages with next tags will be removed from AWS ECR ${REPOSITORY} repository\033[39m\n"
-  __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
-    export _exclude_tag_image_digest="$__output"
-  else
-    _message_error "$__MSG"
-  fi
-}
-
 # Delete last N images from json
 _parsed_json=$(_delete_last_n_images_from_json "$(_describe_ecr_images "$REPOSITORY" "$PROFILE")" "$LEAVE_LAST_IMAGE")
 
+# Get list excluded tags
+list="${EXCLUDE_TAG//,/ }"
+
 if [ -z "$REPOSITORY" ]; then
   __MSG="Command: tcctl aws get_ecr_images_list missed --repository arg"
-  _message_error "$__MSG"
+  _message "$__MSG" "error" "$__output"
 else
   if [ -z "$EXCLUDE_TAG" ]; then
-    # Print deleted images tags
     _get_old_image_tags "$_parsed_json"
     # Create array with images digest
     _array=$( _get_old_image_digest "$_parsed_json" )
@@ -74,12 +61,14 @@ else
       done
     done
   else
+    # Delete last N images from json
+    for item in $list; do
+      _parsed_json=$(echo $_parsed_json | jq "del ( .[] | select ( .imageTags[] == \"$item\" ))")
+    done
     # Print deleted images tags without excluded tag
-    _get_old_image_tags "$_parsed_json" | sed "/$EXCLUDE_TAG/d"
+    _get_old_image_tags "$_parsed_json"
     # Get excluded image digest
-    _get_exclude_tag_image_digest "$_parsed_json"
-    # Create array with images digest
-    _array=$( _get_old_image_digest "$_parsed_json" | sed "/$_exclude_tag_image_digest/d" )
+    _array=$( _get_old_image_digest "$_parsed_json" )
     # Delete AWS ECR images from array
     for l in "${_array[@]}"
     do

@@ -39,9 +39,10 @@ function _get_old_image_tags() {
   __MSG="\033[36mImages with next tags will be removed from AWS ECR ${REPOSITORY} repository\033[39m\n"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    # _message_info "$__MSG"
+    echo "$__output"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$__output"
   fi
 }
 
@@ -58,7 +59,7 @@ function _get_old_image_digest() {
     # _array="$__output"
     echo "$__output"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$__output"
   fi
 }
 
@@ -71,6 +72,6 @@ function _delete_old_ecr_images() {
   if [[ $_error_code -eq "0" ]]; then
     _message_info "$__MSG"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$__output"
   fi
 }

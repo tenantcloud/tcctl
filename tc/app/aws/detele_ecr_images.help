@@ -2,10 +2,16 @@ The commands delete old images from AWS ECR
 
 for example:
 
-tcctl aws detele_ecr_images --profile ecr --repository tc/repo --leave-last-image 5
+tcctl aws detele_ecr_images --profile "ecr" --repository "tc/repo" --leave-last-image "5" --exclude-tag "503,v1,v4"
+
+notice:
+
+--exclude-tag optional key argument
+--profile must be specified if AWS ECR profile name not "default"
 
 where:
 
 --profile          - profile name in ~/.aws/credentials
 --repository       - repository name in AWS ECR
 --leave-last-image - images count which will be leave after delete
+--exclude-tag      - list excluded image tags
