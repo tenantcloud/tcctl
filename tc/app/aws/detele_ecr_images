@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# shellcheck disable=SC1091,SC1090,SC2154,SC2034
+# shellcheck disable=SC1091,SC1090,SC2034
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/aws/functions"
@@ -44,7 +44,7 @@ list="${EXCLUDE_TAG//,/ }"
 
 if [ -z "$REPOSITORY" ]; then
   __MSG="Command: tcctl aws get_ecr_images_list missed --repository arg"
-  _message "$__MSG" "error" "$__output"
+  _message "$__MSG" "error"
 else
   if [ -z "$EXCLUDE_TAG" ]; then
     _get_old_image_tags "$_parsed_json"
