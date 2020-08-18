@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091,SC2154,SC2034,SC2120
+# shellcheck disable=SC2154
 
 # Function show all AWS ECR images
 function _describe_ecr_images() {
@@ -8,7 +8,7 @@ function _describe_ecr_images() {
 	  --repository-name "${1}" \
 	  --profile "${2}" --output json | jq -r '.imageDetails | sort_by(.imagePushedAt)' )
   _error_code=$?
-  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     echo "$__output"
@@ -21,7 +21,7 @@ function _describe_ecr_images() {
 function _delete_last_n_images_from_json() {
   __output=$( echo "$1" | jq -r "del(.[-${2}:])" )
   _error_code=$?
-  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     echo "$__output"
@@ -36,11 +36,10 @@ function _get_old_image_tags() {
   | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
   | awk '{print $3}' )
   export _error_code=$?
-  __MSG="\033[36mImages with next tags will be removed from AWS ECR ${REPOSITORY} repository\033[39m\n"
+  __MSG="Images with next tags will be removed from AWS ECR ${REPOSITORY} repository"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    # _message_info "$__MSG"
-    echo "$__output"
+    _message "$__MSG" "info" "$__output"
   else
     _message "$__MSG" "error" "$__output"
   fi
@@ -52,11 +51,9 @@ function _get_old_image_digest() {
   | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
   | awk '{print $2}' )
   export _error_code=$?
-  __MSG="\033[36mImages with next tags will be removed from AWS ECR ${REPOSITORY} repository\033[39m\n"
+  __MSG="Images with next tags will be removed from AWS ECR ${REPOSITORY} repository"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    # _message_info "$__MSG"
-    # _array="$__output"
     echo "$__output"
   else
     _message "$__MSG" "error" "$__output"
@@ -65,12 +62,12 @@ function _get_old_image_digest() {
 
 # Function delete AWS ECR images
 function _delete_old_ecr_images() {
-  __output=$( echo "aws ecr batch-delete-image --repository-name ${REPOSITORY} --image-ids imageDigest=${i}" )
+  __output=$( aws ecr batch-delete-image --repository-name "${1}" --profile "${2}" --image-ids imageDigest="${i}" )
   export _error_code=$?
-  __MSG="Command: \033[36maws ecr batch-delete-image\033[39m\n"
+  __MSG="Command: aws ecr batch-delete-image"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG" "info" "$__output"
   else
     _message "$__MSG" "error" "$__output"
   fi

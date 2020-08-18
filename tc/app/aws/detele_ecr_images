@@ -57,7 +57,7 @@ else
     do
       for i in $l
       do
-        _delete_old_ecr_images
+        _delete_old_ecr_images "$REPOSITORY" "$PROFILE"
       done
     done
   else
@@ -74,7 +74,7 @@ else
     do
       for i in $l
       do
-        _delete_old_ecr_images
+        _delete_old_ecr_images "$REPOSITORY" "$PROFILE"
       done
     done
   fi

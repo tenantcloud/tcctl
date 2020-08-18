@@ -2,7 +2,7 @@
 
 # shellcheck source=./tc/framework/functions
 # shellcheck source=./tc/app/aws/functions
-# shellcheck disable=SC1091,SC2034
+# shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/aws/functions"
@@ -35,7 +35,7 @@ function _get_all_ecr_images_tags() {
     | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[]' \
     | sort | awk '{print $3}' )
   _error_code=$?
-  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     echo "$__output"
@@ -47,17 +47,17 @@ function _get_all_ecr_images_tags() {
 function _get_all_ecr_images_list() {
   __output=$( _get_all_ecr_images_tags "$(_describe_ecr_images "$REPOSITORY" "$PROFILE")" )
   _error_code="$?"
-  __MSG="Command: \033[36mtcctl aws ecr list-images\033[39m\n"
+  __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG" "info" "$__output"
   else
     _message "$__MSG" "error" "$__output"
   fi
 }
 
 if [ -z "$REPOSITORY" ]; then
-  __MSG="Command: \033[36mtcctl aws get_ecr_images_list\033[39m missed --repository key"
+  __MSG="Command: tcctl aws get_ecr_images_list missed --repository key"
   _message "$__MSG" "error" "$__output"
 else
   _get_all_ecr_images_list
