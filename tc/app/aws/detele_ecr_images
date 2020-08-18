@@ -1,8 +1,6 @@
 #!/bin/bash
 
-# shellcheck source=./tc/framework/functions
-# shellcheck source=./tc/app/aws/functions
-# shellcheck disable=SC1091,SC2154,SC2034
+# shellcheck disable=SC1091,SC1090,SC2154,SC2034
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/aws/functions"
