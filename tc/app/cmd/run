@@ -2,13 +2,13 @@
 
 # shellcheck disable=SC1090
 
-source "$CLI_DIR/tc/framework/functions"
+source "${CLI_DIR}/tc/framework/functions"
 
 for __param in "$@"; do
   __parameters+="$__param "
 done
 
-__output=$( "$__parameters" 2>&1 )
+__output="$( $__parameters 2>&1 )"
 _error_code=$?
 __MSG="Command: cmd run $__parameters"
 __MSG+="$__output"
