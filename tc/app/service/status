@@ -36,7 +36,7 @@ function status_service() {
   elif [[ $OS == Darwin ]]; then
     __output=$( $SERVICE_NAME status )
     _error_code=$?
-    __MSG="Command: mtcctl service $1 status"
+    __MSG="Command: tcctl service $1 status"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
       $SERVICE_NAME status | awk '{ print $2 }'

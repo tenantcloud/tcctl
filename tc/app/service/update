@@ -27,10 +27,10 @@ function update_service() {
     SUDO_COMMAND="sudo "
     __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
     _error_code=$?
-    __MSG="Command: tcctl service $1 update"
+    __MSG="Command: tcctl service $1 update "
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      $SUDO_COMMAND "$SERVICE_NAME" force-reload | column -t
+      $SUDO_COMMAND "$SERVICE_NAME" update | column -t
     else
       _message "$__MSG" "error" "$_error_code"
     fi
@@ -38,7 +38,7 @@ function update_service() {
     SUDO_COMMAND=""
     __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
     _error_code=$?
-    __MSG="Command: tcctl service $1 update"
+    __MSG="Command: tcctl service $1 update "
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
       $SUDO_COMMAND "$SERVICE_NAME" update | column -t
