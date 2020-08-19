@@ -7,7 +7,7 @@ source "$CLI_DIR/tc/app/aws/functions"
 
 set +e
 
-PROFILE="ecr"
+PROFILE="default"
 
 while [[ $# -gt 0 ]]
 do
