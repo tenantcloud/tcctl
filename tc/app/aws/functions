@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2154
+
+# Function show all AWS ECR images
+function _describe_ecr_images() {
+  __output=$( aws ecr describe-images \
+	  --repository-name "${1}" \
+	  --profile "${2}" --output json | jq -r '.imageDetails | sort_by(.imagePushedAt)' )
+  _error_code=$?
+  __MSG="Command: tcctl aws ecr list-images"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+# Function parse AWS ECR and remove N last element from json
+function _delete_last_n_images_from_json() {
+  __output=$( echo "$1" | jq -r "del(.[-${2}:])" )
+  _error_code=$?
+  __MSG="Command: tcctl aws ecr list-images"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+# Function show sotred images tags from _get_ecr_images_list output
+function _get_old_image_tags() {
+  __output=$( echo "$1" \
+  | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
+  | awk '{print $3}' )
+  export _error_code=$?
+  __MSG="Images with next tags will be removed from AWS ECR ${REPOSITORY} repository"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _message "$__MSG" "info" "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+# Function create array with image digest from _get_ecr_images_list output
+function _get_old_image_digest() {
+  __output=$( echo "$1" \
+  | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[0]' \
+  | awk '{print $2}' )
+  export _error_code=$?
+  __MSG="Images with next tags will be removed from AWS ECR ${REPOSITORY} repository"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+# Function delete AWS ECR images
+function _delete_old_ecr_images() {
+  __output=$( aws ecr batch-delete-image --repository-name "${1}" --profile "${2}" --image-ids imageDigest="${i}" )
+  export _error_code=$?
+  __MSG="Command: aws ecr batch-delete-image"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _message "$__MSG" "info" "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
