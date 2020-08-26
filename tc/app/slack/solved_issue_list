@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+set +e
+
+CHANNEL="devops-notifications"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --channel)
+    CHANNEL="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function slack_solved_issue_list() {
+    __output=$( slack chat send "The list of solved problems when deploying (:host: $(hostname) ):\n$(cat /tmp/commits_sumary | egrep -oh 'TC-[0-9]+' | sort -u | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}')" "$1" )
+    _error_code=$?
+    __MSG="Command: tcctl slack solved_list"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      echo "$__output"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+}
+
+if [ -z "$CHANNEL" ]; then
+  __MSG="Command: slack send message"
+  _message "$__MSG" "error" "$_error_code"
+else
+  slack_solved_issue_list "$CHANNEL"
+fi

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+set +e
+
+CHANNEL="devops-notifications"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --channel)
+    CHANNEL="$2"
+    shift 2
+    ;;
+    --url)
+    URL="$2"
+    shift 2
+    ;;
+    --runtime)
+    RUNTIME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function slack_update_finish() {
+    __output=$( slack chat send ":bell: Staging https://$2 updated\nTime on server: $(date +'%H:%M:%S %d-%m-%Y_%Z')\nDeployment time: $3 sec" "$1" )
+    _error_code=$?
+    __MSG="Command: tcctl slack update_finish"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      echo "$__output"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+}
+
+if [ -z "$CHANNEL" ]; then
+  __MSG="Command: slack send message"
+  _message "$__MSG" "error" "$_error_code"
+else
+  slack_update_finish "$CHANNEL" "$URL" "$RUNTIME"
+fi

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+set +e
+
+CHANNEL="devops-notifications"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --channel)
+    CHANNEL="$2"
+    shift 2
+    ;;
+    --url)
+    URL="$2"
+    shift 2
+    ;;
+    --pull-request-url)
+    PULLREQUEST_URL="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function slack_pr_information() {
+    __output=$( slack chat send -cl "#6dc56d" "QA Team need to check before the deploy. Pre-production link $2\nApprove or Decline this request on the Bitbucket.\nSee changes here: $3" "$1" )
+    _error_code=$?
+    __MSG="Command: tcctl slack send_pull_request"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      echo "$__output"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+}
+
+if [ -z "$CHANNEL" ]; then
+  __MSG="Command: slack send message"
+  _message "$__MSG" "error" "$_error_code"
+else
+  slack_pr_information "$CHANNEL" "$URL" "$PULLREQUEST_URL"
+fi
