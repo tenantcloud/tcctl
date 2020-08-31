@@ -37,13 +37,8 @@ function slack_file_upload() {
     if [[ $_error_code -eq "0" ]]; then
       echo "$__output"
     else
-      _message "$__MSG" "error" "$_error_code"
+      _message "$__MSG" "warning"
     fi
 }
 
-if [ -z "$CHANNEL" ]; then
-  __MSG="Command: slack file upload"
-  _message "$__MSG" "error" "$_error_code"
-else
-  slack_file_upload "$CHANNEL" "$SITE_VERSION" "$FILE"
-fi
+slack_file_upload "$CHANNEL" "$SITE_VERSION" "$FILE"
