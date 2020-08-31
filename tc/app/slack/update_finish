@@ -43,9 +43,4 @@ function slack_update_finish() {
     fi
 }
 
-if [ -z "$CHANNEL" ]; then
-  __MSG="Command: slack send message"
-  _message "$__MSG" "error" "$_error_code"
-else
-  slack_update_finish "$CHANNEL" "$URL" "$RUNTIME"
-fi
+slack_update_finish "$CHANNEL" "$URL" "$RUNTIME"
