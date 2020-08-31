@@ -4,9 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-set +e
-
-CHANNEL="devops-notifications"
+CHANNEL="#devops-notifications"
 
 while [[ $# -gt 0 ]]
 do
@@ -17,13 +15,19 @@ case $key in
     CHANNEL="$2"
     shift 2
     ;;
+    --file)
+    FILE="$2"
+    shift 2
+    ;;
     *)
     ;;
 esac
 done
 
 function slack_solved_issue_list() {
-    __output=$( slack chat send "The list of solved problems when deploying (:host: $(hostname) ):\n$(cat /tmp/commits_sumary | egrep -oh 'TC-[0-9]+' | sort -u | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}')" "$1" )
+    SLACK_MESSAGE="The list of solved problems when deploying (:host: $(hostname) ):\n"
+    SLACK_MESSAGE+="$(cat $2 | egrep -oh 'TC-[0-9]+' | sort -u | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}')"
+    __output=$( slack chat send "$SLACK_MESSAGE" "$1" )
     _error_code=$?
     __MSG="Command: tcctl slack solved_list"
     __MSG+="$__output"
@@ -38,5 +42,5 @@ if [ -z "$CHANNEL" ]; then
   __MSG="Command: slack send message"
   _message "$__MSG" "error" "$_error_code"
 else
-  slack_solved_issue_list "$CHANNEL"
+  slack_solved_issue_list "$CHANNEL" "$FILE"
 fi

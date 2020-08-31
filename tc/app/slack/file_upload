@@ -4,9 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-set +e
-
-CHANNEL="devops-notifications"
+CHANNEL="#devops-notifications"
 
 while [[ $# -gt 0 ]]
 do
@@ -31,7 +29,8 @@ esac
 done
 
 function slack_file_upload() {
-    __output=$( slack file upload "$3" "$1" --comment "Changes in version $2 on :host: $(hostname)" )
+    SLACK_MESSAGE="Changes in version $2 on :host: $(hostname)"
+    __output=$( slack file upload "$3" "$1" --comment "$SLACK_MESSAGE" )
     _error_code=$?
     __MSG="Command: tcctl slack file_upload"
     __MSG+="$__output"

@@ -4,9 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-set +e
-
-CHANNEL="devops-notifications"
+CHANNEL="#devops-notifications"
 
 while [[ $# -gt 0 ]]
 do
@@ -31,7 +29,10 @@ esac
 done
 
 function slack_update_finish() {
-    __output=$( slack chat send ":bell: Staging https://$2 updated\nTime on server: $(date +'%H:%M:%S %d-%m-%Y_%Z')\nDeployment time: $3 sec" "$1" )
+    SLACK_MESSAGE=":bell: Staging https://$2 updated\n"
+    SLACK_MESSAGE+="Time on server: $(date +'%H:%M:%S %d-%m-%Y_%Z')\n"
+    SLACK_MESSAGE+="Deployment time: $3 sec"
+    __output=$( slack chat send "$SLACK_MESSAGE" "$1" )
     _error_code=$?
     __MSG="Command: tcctl slack update_finish"
     __MSG+="$__output"

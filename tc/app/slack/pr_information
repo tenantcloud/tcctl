@@ -4,9 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-set +e
-
-CHANNEL="devops-notifications"
+CHANNEL="#devops-notifications"
 
 while [[ $# -gt 0 ]]
 do
@@ -31,7 +29,10 @@ esac
 done
 
 function slack_pr_information() {
-    __output=$( slack chat send -cl "#6dc56d" "QA Team need to check before the deploy. Pre-production link $2\nApprove or Decline this request on the Bitbucket.\nSee changes here: $3" "$1" )
+    SLACK_COLOR="#6dc56d"
+    SLACK_MESSAGE="QA Team need to check before the deploy. Pre-production link $2\n"
+    SLACK_MESSAGE+="Approve or Decline this request on the Bitbucket.\nSee changes here: $3"
+    __output=$( slack chat send -cl "$SLACK_COLOR" "$SLACK_MESSAGE" "$1" )
     _error_code=$?
     __MSG="Command: tcctl slack send_pull_request"
     __MSG+="$__output"
