@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# shellcheck disable=SC1091,SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/aws/functions"
+
+set +e
+
+PROFILE="default"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --profile)
+    PROFILE="$2"
+    shift 2
+    ;;
+    --repository)
+    REPOSITORY="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+# Function show all AWS ECR images
+function _get_all_ecr_images_tags() {
+  __output=$( echo "$1" \
+    | jq -r '.[] | (.imagePushedAt|tostring) + " " + .imageDigest + " " + .imageTags[]' \
+    | sort | awk '{print $3}' )
+  _error_code=$?
+  __MSG="Command: tcctl aws ecr list-images"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+function _get_all_ecr_images_list() {
+  __output=$( _get_all_ecr_images_tags "$(_describe_ecr_images "$REPOSITORY" "$PROFILE")" )
+  _error_code="$?"
+  __MSG="Command: tcctl aws ecr list-images"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _message "$__MSG" "info" "$__output"
+  else
+    _message "$__MSG" "error" "$__output"
+  fi
+}
+
+if [ -z "$REPOSITORY" ]; then
+  __MSG="Command: tcctl aws get_ecr_images_list missed --repository key"
+  _message "$__MSG" "error" "$__output"
+else
+  _get_all_ecr_images_list
+fi
