@@ -1,48 +1,14 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034,SC2154,SC2059,SC2005
-
 __draw_line() {
   __count=$2
   __symbol_count=${__count:=80}
-  echo "$( for i in $(seq 1 1 $__symbol_count) ; do printf "$1"; done )"
+  for (( i=1; i <= __symbol_count; i++ )) ; do printf "%s" "$1"; done
+  echo
 }
 
 __show_date_hostname() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] on $(hostname)"
-}
-
-function _message_info() {
-  echo "= INFO ========================================================================="
-  __show_date_hostname
-  __draw_line -
-  printf "$1\n"
-  __draw_line -
-}
-
-function _message_warning() {
-  __exit_code_number=$?
-  [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
-  unset _error_code
-  echo "= WARNING ======================================================================"
-  __show_date_hostname
-  __draw_line -
-  echo "Exit code $__exit_code_number"
-  printf "$1\n"
-  __draw_line -
-}
-
-function _message_error() {
-  __exit_code_number=$?
-  [[ $__exit_code_number -eq "0" ]] && __exit_code_number=$_error_code
-  unset _error_code
-  echo "= ERROR ========================================================================"
-  __show_date_hostname
-  __draw_line -
-  echo "Exit code $__exit_code_number"
-  printf "$1\n"
-  __draw_line -
-  exit "$__exit_code_number"
 }
 
 # Function show message (info, error, warning)
@@ -50,8 +16,8 @@ function _message_error() {
 #        _message "message"
 function _message {
   __message_body="$1"
-  [[ -z $2 ]] && __message_type="info" || __message_type="$2"
-  [[ -z $3 ]] && __message_error_code="0" || __message_error_code="$3"
+  __message_type="${2:-info}"
+  __message_error_code="${3:-0}"
 
   case "$__message_type" in
     error)
@@ -69,8 +35,8 @@ function _message {
   __draw_line -
 
   [[ $__message_type != "info" ]] && echo "Exit code $__message_error_code"
-  printf "%s\n" "$__message_body"
-  
+  printf "%b\n" "$__message_body"
+
   __draw_line -
 
   [[ $__message_type == "error" ]] && exit "$__message_error_code"
@@ -86,6 +52,5 @@ function _get_project_name() {
 }
 
 function _get_os() {
-  OS=$(uname -s)
-  echo "$OS"
+  uname -s
 }
