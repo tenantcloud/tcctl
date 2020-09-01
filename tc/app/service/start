@@ -20,8 +20,7 @@ done
 
 function start_service() {
     SERVICE_NAME=$1
-    OS=$( _get_os )
-    if [[ $OS == Linux ]]; then
+    if [[ $( _get_os ) == Linux ]]; then
       SUDO_COMMAND="sudo "
       __output=$( $SUDO_COMMAND service "$SERVICE_NAME" start )
       _error_code=$?
@@ -32,7 +31,7 @@ function start_service() {
       else
         _message "$__MSG" "error" "$_error_code"
       fi
-    elif [[ $OS == Darwin ]]; then
+    elif [[ $( _get_os ) == Darwin ]]; then
       __output=$( $SERVICE_NAME start all )
       _error_code=$?
       __MSG="Command: tcctl service $1 start"

@@ -20,8 +20,7 @@ done
 
 function stop_service() {
   SERVICE_NAME=$1
-  OS=$( _get_os )
-  if [[ $OS == Linux ]]; then
+  if [[ $( _get_os ) == Linux ]]; then
     SUDO_COMMAND="sudo "
     __output=$( $SUDO_COMMAND service "$SERVICE_NAME" stop )
     _error_code=$?
@@ -32,7 +31,7 @@ function stop_service() {
     else
       _message "$__MSG" "error" "$_error_code"
     fi
-  elif [[ $OS == Darwin ]]; then
+  elif [[ $( _get_os ) == Darwin ]]; then
     __output=$( $SERVICE_NAME stop all )
     _error_code=$?
     __MSG="Command: \033[36mtcctl service $1 stop\033[39m\n"

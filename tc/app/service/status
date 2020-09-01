@@ -20,8 +20,7 @@ done
 
 function status_service() {
   SERVICE_NAME=$1
-  OS=$( _get_os )
-  if [[ $OS == Linux ]]; then
+  if [[ $( _get_os ) == Linux ]]; then
     __output=$( systemctl is-active "$SERVICE_NAME" )
     _error_code=$?
     __MSG="Command: tcctl service $1 status"
@@ -31,7 +30,7 @@ function status_service() {
     else
       _message "$__MSG" "error" "$_error_code"
     fi
-  elif [[ $OS == Darwin ]]; then
+  elif [[ $( _get_os ) == Darwin ]]; then
     __output=$( $SERVICE_NAME status )
     _error_code=$?
     __MSG="Command: tcctl service $1 status"

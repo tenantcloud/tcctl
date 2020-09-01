@@ -20,8 +20,7 @@ done
 
 function update_service() {
   SERVICE_NAME=$1
-  OS=$( _get_os )
-  if [[ $OS == Linux ]]; then
+  if [[ $( _get_os ) == Linux ]]; then
     SUDO_COMMAND="sudo "
     __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
     _error_code=$?
@@ -32,7 +31,7 @@ function update_service() {
     else
       _message "$__MSG" "error" "$_error_code"
     fi
-  elif [[ $OS == Darwin ]]; then
+  elif [[ $( _get_os ) == Darwin ]]; then
     SUDO_COMMAND=""
     __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
     _error_code=$?

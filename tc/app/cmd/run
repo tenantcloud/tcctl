@@ -2,7 +2,7 @@
 
 # shellcheck disable=SC1090
 
-source "${CLI_DIR}/tc/framework/functions"
+source "$CLI_DIR/tc/framework/functions"
 
 for __param in "$@"; do
   __parameters+="$__param "
