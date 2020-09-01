@@ -6,8 +6,6 @@ source "$CLI_DIR/tc/framework/functions"
 
 PARAM_ENV="${PARAM_ENV:-.env}"
 
-set +e
-
 while [[ $# -gt 0 ]]
 do
 key="$1"

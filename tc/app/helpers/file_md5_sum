@@ -4,8 +4,6 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-set +e
-
 while [[ $# -gt 0 ]]
 do
 key="$1"

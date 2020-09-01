@@ -6,8 +6,6 @@ source "$CLI_DIR/tc/framework/functions"
 
 PROCCESS_COUNT="${PROCCESS_COUNT:-8}"
 
-set +e
-
 while [[ $# -gt 0 ]]
 do
 key="$1"

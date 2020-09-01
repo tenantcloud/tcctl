@@ -8,8 +8,6 @@ VAULT_CONFIG_FILE=~/.vault-configuration
 COMMAND_SHELL=~/.zshrc
 VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
 
-set +e
-
 while [[ $# -gt 0 ]]
 do
 key="$1"
