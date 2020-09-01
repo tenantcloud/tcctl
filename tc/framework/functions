@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2034,SC2154,SC2059,SC2005
+
 __draw_line() {
   __count=$2
   __symbol_count=${__count:=80}
-  echo $( for i in $(seq 1 1 $__symbol_count) ; do printf "$1"; done )
+  echo "$( for i in $(seq 1 1 $__symbol_count) ; do printf "$1"; done )"
 }
 
 __show_date_hostname() {
@@ -40,7 +42,7 @@ function _message_error() {
   echo "Exit code $__exit_code_number"
   printf "$1\n"
   __draw_line -
-  exit $__exit_code_number
+  exit "$__exit_code_number"
 }
 
 # Function show message (info, error, warning)
