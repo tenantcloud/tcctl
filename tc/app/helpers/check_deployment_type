@@ -8,7 +8,7 @@ function check_deployment_type() {
   BRANCH=$(tcctl cmd run git branch | grep \* | cut -d ' ' -f2)
   REPOSITORY_URL=$(tcctl cmd run git config --get remote.origin.url)
   REPOSITORY_TMP_DIR="/tmp/$(date +%Y%m%d-%H%M%S)"
-  __output=$( git clone --depth 1 "$REPOSITORY_URL" -b "$BRANCH $REPOSITORY_TMP_DIR" )
+  __output=$( git clone --depth 1 "$REPOSITORY_URL" -b "$BRANCH" "$REPOSITORY_TMP_DIR" )
   _error_code=$?
   __MSG="Command: tcctl helpers $REPOSITORY_URL clone to tmp dir"
   __MSG+="$__output"
@@ -27,10 +27,7 @@ function check_deployment_type() {
     _message "$__MSG"
     DEPLOY_TASKS="$__output"
     if [[ $DEPLOY_TASKS -gt "0" ]]; then
-      echo "We find $DEPLOY_TASKS tasks (migration + once_run command)"
       export FULL_DEPLOY=true
-    else
-      echo "No miration or once_run command on deploy ($DEPLOY_TASKS)"
     fi
   else
     _message "$__MSG" "error" "$_error_code"

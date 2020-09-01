@@ -26,7 +26,7 @@ function add_horizon() {
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo "$SED_COMMAND"` "s+program:+program:horizon-$PROJECT_NAME+g" "$HORIZON_FILE" )
+  __output=$( `echo "$SED_COMMAND"` "s+program:+program:horizon+g" "$HORIZON_FILE" )
   _error_code=$?
   __MSG="Command: tcctl add horizon-$PROJECT_NAME program"
   __MSG+="$__output"

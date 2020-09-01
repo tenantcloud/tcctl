@@ -22,12 +22,12 @@ done
 
 function wait_replicas_zero_lag() {
   DB_MASTER_NAME=$1
-	  __output=$( tcctl aws get_replicas_name "${DB_MASTER_NAME}" )
+	  __output=$( tcctl aws get_replicas_name --db-identifier "${DB_MASTER_NAME}" )
   _error_code=$?
   __MSG="Command: tcctl aws get $1 name"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    REPLICA_DB_INSTANCES_NAME=$( tcctl aws get_replicas_name "${DB_MASTER_NAME}" | grep -e "^${DB_MASTER_NAME}-replica.*" )
+    REPLICA_DB_INSTANCES_NAME=$( tcctl aws get_replicas_name --db-identifier "${DB_MASTER_NAME}" | grep -e "^${DB_MASTER_NAME}-replica.*" )
     if [[ -z "$REPLICA_DB_INSTANCES_NAME" ]]; then
       slack chat send "We were unable to find replica's DB instances and STOP deployment process on $(hostname)" "${SLACK_CHANNEL}"
       exit
