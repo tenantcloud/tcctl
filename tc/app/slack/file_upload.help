@@ -1,0 +1,11 @@
+The commands with which we can send slack message
+
+for example:
+
+tcctl slack file_upload --channel "#devops" --site-version "$SITE_VERSION" --file "/tmp/filename"
+
+where:
+
+channel            - the name of Slack channel
+site-version       - variable from build script
+file             - the path for file which will be attach into message
