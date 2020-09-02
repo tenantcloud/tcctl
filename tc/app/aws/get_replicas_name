@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-source "./cli/tc/framework/functions"
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
 
 while [[ $# -gt 0 ]]
 do

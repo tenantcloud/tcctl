@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-source "./cli/tc/framework/functions"
+# shellcheck disable=SC2063,SC1090
 
-# shellcheck disable=SC2063
+source "$CLI_DIR/tc/framework/functions"
 
 function check_deployment_type() {
   BRANCH=$(tcctl run git branch | grep \* | cut -d ' ' -f2)
