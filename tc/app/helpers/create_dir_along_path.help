@@ -1,0 +1,10 @@
+The commands with which we can create the dir if doesn't exist
+
+for example:
+
+tcctl helpers create_dir_along_path --along_path along_path --dir_name dir_name
+
+where:
+
+along_path              - the path where we create the dir
+dir_name                - name of the dir
