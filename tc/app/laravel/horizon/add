@@ -1,75 +1,76 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090,SC2116,SC2006,SC2034
+
 source "$CLI_DIR/tc/framework/functions"
 
 function add_horizon() {
-  OS=$( _get_os )
-  if [[ $OS == Linux ]] ; then
-    HORIZON_FILE="/etc/supervisor/conf.d/horizon-$PROJECT_NAME.conf"
+  if [[ $( _get_os ) == Linux ]] ; then
+    HORIZON_FILE="/etc/supervisor/conf.d/horizon.conf"
     SED_COMMAND="sudo sed -i"
     PHP_PATH="php"
-  elif [[ $OS == Darwin ]] ; then
-    HORIZON_FILE="/usr/local/etc/supervisor.d/horizon-$PROJECT_NAME.ini"
+  elif [[ $( _get_os ) == Darwin ]] ; then
+    HORIZON_FILE="/usr/local/etc/supervisor.d/horizon.ini"
     SED_COMMAND="sed -i .backup"
     PHP=$(php -v | head -n 1 | cut -d " " -f 2 | cut -c 1-3)
-    PHP_PATH=$(which php)
+    PHP_PATH=$(command -v php)
   fi
-  [[ $OS == Linux ]] && [[ ! -f $HORIZON_FILE ]] && SUDO_COMMAND="sudo "
-  __output=$( `echo $SUDO_COMMAND` cp $PROJECT_PATH/docs/installation/supervisor/horizon.conf $HORIZON_FILE )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl add horizon-$PROJECT_NAME conf\033[39m\n"
+  [[ $( _get_os ) == Linux ]] && [[ ! -f $HORIZON_FILE ]] && SUDO_COMMAND="sudo "
+  __output=$( `echo "$SUDO_COMMAND"` cp "$( _get_project_path )"/docs/installation/supervisor/horizon.conf "$HORIZON_FILE" )
+  _error_code=$?
+  __MSG="Command: tcctl add horizon config"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo $SED_COMMAND` "s+program:+program:horizon-$PROJECT_NAME+g" $HORIZON_FILE )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl add horizon-$PROJECT_NAME program\033[39m\n"
+  __output=$( `echo "$SED_COMMAND"` "s+program:+program:horizon+g" "$HORIZON_FILE" )
+  _error_code=$?
+  __MSG="Command: tcctl add horizon program"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo $SED_COMMAND` "s+command=+command=$PHP_PATH artisan horizon+g" $HORIZON_FILE )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl add horizon-$PROJECT_NAME command\033[39m\n"
+  __output=$( `echo "$SED_COMMAND"` "s+command=+command=$PHP_PATH artisan horizon+g" "$HORIZON_FILE" )
+  _error_code=$?
+  __MSG="Command: tcctl add horizon command"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo $SED_COMMAND` "s+directory=+directory=$PROJECT_PATH+g" $HORIZON_FILE )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl add horizon-$PROJECT_NAME directory\033[39m\n"
+  __output=$( `echo "$SED_COMMAND"` "s+directory=+directory=$( _get_project_path )+g" "$HORIZON_FILE" )
+  _error_code=$?
+  __MSG="Command: tcctl add horizon directory"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo $SED_COMMAND` "s+user=+user=$USER+g" $HORIZON_FILE )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl add horizon-$PROJECT_NAME user\033[39m\n"
+  __output=$( `echo "$SED_COMMAND"` "s+user=+user=$USER+g" "$HORIZON_FILE" )
+  _error_code=$?
+  __MSG="Command: tcctl add horizon user"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo $SED_COMMAND` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon-$PROJECT_NAME.log+g" $HORIZON_FILE )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl add horizon-$PROJECT_NAME stdout_logfile\033[39m\n"
+  __output=$( `echo "$SED_COMMAND"` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon.log+g" "$HORIZON_FILE" )
+  _error_code=$?
+  __MSG="Command: tcctl add horizon stdout_logfile"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    _message_info "$__MSG"
+    _message "$__MSG"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
-  [ -f $HORIZON_FILE.backup ] && rm $HORIZON_FILE.backup
+  [ -f "$HORIZON_FILE".backup ] && rm "$HORIZON_FILE".backup
 }
 
 add_horizon

@@ -1,19 +1,40 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
+
 source "$CLI_DIR/tc/framework/functions"
 
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --filename)
+    FILENAME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
 function check_bin_file() {
-  __output=$( test -f /usr/local/bin/$1 )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl helpers check $1 bin file\033[39m\n"
+  __output=$(command -v "$1")
+  _error_code=$?
+  __MSG="Command: tcctl helpers check_bin_file $1 => "
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
-    _message_info "$__MSG"
+    _message "$__MSG"
   else
-    echo "$1 bin file is missing"
-    _message_error "$__MSG"
+    echo "bin file $1 is missing"
+    _message "$__MSG" "error" "$_error_code"
   fi
 
 }
 
-check_bin_file $1
+if [ -z "$FILENAME" ]; then
+  __MSG="Command: tcctl helpers check_bin_file missed --filename"
+  _message "$__MSG" "error" "$_error_code"
+else
+  check_bin_file "$FILENAME"
+fi

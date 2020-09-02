@@ -2,7 +2,7 @@ The commands with which we can restart servicectl
 
 for example:
 
-tcctl service restart service_name
+tcctl service restart --service-name service_name
 
 where:
 

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2119,SC2120
+
 function changed_frontend_files() {
   fe_files="resources/assets/ "
   fe_files+="resources/task/ "
@@ -14,7 +16,7 @@ function changed_frontend_files() {
     do
       if [[ $i == $j* ]]; then
         status=true
-        echo $j
+        echo  "$j"
       fi
     done
   done

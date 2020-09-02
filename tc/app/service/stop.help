@@ -2,7 +2,7 @@ The commands with which we can stop service
 
 for example:
 
-tcctl service stop service_name
+tcctl service stop --service-name service_name
 
 where:
 

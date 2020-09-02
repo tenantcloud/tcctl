@@ -2,7 +2,7 @@ The commands with which we can start of service
 
 for example:
 
-tcctl service start service_name
+tcctl service start --service-name service_name
 
 where:
 

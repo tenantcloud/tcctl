@@ -1,21 +1,49 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2124,SC1090
+
 source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --secret-project)
+    SECRET_PROJECT="$2"
+    shift 2
+    ;;
+    --env-tmp)
+    ENV_TEMP="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function vault_get() {
   tcctl helpers check_bin_file vault
   tcctl vault token
   VAULT_SECRET=$1
   ENV_TEMP=$2
-  __output=$( vault kv get $VAULT_SECRET 2>&1 )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl vault get $@\033[39m\n"
+  __output=$( vault kv get "$VAULT_SECRET" 2>&1 )
+  _error_code=$?
+  __MSG="Command: tcctl vault get $@"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
-    vault kv get $VAULT_SECRET | sed 's/\ \{1,\}/=/g' | sed 1,11d > $ENV_TEMP
+    vault kv get "$VAULT_SECRET" | sed 's/\ \{1,\}/=/g' | sed 1,11d > "$ENV_TEMP"
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-vault_get $1 $2
+if [ -z "$SECRET_PROJECT" ]; then
+  __MSG="Command: tcctl vault get missed --secret-project"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$ENV_TEMP" ]; then
+  __MSG="Command: tcctl vault get missed --env-tmp"
+  _message "$__MSG" "error" "$_error_code"
+else
+  vault_get "$SECRET_PROJECT" "$ENV_TEMP"
+fi

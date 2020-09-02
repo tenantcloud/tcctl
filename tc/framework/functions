@@ -36,7 +36,7 @@ function _message {
 
   [[ $__message_type != "info" ]] && echo "Exit code $__message_error_code"
   printf "%b\n" "$__message_body"
-  
+
   __draw_line -
 
   [[ $__message_type == "error" ]] && exit "$__message_error_code"

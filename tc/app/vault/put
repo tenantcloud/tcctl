@@ -1,21 +1,49 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2196,SC2046,SC2124,SC2034,SC1090
+
 source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --secret-project)
+    SECRET_PROJECT="$2"
+    shift 2
+    ;;
+    --param-env)
+    PARAM_ENV="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function vault_put() {
   tcctl helpers check_bin_file vault
   tcctl vault token
   VAULT_SECRETS=$1
-  ENV_FILE=$2
-  __output=$( vault kv put $VAULT_SECRETS $(egrep -v '^#' $ENV_FILE) 2>&1 )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl vault put $@\033[39m\n"
+  PARAM_ENV=$2
+  __output=$( vault kv put "$VAULT_SECRETS" $(egrep -v '^#' "$PARAM_ENV") 2>&1 )
+  _error_code=$?
+  __MSG="Command: tcctl vault put $@"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
-    _vault_kv_put=$( echo $__output | xargs )
+    _vault_kv_put=$( echo "$__output" | xargs )
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-vault_put $1 $2
+if [ -z "$SECRET_PROJECT" ]; then
+  __MSG="Command: tcctl vault put missed --secret-project"
+  _message_error "$__MSG"
+elif [ -z "$PARAM_ENV" ]; then
+  __MSG="Command: tcctl vault put missed --param-env"
+  _message "$__MSG" "error" "$_error_code"
+else
+  vault_put "$SECRET_PROJECT" "$PARAM_ENV"
+fi

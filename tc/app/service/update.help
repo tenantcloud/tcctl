@@ -2,7 +2,7 @@ The commands with which we can update servicectl
 
 for example:
 
-tcctl service update service_name
+tcctl service update --service-name service_name
 
 where:
 

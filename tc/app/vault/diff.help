@@ -2,7 +2,7 @@ The command which compares the keys between the server and the project
 
 for example:
 
-tcctl vault diff .env .env-tmp
+tcctl vault diff --env-1 .env --env-2 .env-tmp
 
 where:
 

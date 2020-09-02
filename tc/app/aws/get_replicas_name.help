@@ -2,7 +2,7 @@ The commands with which we can get replicas name
 
 for example:
 
-tcctl aws get_replicas_name DB_IDENTIFIER
+tcctl aws get_replicas_name --db-identifier DB_IDENTIFIER
 
 where:
 

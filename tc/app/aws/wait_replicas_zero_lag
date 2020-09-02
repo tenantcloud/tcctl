@@ -1,15 +1,31 @@
 #!/usr/bin/env bash
 
-source "./cli/tc/framework/functions"
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --db-master-name)
+    DB_MASTER_NAME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function wait_replicas_zero_lag() {
-  DB_IDENTIFIER=$1
-	  __output=$( tcctl aws get_replicas_name ${DB_IDENTIFIER} )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl aws get $1 name\033[39m\n"
+  DB_MASTER_NAME=$1
+	  __output=$( tcctl aws get_replicas_name --db-identifier "${DB_MASTER_NAME}" )
+  _error_code=$?
+  __MSG="Command: tcctl aws get $1 name"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    REPLICA_DB_INSTANCES_NAME=$( tcctl aws get_replicas_name ${DB_IDENTIFIER} | grep -e "^${DB_IDENTIFIER}-replica.*" )
+    REPLICA_DB_INSTANCES_NAME=$( tcctl aws get_replicas_name --db-identifier "${DB_MASTER_NAME}" | grep -e "^${DB_MASTER_NAME}-replica.*" )
     if [[ -z "$REPLICA_DB_INSTANCES_NAME" ]]; then
       slack chat send "We were unable to find replica's DB instances and STOP deployment process on $(hostname)" "${SLACK_CHANNEL}"
       exit
@@ -26,7 +42,7 @@ function wait_replicas_zero_lag() {
             --end-time "$(date +'%Y-%m-%d %H:%M:%S')" \
             --period 3600 \
             --statistics Average \
-            --dimensions  Name=DBInstanceIdentifier,Value=$REPLICA_DB_INSTANCES_NAME | jq -r '.Datapoints[].Average')
+            --dimensions  Name=DBInstanceIdentifier,Value="$REPLICA_DB_INSTANCES_NAME" | jq -r '.Datapoints[].Average')
       LEFT_TIME=$(( END_TIME - $(date +%s) ))
       if [[ ("$LAG" -gt "$SECONDS") || ("$LEFT_TIME" -lt "0") ]]; then
         slack chat send "We can't deploy on $(hostname). We waited ${SECONDS} seconds. Replica LAG: $LAG" "${SLACK_CHANNEL}"
@@ -39,8 +55,13 @@ function wait_replicas_zero_lag() {
     echo "Replica $REPLICA_DB_INSTANCES_NAME LAG is 0"
     fi
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-wait_replicas_zero_lag $1
+if [ -z "$DB_MASTER_NAME" ]; then
+  __MSG="Command: tcctl aws wait_replicas_zero_lag missed --db-master-name"
+  _message "$__MSG" "error" "$_error_code"
+else
+  wait_replicas_zero_lag "$DB_MASTER_NAME"
+fi

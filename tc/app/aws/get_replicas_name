@@ -2,20 +2,39 @@
 
 source "./cli/tc/framework/functions"
 
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --db-identifier)
+    DB_IDENTIFIER="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
 function get_replicas_name() {
   DB_IDENTIFIER=$1
-  __output=$( aws rds describe-db-instances --db-instance-identifier $DB_IDENTIFIER )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl aws $1 describe-db-instances\033[39m\n"
+  __output=$( aws rds describe-db-instances --db-instance-identifier "$DB_IDENTIFIER" )
+  _error_code=$?
+  __MSG="Command: tcctl aws $1 describe-db-instances"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    REPLICA_DB_INSTANCES=$( aws rds describe-db-instances --db-instance-identifier $DB_IDENTIFIER | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
+    REPLICA_DB_INSTANCES=$( aws rds describe-db-instances --db-instance-identifier "$DB_IDENTIFIER" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
     for i in $REPLICA_DB_INSTANCES; do
       echo "$i"
     done
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-get_replicas_name $1
+if [ -z "$DB_IDENTIFIER" ]; then
+  __MSG="Command: tcctl aws get_replicas_name missed --db-identifier"
+  _message "$__MSG" "error" "$_error_code"
+else
+  get_replicas_name "$DB_IDENTIFIER"
+fi

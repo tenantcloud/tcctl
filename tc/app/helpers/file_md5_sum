@@ -1,33 +1,53 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
+
 source "$CLI_DIR/tc/framework/functions"
 
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --filename)
+    FILENAME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
 function file_md5_sum() {
-  OS=$( _get_os )
-  if [[ $OS == "Linux" ]]; then
-    __output=$( md5sum $1 )
-    export _error_code=$?
-    __MSG="Command: \033[36mtcctl helpers $1 md5sum\033[39m\n"
+  if [[ $( _get_os ) == "Linux" ]]; then
+    __output=$( md5sum "$1" )
+    _error_code=$?
+    __MSG="Command: tcctl helpers $1 md5sum"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      FILE_MD5_SUM=$( md5sum $1 | awk '{print $1}' )
+      FILE_MD5_SUM=$( md5sum "$1" | awk '{print $1}' )
     else
-      _message_error "$__MSG"
+      _message "$__MSG" "error" "$_error_code"
     fi
   fi
-  if [[ $OS == "Darwin" ]]; then
-    __output=$( md5 $1 )
-    export _error_code=$?
-    __MSG="Command: \033[36mtcctl helpers $1 md5_sum\033[39m\n"
+  if [[ $( _get_os ) == "Darwin" ]]; then
+    __output=$( md5 "$1" )
+    _error_code=$?
+    __MSG="Command: tcctl helpers $1 md5_sum"
     __MSG+="$__output"
     if [[ $_error_code -eq "0" ]]; then
-      FILE_MD5_SUM=$( md5 $1 | awk '{print $4}' )
+      FILE_MD5_SUM=$( md5 "$1" | awk '{print $4}' )
     else
-      _message_error "$__MSG"
+      _message "$__MSG" "error" "$_error_code"
     fi
   fi
-  echo $FILE_MD5_SUM
+  echo "$FILE_MD5_SUM"
 
 }
 
-file_md5_sum $1
+if [ -z "$FILENAME" ]; then
+  __MSG="Command: tcctl helpers file_md5_sum missed --filename"
+  _message "$__MSG" "error" "$_error_code"
+else
+  file_md5_sum "$FILENAME"
+fi

@@ -1,44 +1,72 @@
 #!/usr/bin/env bash
 
-source "./cli/tc/framework/functions"
+# shellcheck disable=SC2004,SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --db-master-name)
+    DB_MASTER_NAME="$2"
+    shift 2
+    ;;
+    --db-instance-type)
+    DB_INSTANCE_TYPE="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function create_master_replicas() {
-  DB_IDENTIFIER=$1
+  DB_MASTER_NAME=$1
   DB_INSTANCE_TYPE=$2
   for (( i = 1; i <= $REPLICA_DB_INSTANCES_COUNT; i++ )); do
     if [[ $i = "1" ]]; then
-      DB_REPLICA_NAME=${DB_IDENTIFIER}-replica-$(date +%Y%m%d-%H%M%S)
+      DB_REPLICA_NAME=${DB_MASTER_NAME}-replica-$(date +%Y%m%d-%H%M%S)
       __output=$( aws rds create-db-instance-read-replica \
-              --db-instance-identifier $DB_REPLICA_NAME \
-              --source-db-instance-identifier $DB_IDENTIFIER \
-              --db-instance-class $DB_INSTANCE_TYPE )
-      export _error_code=$?
-      __MSG="Command: \033[36mtcctl aws create read replica $DB_REPLICA_NAME\033[39m\n"
+              --db-instance-identifier "$DB_REPLICA_NAME" \
+              --source-db-instance-identifier "$DB_MASTER_NAME" \
+              --db-instance-class "$DB_INSTANCE_TYPE" )
+      _error_code=$?
+      __MSG="Command: tcctl aws create read replica $DB_REPLICA_NAME"
       __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
-        _message_info "$__MSG"
+        _message "$__MSG"
       else
-        _message_error "$__MSG"
+        _message "$__MSG" "error" "$_error_code"
       fi
     fi
     if [[ $i = "2" ]]; then
-      DB_BACKUP_NAME=${DB_IDENTIFIER}-backup-$(date +%Y%m%d-%H%M%S)
+      DB_BACKUP_NAME=${DB_MASTER_NAME}-backup-$(date +%Y%m%d-%H%M%S)
       __output=$(aws rds create-db-instance-read-replica \
-              --db-instance-identifier $DB_BACKUP_NAME \
-              --source-db-instance-identifier $DB_IDENTIFIER \
-              --db-instance-class $DB_INSTANCE_TYPE )
-      export _error_code=$?
-      __MSG="Command: \033[36mtcctl aws create backup read replica: $DB_BACKUP_NAME\033[39m\n"
+              --db-instance-identifier "$DB_BACKUP_NAME" \
+              --source-db-instance-identifier "$DB_MASTER_NAME" \
+              --db-instance-class "$DB_INSTANCE_TYPE" )
+      _error_code=$?
+      __MSG="Command: tcctl aws create backup read replica: $DB_BACKUP_NAME"
       __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
-        _message_info "$__MSG"
-        DB_URL_SUFFIX=$(cat .env | grep "^DB_HOST=" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
+        _message "$__MSG"
+        DB_URL_SUFFIX=$(.env | grep "^DB_HOST=" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
         slack chat send "New DB slave: ${DB_BACKUP_NAME}.${DB_URL_SUFFIX}" "#replica-db-access" > /dev/null
       else
-        _message_error "$__MSG"
+        _message "$__MSG" "error" "$_error_code"
       fi
     fi
   done
 }
 
-create_master_replicas $1 $2
+if [ -z "$DB_MASTER_NAME" ]; then
+  __MSG="Command: tcctl aws create_master_replicas missed --db-master-name"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$DB_INSTANCE_TYPE" ]; then
+  __MSG="Command: tcctl aws create_master_replicas missed --db-instance-type"
+  _message "$__MSG" "error" "$_error_code"
+else
+  create_master_replicas "$DB_MASTER_NAME" "$DB_INSTANCE_TYPE"
+fi

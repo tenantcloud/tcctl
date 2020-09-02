@@ -1,19 +1,62 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2124,SC2129,SC2154,SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
 VAULT_CONFIG_FILE=~/.vault-configuration
 COMMAND_SHELL=~/.zshrc
+VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --vault-addr)
+    VAULT_ADDR="$2"
+    shift 2
+    ;;
+    --vault-name)
+    VAULT_NAME="$2"
+    shift 2
+    ;;
+    --vault-password)
+    VAULT_PASSWORD="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function vault_config() {
   tcctl helpers check_bin_file vault
   VAULT_ADDR=$1
   VAULT_NAME=$2
   VAULT_PASSWORD=$3
-  echo 'export VAULT_ADDR='$VAULT_ADDR >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_NAME='$VAULT_NAME >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_PASSWORD='$VAULT_PASSWORD >> $VAULT_CONFIG_FILE
+  echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
+  echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
+  echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
   echo "source $VAULT_CONFIG_FILE" >> $COMMAND_SHELL
   source $VAULT_CONFIG_FILE
+  _error_code=$?
+  __MSG="Command: tcctl vault config $@"
+  __MSG+="$__output"
+  if [[ $_error_code -eq "0" ]]; then
+    _message "$__MSG" "info" "$_error_code"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
   echo "Add vault credentials to profile is successfully"
 }
 
-vault_config $1 $2 $3
+if [ -z "$VAULT_NAME" ]; then
+  __MSG="Command: tcctl vault config missed --vault-name"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$VAULT_PASSWORD" ]; then
+  __MSG="Command: tcctl vault config missed --vault-password"
+  _message "$__MSG" "error" "$_error_code"
+else
+  vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
+fi

@@ -1,16 +1,37 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2004,SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+PROCCESS_COUNT="${PROCCESS_COUNT:-8}"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --proccess_count)
+    PROCCESS_COUNT="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
 function finish_all_queues() {
   echo "Finish All queues after site was down"
-  PROCCESS_COUNT=8
+  PROCCESS_COUNT=$1
   SESSION_NAME="QUEUESFINISH"
-  tcctl cmd run byobu -2 new-session -d -s $SESSION_NAME
+  tcctl run byobu -2 new-session -d -s $SESSION_NAME
+
   for ((i=1;i<=$PROCCESS_COUNT;i++));
   do
-      tcctl cmd run byobu new-window -t $SESSION_NAME "php artisan queue:work --force --queue=high,default,export,reports,promo,low,notification,convert-to-pdf,cron,deploy"
+      tcctl run byobu new-window -t $SESSION_NAME "php artisan queue:work --force --queue=high,default,export,reports,promo,low,notification,convert-to-pdf,cron,deploy"
   done
   tcctl php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
-  tcctl cmd run byobu kill-session -t $SESSION_NAME
+  tcctl run byobu kill-session -t $SESSION_NAME
 }
 
-finish_all_queues
+finish_all_queues "$PROCCESS_COUNT"

@@ -1,15 +1,51 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
+
 source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --service-name)
+    SERVICE_NAME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function status_service() {
   SERVICE_NAME=$1
-  OS=$( _get_os )
-  if [[ $OS == Linux ]]; then
-    echo $( systemctl is-active $SERVICE_NAME | column -t )
-  elif [[ $OS == Darwin ]]; then
-    echo $( $SERVICE_NAME status | awk '{ print $2 }' )
+  if [[ $( _get_os ) == Linux ]]; then
+    __output=$( systemctl is-active "$SERVICE_NAME" )
+    _error_code=$?
+    __MSG="Command: tcctl service $1 status"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      systemctl is-active "$SERVICE_NAME" | column -t
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  elif [[ $( _get_os ) == Darwin ]]; then
+    __output=$( $SERVICE_NAME status )
+    _error_code=$?
+    __MSG="Command: tcctl service $1 status"
+    __MSG+="$__output"
+    if [[ $_error_code -eq "0" ]]; then
+      $SERVICE_NAME status | awk '{ print $2 }'
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
   fi
 }
 
-status_service $1
+if [ -z "$SERVICE_NAME" ]; then
+  __MSG="Command: Command: tcctl service status missed --service-name"
+  _message "$__MSG" "error" "$_error_code"
+else
+  status_service "$SERVICE_NAME"
+fi

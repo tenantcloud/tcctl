@@ -1,20 +1,48 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2124,SC1090
+
 source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --env-1)
+    ENV1="$2"
+    shift 2
+    ;;
+    --env-2)
+    ENV2="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function vault_diff() {
   tcctl helpers check_bin_file vault
-  ENV_FILE=$1
-  ENV_TEMP=$2
-  __output=$( diff -y --suppress-common-lines $ENV_FILE $ENV_TEMP )
-  export _error_code=$?
-  __MSG="Command: \033[36mtcctl vault diff $@\033[39m\n"
+  ENV1=$1
+  ENV2=$2
+  __output=$( diff -y --suppress-common-lines "$ENV1" "$ENV2" )
+  _error_code=$?
+  __MSG="Command: tcctl vault diff $@"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
     echo "$__output" | column -t
   else
-    _message_error "$__MSG"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-vault_diff $1 $2
+if [ -z "$ENV1" ]; then
+  __MSG="Command: tcctl vault diff missed --env-1"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$ENV2" ]; then
+  __MSG="Command: tcctl vault diff missed --env-2"
+  _message "$__MSG" "error" "$_error_code"
+else
+  vault_diff "$ENV1" "$ENV2"
+fi
