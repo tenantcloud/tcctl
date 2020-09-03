@@ -25,7 +25,7 @@ function get_db_identifier() {
     _error_code=$?
     __MSG="Command: tcctl aws $1 get_db_identifier"
     __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
+    if [[ "$_error_code" -eq "0" ]]; then
       echo "$__output" | awk -F '.' '{print $1}'
     else
       _message "$__MSG" "error" "$_error_code"

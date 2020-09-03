@@ -35,7 +35,7 @@ function _get_all_ecr_images_tags() {
   _error_code=$?
   __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     echo "$__output"
   else
     _message "$__MSG" "error" "$__output"
@@ -47,7 +47,7 @@ function _get_all_ecr_images_list() {
   _error_code="$?"
   __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG" "info" "$__output"
   else
     _message "$__MSG" "error" "$__output"

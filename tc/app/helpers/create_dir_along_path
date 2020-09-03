@@ -30,7 +30,7 @@ function _create_dir_along_path() {
     _error_code=$?
   __MSG="Command: tcctl helpers create $2 along path $1"
   __MSG+="$__output"
-    if [ $_error_code -eq "0" ]; then
+    if [ "$_error_code" -eq "0" ]; then
       _message "$__MSG"
     else
       _message "$__MSG" "error" "$_error_code"

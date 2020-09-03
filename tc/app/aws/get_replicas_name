@@ -24,7 +24,7 @@ function get_replicas_name() {
   _error_code=$?
   __MSG="Command: tcctl aws $1 describe-db-instances"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     REPLICA_DB_INSTANCES=$( aws rds describe-db-instances --db-instance-identifier "$DB_IDENTIFIER" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
     for i in $REPLICA_DB_INSTANCES; do
       echo "$i"

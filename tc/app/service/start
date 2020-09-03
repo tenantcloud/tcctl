@@ -26,7 +26,7 @@ function start_service() {
       _error_code=$?
       __MSG="Command: tcctl service $1 start"
       __MSG+="$__output"
-      if [[ $_error_code -eq "0" ]]; then
+      if [[ "$_error_code" -eq "0" ]]; then
         echo "$__output" | column -t
       else
         _message "$__MSG" "error" "$_error_code"
@@ -36,7 +36,7 @@ function start_service() {
       _error_code=$?
       __MSG="Command: tcctl service $1 start"
       __MSG+="$__output"
-      if [[ $_error_code -eq "0" ]]; then
+      if [[ "$_error_code" -eq "0" ]]; then
         echo "$__output" | column -t
       else
         _message "$__MSG" "error" "$_error_code"

@@ -12,7 +12,7 @@ function check_deployment_type() {
   _error_code=$?
   __MSG="Command: tcctl helpers $REPOSITORY_URL clone to tmp dir"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
@@ -23,7 +23,7 @@ function check_deployment_type() {
   _error_code=$?
   __MSG="Command: tcctl helpers $REPOSITORY_URL check migrations state"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
     DEPLOY_TASKS="$__output"
     if [[ $DEPLOY_TASKS -gt "0" ]]; then

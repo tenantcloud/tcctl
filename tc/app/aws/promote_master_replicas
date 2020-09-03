@@ -24,14 +24,15 @@ function promote_master_replicas() {
   _error_code=$?
   __MSG="Command: tcctl aws $1 describe-db-instances"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     REPLICA_DB_INSTANCES=$( echo "$__output" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
-    export REPLICA_DB_INSTANCES_COUNT=$(echo "$REPLICA_DB_INSTANCES" | wc -w)
+    REPLICA_DB_INSTANCES_COUNT=$(echo "$REPLICA_DB_INSTANCES" | wc -w)
+    echo "$REPLICA_DB_INSTANCES_COUNT"
     for i in $REPLICA_DB_INSTANCES; do
-      echo "Promote read replica $i to instance"
+      #echo "Promote read replica $i to instance"
       aws rds promote-read-replica \
             --db-instance-identifier "$i" \
-            --backup-retention-period 1
+            --backup-retention-period 1 > /dev/null
     done
   else
     _message "$__MSG" "error" "$_error_code"

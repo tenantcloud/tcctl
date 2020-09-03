@@ -24,7 +24,7 @@ function file_md5_sum() {
     _error_code=$?
     __MSG="Command: tcctl helpers $1 md5sum"
     __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
+    if [[ "$_error_code" -eq "0" ]]; then
       FILE_MD5_SUM=$( md5sum "$1" | awk '{print $1}' )
     else
       _message "$__MSG" "error" "$_error_code"
@@ -35,7 +35,7 @@ function file_md5_sum() {
     _error_code=$?
     __MSG="Command: tcctl helpers $1 md5_sum"
     __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
+    if [[ "$_error_code" -eq "0" ]]; then
       FILE_MD5_SUM=$( md5 "$1" | awk '{print $4}' )
     else
       _message "$__MSG" "error" "$_error_code"

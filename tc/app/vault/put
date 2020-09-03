@@ -31,7 +31,7 @@ function vault_put() {
   _error_code=$?
   __MSG="Command: tcctl vault put $@"
   __MSG+="$__output"
-  if [ $_error_code -eq "0" ]; then
+  if [ "$_error_code" -eq "0" ]; then
     _vault_kv_put=$( echo "$__output" | xargs )
   else
     _message "$__MSG" "error" "$_error_code"

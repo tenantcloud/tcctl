@@ -25,7 +25,7 @@ function status_service() {
     _error_code=$?
     __MSG="Command: tcctl service $1 status"
     __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
+    if [[ "$_error_code" -eq "0" ]]; then
       systemctl is-active "$SERVICE_NAME" | column -t
     else
       _message "$__MSG" "error" "$_error_code"
@@ -35,7 +35,7 @@ function status_service() {
     _error_code=$?
     __MSG="Command: tcctl service $1 status"
     __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
+    if [[ "$_error_code" -eq "0" ]]; then
       $SERVICE_NAME status | awk '{ print $2 }'
     else
       _message "$__MSG" "error" "$_error_code"

@@ -43,7 +43,7 @@ function vault_config() {
   _error_code=$?
   __MSG="Command: tcctl vault config $@"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG" "info" "$_error_code"
   else
     _message "$__MSG" "error" "$_error_code"
