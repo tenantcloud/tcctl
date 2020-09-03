@@ -31,7 +31,7 @@ esac
 done
 
 function vault_config() {
-  tcctl helpers check_bin_file vault
+  tcctl helpers check_bin_file --filename vault
   VAULT_ADDR=$1
   VAULT_NAME=$2
   VAULT_PASSWORD=$3

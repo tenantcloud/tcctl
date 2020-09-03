@@ -19,7 +19,7 @@ esac
 done
 
 function vault_check_path() {
-  tcctl helpers check_bin_file vault
+  tcctl helpers check_bin_file --filename vault
   tcctl vault token
   SECRET_PATH="$1"
   __output=$( vault kv get "$SECRET_PATH" 2>&1 )
