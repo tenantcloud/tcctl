@@ -5,7 +5,6 @@
 source "$CLI_DIR/tc/framework/functions"
 
 VAULT_CONFIG_FILE=~/.vault-configuration
-COMMAND_SHELL=~/.zshrc
 VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
 
 while [[ $# -gt 0 ]]
@@ -38,13 +37,12 @@ function vault_config() {
   echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
   echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
   echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
-  echo "source $VAULT_CONFIG_FILE" >> $COMMAND_SHELL
   source $VAULT_CONFIG_FILE
   _error_code=$?
   __MSG="Command: tcctl vault config $@"
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
-    _message "$__MSG" "info" "$_error_code"
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi

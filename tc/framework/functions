@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090,SC2155
+
 __draw_line() {
   __count=$2
   __symbol_count=${__count:=80}
@@ -11,9 +13,6 @@ __show_date_hostname() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] on $(hostname)"
 }
 
-# Function show message (info, error, warning)
-# Usage: _message "message" "error" "128"
-#        _message "message"
 function _message {
   __message_body="$1"
   __message_type="${2:-info}"
@@ -54,3 +53,11 @@ function _get_project_name() {
 function _get_os() {
   uname -s
 }
+
+function _vault_get_addr() {
+  VAULT_CONFIG_FILE=~/.vault-configuration
+  source $VAULT_CONFIG_FILE
+  echo "$VAULT_ADDR"
+}
+
+export VAULT_ADDR=$(_vault_get_addr)

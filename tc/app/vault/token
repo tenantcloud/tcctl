@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2120,SC1090,SC2124,SC2034
+# shellcheck disable=SC2120,SC1090,SC2124
 
 VAULT_CONFIG_FILE=~/.vault-configuration
 
