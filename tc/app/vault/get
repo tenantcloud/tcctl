@@ -9,12 +9,12 @@ do
 key="$1"
 
 case $key in
-    --secret-project)
-    SECRET_PROJECT="$2"
+    --secret-path)
+    SECRET_PATH="$2"
     shift 2
     ;;
-    --env-tmp)
-    ENV_TEMP="$2"
+    --env)
+    ENV="$2"
     shift 2
     ;;
     *)
@@ -23,27 +23,27 @@ esac
 done
 
 function vault_get() {
-  tcctl helpers check_bin_file vault
+  tcctl helpers check_bin_file --filename vault
   tcctl vault token
-  VAULT_SECRET=$1
-  ENV_TEMP=$2
-  __output=$( vault kv get "$VAULT_SECRET" 2>&1 )
+  SECRET_PATH=$1
+  ENV=$2
+  __output=$( vault kv get "$SECRET_PATH" 2>&1 )
   _error_code=$?
   __MSG="Command: tcctl vault get $@"
   __MSG+="$__output"
   if [ $_error_code -eq "0" ]; then
-    vault kv get "$VAULT_SECRET" | sed 's/\ \{1,\}/=/g' | sed 1,11d > "$ENV_TEMP"
+    vault kv get "$SECRET_PATH" | sed 's/\ \{1,\}/=/g' | sed 1,11d > "$ENV"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-if [ -z "$SECRET_PROJECT" ]; then
-  __MSG="Command: tcctl vault get missed --secret-project"
+if [ -z "$SECRET_PATH" ]; then
+  __MSG="Command: tcctl vault get missed --secret-path"
   _message "$__MSG" "error" "$_error_code"
-elif [ -z "$ENV_TEMP" ]; then
-  __MSG="Command: tcctl vault get missed --env-tmp"
+elif [ -z "$ENV" ]; then
+  __MSG="Command: tcctl vault get missed --env"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_get "$SECRET_PROJECT" "$ENV_TEMP"
+  vault_get "$SECRET_PATH" "$ENV"
 fi
