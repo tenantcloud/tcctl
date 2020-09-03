@@ -23,13 +23,10 @@ function check_bin_file() {
   _error_code=$?
   __MSG="Command: tcctl helpers check_bin_file $1 => "
   __MSG+="$__output"
-  if [ $_error_code -eq "0" ]; then
-    _message "$__MSG"
-  else
+  if [ $_error_code -gt "0" ]; then
     echo "bin file $1 is missing"
     _message "$__MSG" "error" "$_error_code"
   fi
-
 }
 
 if [ -z "$FILENAME" ]; then
