@@ -25,7 +25,7 @@ function promote_master_replicas() {
   __MSG="Command: tcctl aws $1 describe-db-instances"
   __MSG+="$__output"
   if [[ $_error_code -eq "0" ]]; then
-    REPLICA_DB_INSTANCES=$( $__output | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
+    REPLICA_DB_INSTANCES=$( echo "$__output" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
     export REPLICA_DB_INSTANCES_COUNT=$(echo "$REPLICA_DB_INSTANCES" | wc -w)
     for i in $REPLICA_DB_INSTANCES; do
       echo "Promote read replica $i to instance"
