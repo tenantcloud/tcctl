@@ -3,6 +3,7 @@
 # shellcheck disable=SC2124,SC1090,SC2034
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/vault/functions"
 
 while [[ $# -gt 0 ]]
 do
