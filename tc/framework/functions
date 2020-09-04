@@ -11,6 +11,9 @@ __show_date_hostname() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] on $(hostname)"
 }
 
+# Function show message (info, error, warning)
+# Usage: _message "message" "error" "128"
+#        _message "message"
 function _message {
   __message_body="$1"
   __message_type="${2:-info}"
