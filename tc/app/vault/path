@@ -3,6 +3,7 @@
 # shellcheck disable=SC2124,SC2034,SC1090
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/vault/functions"
 
 while [[ $# -gt 0 ]]
 do
@@ -26,7 +27,7 @@ function vault_check_path() {
   _error_code=$?
   __MSG="Command: tcctl vault path $@"
   __MSG+="$__output"
-  if [ $_error_code -eq "0" ]; then
+  if [ "$_error_code" -eq "0" ]; then
     echo "true"
   else
     echo "false"

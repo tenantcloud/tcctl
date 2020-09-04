@@ -36,7 +36,7 @@ function slack_update_finish() {
     _error_code=$?
     __MSG="Command: tcctl slack update_finish"
     __MSG+="$__output"
-    if [[ $_error_code -eq "0" ]]; then
+    if [[ "$_error_code" -eq "0" ]]; then
       _message "Message was send into Slack $CHANNEL"
     else
       _message "$__MSG" "error" "$_error_code"

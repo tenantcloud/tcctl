@@ -20,7 +20,7 @@ function add_horizon() {
   _error_code=$?
   __MSG="Command: tcctl add horizon config"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
@@ -29,7 +29,7 @@ function add_horizon() {
   _error_code=$?
   __MSG="Command: tcctl add horizon program"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
@@ -38,7 +38,7 @@ function add_horizon() {
   _error_code=$?
   __MSG="Command: tcctl add horizon command"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
@@ -47,7 +47,7 @@ function add_horizon() {
   _error_code=$?
   __MSG="Command: tcctl add horizon directory"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
@@ -56,7 +56,7 @@ function add_horizon() {
   _error_code=$?
   __MSG="Command: tcctl add horizon user"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
@@ -65,7 +65,7 @@ function add_horizon() {
   _error_code=$?
   __MSG="Command: tcctl add horizon stdout_logfile"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"

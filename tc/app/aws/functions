@@ -10,7 +10,7 @@ function _describe_ecr_images() {
   _error_code=$?
   __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     echo "$__output"
   else
     _message "$__MSG" "error" "$__output"
@@ -23,7 +23,7 @@ function _delete_last_n_images_from_json() {
   _error_code=$?
   __MSG="Command: tcctl aws ecr list-images"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     echo "$__output"
   else
     _message "$__MSG" "error" "$__output"
@@ -38,7 +38,7 @@ function _get_old_image_tags() {
   export _error_code=$?
   __MSG="Images with next tags will be removed from AWS ECR ${REPOSITORY} repository"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG" "info" "$__output"
   else
     _message "$__MSG" "error" "$__output"

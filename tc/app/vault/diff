@@ -30,7 +30,7 @@ function vault_diff() {
   _error_code=$?
   __MSG="Command: tcctl vault diff $@"
   __MSG+="$__output"
-  if [[ $_error_code -eq "0" ]]; then
+  if [[ "$_error_code" -eq "0" ]]; then
     echo "$__output" | column -t
   else
     _message "$__MSG" "error" "$_error_code"

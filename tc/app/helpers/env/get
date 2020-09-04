@@ -34,7 +34,7 @@ function get_value_from_env() {
   _error_code=$?
   __MSG="Command: tcctl helpers get value from $1"
   __MSG+="$__output"
-  if [ $_error_code -eq "0" ]; then
+  if [ "$_error_code" -eq "0" ]; then
     if [[ -z "$__output" ]]; then
       _message "$__MSG" "warning" "$_error_code"
       exit 1
