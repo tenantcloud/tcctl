@@ -61,7 +61,7 @@ else
   else
     # Delete last N images from json
     for item in $list; do
-      _parsed_json=$(echo $_parsed_json | jq "del ( .[] | select ( .imageTags[] == \"$item\" ))")
+      _parsed_json=$(echo "$_parsed_json" | jq "del ( .[] | select ( .imageTags[] == \"$item\" ))")
     done
     # Print deleted images tags without excluded tag
     _get_old_image_tags "$_parsed_json"
