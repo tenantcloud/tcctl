@@ -26,7 +26,7 @@ done
 
 function slack_solved_issue_list() {
     SLACK_MESSAGE="The list of solved problems when deploying (:host: $(hostname) ):\n"
-    SLACK_MESSAGE+="$(cat $2 | egrep -oh 'TC-[0-9]+' | sort -u | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}')"
+    SLACK_MESSAGE+="$( grep -E 'TC-[0-9]+' | sort -u | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}' < "$2" )"
     __output=$( slack chat send "$SLACK_MESSAGE" "$1" )
     _error_code=$?
     __MSG="Command: tcctl slack solved_list"
