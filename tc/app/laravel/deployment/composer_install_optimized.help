@@ -1,0 +1,5 @@
+The commands with which we can run composer install with optimized settings
+
+for example:
+
+tcctl laravel deployment composer_install_optimized
