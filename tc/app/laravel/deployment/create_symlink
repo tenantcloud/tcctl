@@ -19,11 +19,11 @@ esac
 done
 
 function _create_symlink() {
-  AASSETS_DIR=$1
-  if [ ! -d "$1" ]; then
+  ASSETS_DIR=$1
+  if [ ! -d "$ASSETS_DIR" ]; then
     __output=$(yarn symlink)
     _error_code=$?
-  __MSG="Command: tcctl deployment create symlink $1"
+  __MSG="Command: tcctl deployment create symlink $ASSETS_DIR "
   __MSG+="$__output"
     if [ "$_error_code" -eq "0" ]; then
       _message "$__MSG"
