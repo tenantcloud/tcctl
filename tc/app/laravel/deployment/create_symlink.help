@@ -1,0 +1,9 @@
+The commands with which we can create symlink
+
+for example:
+
+tcctl laravel development create_symlink --assets_dir assets_dir
+
+where:
+
+assets_dir              - the dir where we create the symlink

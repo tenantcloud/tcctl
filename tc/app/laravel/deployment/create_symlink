@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090,SC2034,SC2154
+
+source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --assets_dir)
+    ASSETS_DIR="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function _create_symlink() {
+  AASSETS_DIR=$1
+  if [ ! -d "$1" ]; then
+    __output=$(yarn symlink)
+    _error_code=$?
+  __MSG="Command: tcctl deployment create symlink $1"
+  __MSG+="$__output"
+    if [ "$_error_code" -eq "0" ]; then
+      _message "$__MSG"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  fi
+}
+
+if [ -z "$ASSETS_DIR" ]; then
+  __MSG="Command: tcctl laravel deployment create_symlink missed --assets_dir"
+  _message "$__MSG" "error" "$_error_code"
+else
+  _create_symlink "$ASSETS_DIR"
+fi

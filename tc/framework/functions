@@ -54,3 +54,7 @@ function _get_project_name() {
 function _get_os() {
   uname -s
 }
+
+function _get_date() {
+  date +%s
+}
