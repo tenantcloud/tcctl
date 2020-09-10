@@ -5,7 +5,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 CHANNEL="#devops-notifications"
-MESSAGE="Please, check your Slack message formation"
+MESSAGE="Hostname: $(hostname)"
 
 while [[ $# -gt 0 ]]
 do
@@ -30,7 +30,7 @@ esac
 done
 
 function slack_file_upload() {
-  if [[ -f $(command -v slack) ]]; then
+  if [[ -f $(command -v slack) ]] && [[ -f "$FILE" ]]; then
     __output=$( slack file upload "$3" "$1" --comment "$2" )
     _error_code=$?
     __MSG="Command: tcctl slack file_upload"
@@ -41,7 +41,7 @@ function slack_file_upload() {
       _message "$__MSG" "warning"
     fi
   else
-    echo "We can't find slack command"
+    echo "We can't find slack command or commnts_summary file"
     exit 1
   fi
 }
