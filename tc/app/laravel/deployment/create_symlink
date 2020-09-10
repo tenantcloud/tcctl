@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090,SC2034,SC2154
+
+source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --source)
+    SOURCE="$2"
+    shift 2
+    ;;
+    --destination )
+    DESTINATION="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function _create_symlink() {
+  SOURCE=$1
+  DESTINATION=$2
+  if [[ -z "$(readlink "$DESTINATION" )" ]]; then
+    __output=$(ln -s "$(pwd)"/"$SOURCE" "$(pwd)"/"$DESTINATION")
+    _error_code=$?
+    __MSG="Command: tcctl laravel deployment create symlink"
+    __MSG+="$__output"
+    if [ "$_error_code" -eq "0" ]; then
+      _message "$__MSG"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  fi
+}
+
+if [ -z "$SOURCE" ]; then
+  __MSG="Command: tcctl laravel deployment create_symlink missed --source"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$DESTINATION" ]; then
+  __MSG="Command: tcctl laravel deployment create_symlink missed --destination"
+  _message "$__MSG" "error" "$_error_code"
+else
+  _create_symlink "$SOURCE" "$DESTINATION"
+fi

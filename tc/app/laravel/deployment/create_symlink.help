@@ -1,0 +1,10 @@
+The commands with which we can create symlink
+
+for example:
+
+tcctl laravel deployment create_symlink --source resources/web --destination public/web
+
+where:
+
+resources/web           - source dir
+public/web              - destination dir
