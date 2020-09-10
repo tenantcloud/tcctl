@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+CHANNEL="#devops-notifications"
+MESSAGE="Please, check your Slack message formation"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --channel)
+    CHANNEL="$2"
+    shift 2
+    ;;
+    --message)
+    MESSAGE="$2"
+    shift 2
+    ;;
+    --color)
+    COLOR="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function slack_send_message() {
+  if [[ -f $(command -v slack) ]]; then
+    __slack_message="$1"
+    __slack_color="$3"
+    __slack_channel="$2"
+    if [[ -n $__slack_color ]]; then
+      __slack_color="-cl \"$__slack_color\""
+    fi
+    __slack_command="$(command -v slack) chat send $__slack_color "\"$__slack_message\"" "\"$__slack_channel\"""
+    __output=$( eval "$__slack_command" )
+    _error_code=$?
+    __MSG="Command: tcctl slack update_finish"
+    __MSG+="$__output"
+    if [[ "$_error_code" -eq "0" ]]; then
+      _message "Message was send into Slack $CHANNEL"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  else
+    echo "We can't find slack command"
+    exit 1
+  fi
+}
+
+slack_send_message "$MESSAGE" "$CHANNEL" "$COLOR"

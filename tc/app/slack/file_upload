@@ -5,6 +5,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 CHANNEL="#devops-notifications"
+MESSAGE="Hostname: $(hostname)"
 
 while [[ $# -gt 0 ]]
 do
@@ -15,12 +16,12 @@ case $key in
     CHANNEL="$2"
     shift 2
     ;;
-    --site-version)
-    SITE_VERSION="$2"
-    shift 2
-    ;;
     --file)
     FILE="$2"
+    shift 2
+    ;;
+    --message)
+    MESSAGE="$2"
     shift 2
     ;;
     *)
@@ -29,8 +30,11 @@ esac
 done
 
 function slack_file_upload() {
-    SLACK_MESSAGE="Changes in version $2 on :host: $(hostname)"
-    __output=$( slack file upload "$3" "$1" --comment "$SLACK_MESSAGE" )
+  if [[ -f $(command -v slack) ]] && [[ -f "$FILE" ]]; then
+    __slack_channel="$1"
+    __slack_message="$2"
+    __slack_file="$3"
+    __output=$( slack file upload "$__slack_file" "$__slack_channel" --comment "$__slack_message" )
     _error_code=$?
     __MSG="Command: tcctl slack file_upload"
     __MSG+="$__output"
@@ -39,6 +43,10 @@ function slack_file_upload() {
     else
       _message "$__MSG" "warning"
     fi
+  else
+    echo "We can't find slack command or commnts_summary file"
+    exit 1
+  fi
 }
 
-slack_file_upload "$CHANNEL" "$SITE_VERSION" "$FILE"
+slack_file_upload "$CHANNEL" "$MESSAGE" "$FILE"

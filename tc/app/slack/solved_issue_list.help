@@ -1,9 +1,0 @@
-The commands with which we can send slack message
-
-for example:
-
-tcctl slack solved_issue_list --channel "#devops"
-
-where:
-
-channel            - the name of Slack channel
