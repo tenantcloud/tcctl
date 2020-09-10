@@ -30,6 +30,7 @@ esac
 done
 
 function slack_send_message() {
+  if [[ -f $(command -v slack) ]]; then
     _slack_message="$1"
     _slack_color="$3"
     _slack_channel="$2"
@@ -46,6 +47,10 @@ function slack_send_message() {
     else
       _message "$__MSG" "error" "$_error_code"
     fi
+  else
+    echo "We can't find slack command"
+    exit 1
+  fi
 }
 
 slack_send_message "$MESSAGE" "$CHANNEL" "$COLOR"

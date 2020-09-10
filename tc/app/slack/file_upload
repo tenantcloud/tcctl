@@ -30,6 +30,7 @@ esac
 done
 
 function slack_file_upload() {
+  if [[ -f $(command -v slack) ]]; then
     __output=$( slack file upload "$3" "$1" --comment "$2" )
     _error_code=$?
     __MSG="Command: tcctl slack file_upload"
@@ -39,6 +40,10 @@ function slack_file_upload() {
     else
       _message "$__MSG" "warning"
     fi
+  else
+    echo "We can't find slack command"
+    exit 1
+  fi
 }
 
 slack_file_upload "$CHANNEL" "$MESSAGE" "$FILE"
