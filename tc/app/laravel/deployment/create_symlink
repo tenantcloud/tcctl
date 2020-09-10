@@ -9,8 +9,12 @@ do
 key="$1"
 
 case $key in
-    --assets_dir)
-    ASSETS_DIR="$2"
+    --source)
+    SOURCE="$2"
+    shift 2
+    ;;
+    --destination )
+    DESTINATION="$2"
     shift 2
     ;;
     *)
@@ -19,11 +23,12 @@ esac
 done
 
 function _create_symlink() {
-  ASSETS_DIR=$1
-  if [ ! -d "$ASSETS_DIR" ]; then
-    __output=$(yarn symlink)
+  SOURCE=$1
+  DESTINATION=$2
+  if [[ -z "$(readlink "$DESTINATION" )" ]]; then
+    __output=$(ln -s "$(pwd)"/"$SOURCE" "$(pwd)"/"$DESTINATION")
     _error_code=$?
-    __MSG="Command: tcctl laravel deployment create symlink $ASSETS_DIR "
+    __MSG="Command: tcctl laravel deployment create symlink"
     __MSG+="$__output"
     if [ "$_error_code" -eq "0" ]; then
       _message "$__MSG"
@@ -33,9 +38,12 @@ function _create_symlink() {
   fi
 }
 
-if [ -z "$ASSETS_DIR" ]; then
-  __MSG="Command: tcctl laravel deployment create_symlink missed --assets_dir"
+if [ -z "$SOURCE" ]; then
+  __MSG="Command: tcctl laravel deployment create_symlink missed --source"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$DESTINATION" ]; then
+  __MSG="Command: tcctl laravel deployment create_symlink missed --destination"
   _message "$__MSG" "error" "$_error_code"
 else
-  _create_symlink "$ASSETS_DIR"
+  _create_symlink "$SOURCE" "$DESTINATION"
 fi

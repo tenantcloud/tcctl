@@ -2,8 +2,9 @@ The commands with which we can create symlink
 
 for example:
 
-tcctl laravel deployment create_symlink --assets_dir assets_dir
+tcctl laravel deployment create_symlink --source resources/web --destination public/web
 
 where:
 
-assets_dir              - the dir where we create the symlink
+resources/web           - source dir
+public/web              - destination dir
