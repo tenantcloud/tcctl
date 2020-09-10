@@ -29,8 +29,8 @@ done
 
 list="${QUEUE//,/ }"
 
-function _finish_all_queues() {
-  __session_name="QUEUESFINISH"
+function _queue_work() {
+  __session_name="QUEUES"
   __parallel_process=$1
   if  [[ -z $(command -v byobu) ]]; then
     byobu -2 new-session -d -s $__session_name
@@ -50,6 +50,11 @@ function _finish_all_queues() {
       fi
     done
   done
+  php artisan tc:once_run --during_deploy --force
+  _error_code=$(( "$_error_code" + "$?" ))
+  if [[ "$_error_code" -gt "0" ]]; then
+    exit 1
+  fi
   php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
   _error_code=$(( "$_error_code" + "$?" ))
   if [[ "$_error_code" -gt "0" ]]; then
@@ -60,7 +65,7 @@ function _finish_all_queues() {
   if [[ "$_error_code" -gt "0" ]]; then
     exit 1
   fi
-  __MSG="Command: tcctl laravel deployment finish_all_queues"
+  __MSG="Command: tcctl laravel deployment queue_work"
   if [ "$_error_code" -eq "0" ]; then
     _message "$__MSG"
   else
@@ -69,11 +74,11 @@ function _finish_all_queues() {
 }
 
 if [ -z "$PARALLEL_PROCESS" ]; then
-  __MSG="Command: tcctl laravel deployment finish_all_queues missed --parallel-process"
+  __MSG="Command: tcctl laravel deployment queue_work missed --parallel-process"
   _message "$__MSG" "error" "$_error_code"
 elif [ -z "$QUEUE" ]; then
-  __MSG="Command: tcctl laravel deployment finish_all_queues missed --queue"
+  __MSG="Command: tcctl laravel deployment queue_work missed --queue"
   _message "$__MSG" "error" "$_error_code"
 else
-  _finish_all_queues "$PARALLEL_PROCESS"
+  _queue_work "$PARALLEL_PROCESS"
 fi
