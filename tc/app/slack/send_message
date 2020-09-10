@@ -5,6 +5,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 CHANNEL="#devops-notifications"
+MESSAGE="Please, check your Slack message formation"
 
 while [[ $# -gt 0 ]]
 do
@@ -29,8 +30,14 @@ esac
 done
 
 function slack_send_message() {
-    SLACK_MESSAGE="$1"
-    __output=$( slack chat send -cl "$3" "$SLACK_MESSAGE" "$2" )
+    _slack_message="$1"
+    _slack_color="$3"
+    _slack_channel="$2"
+    if [[ -n $_slack_color ]]; then
+      _slack_color="-cl \"$_slack_color\""
+    fi
+    _slack_command="$(command -v slack) chat send $_slack_color "\"$_slack_message\"" "\"$_slack_channel\"""
+    __output=$( eval "$_slack_command" )
     _error_code=$?
     __MSG="Command: tcctl slack update_finish"
     __MSG+="$__output"

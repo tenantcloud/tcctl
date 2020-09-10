@@ -5,6 +5,7 @@
 source "$CLI_DIR/tc/framework/functions"
 
 CHANNEL="#devops-notifications"
+MESSAGE="Please, check your Slack message formation"
 
 while [[ $# -gt 0 ]]
 do
@@ -15,12 +16,12 @@ case $key in
     CHANNEL="$2"
     shift 2
     ;;
-    --site-version)
-    SITE_VERSION="$2"
-    shift 2
-    ;;
     --file)
     FILE="$2"
+    shift 2
+    ;;
+    --message)
+    MESSAGE="$2"
     shift 2
     ;;
     *)
@@ -29,8 +30,7 @@ esac
 done
 
 function slack_file_upload() {
-    SLACK_MESSAGE="Changes in version $2 on :host: $(hostname)"
-    __output=$( slack file upload "$3" "$1" --comment "$SLACK_MESSAGE" )
+    __output=$( slack file upload "$3" "$1" --comment "$2" )
     _error_code=$?
     __MSG="Command: tcctl slack file_upload"
     __MSG+="$__output"
@@ -41,4 +41,4 @@ function slack_file_upload() {
     fi
 }
 
-slack_file_upload "$CHANNEL" "$SITE_VERSION" "$FILE"
+slack_file_upload "$CHANNEL" "$MESSAGE" "$FILE"
