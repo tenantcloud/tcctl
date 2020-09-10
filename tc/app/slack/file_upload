@@ -31,7 +31,10 @@ done
 
 function slack_file_upload() {
   if [[ -f $(command -v slack) ]] && [[ -f "$FILE" ]]; then
-    __output=$( slack file upload "$3" "$1" --comment "$2" )
+    __slack_channel="$1"
+    __slack_message="$2"
+    __slack_file="$3"
+    __output=$( slack file upload "$__slack_file" "$__slack_channel" --comment "$__slack_message" )
     _error_code=$?
     __MSG="Command: tcctl slack file_upload"
     __MSG+="$__output"
