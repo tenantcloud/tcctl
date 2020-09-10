@@ -1,0 +1,5 @@
+The commands with which we can get name of the repositories
+
+for example:
+
+tcctl helpers get_repo_name
