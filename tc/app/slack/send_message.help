@@ -1,0 +1,11 @@
+The commands with which we can send slack message with color and message body
+
+for example:
+
+tcctl slack send_message --channel "#devops" --color "#18db12" --message "The site is up."
+
+where:
+
+channel            - the name of Slack channel
+color              - the color of Slack message
+message            - the body of Slack message

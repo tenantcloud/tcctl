@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+CHANNEL="#devops-notifications"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --channel)
+    CHANNEL="$2"
+    shift 2
+    ;;
+    --message)
+    MESSAGE="$2"
+    shift 2
+    ;;
+    --color)
+    COLOR="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function slack_send_message() {
+    SLACK_MESSAGE="$1"
+    __output=$( slack chat send -cl "$3" "$SLACK_MESSAGE" "$2" )
+    _error_code=$?
+    __MSG="Command: tcctl slack update_finish"
+    __MSG+="$__output"
+    if [[ "$_error_code" -eq "0" ]]; then
+      _message "Message was send into Slack $CHANNEL"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+}
+
+slack_send_message "$MESSAGE" "$CHANNEL" "$COLOR"

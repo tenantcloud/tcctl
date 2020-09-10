@@ -1,4 +1,4 @@
-The commands with which we can send slack message
+The commands with which we can send slack message with file attachment
 
 for example:
 
@@ -8,4 +8,4 @@ where:
 
 channel            - the name of Slack channel
 site-version       - variable from build script
-file             - the path for file which will be attach into message
+file               - the path for file which will be attach into message
