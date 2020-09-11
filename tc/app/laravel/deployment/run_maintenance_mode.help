@@ -2,7 +2,7 @@ The commands with which we can run maintenance mode
 
 for example:
 
-tcctl laravel deployment run_maintenance_mode --delay_time 2 --terminate-when-finish true
+tcctl laravel deployment run_maintenance_mode --delay_time 2 --terminate_when_finish true
 
 where:
 
