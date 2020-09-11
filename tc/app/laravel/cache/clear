@@ -4,6 +4,13 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
+__os_version="$(_get_os)"
+case "${__os_version}" in
+    Linux*)     __command="sudo service php7.4-fpm reload";;
+    Darwin*)    __command="brew services restart php";;
+    *)
+esac
+
 function laravel_cache_clear() {
   __output=$( php artisan clear-compiled )
   _error_code=$?
@@ -15,26 +22,13 @@ function laravel_cache_clear() {
     _message "$__MSG" "error" "$_error_code"
   fi
 
-  if [[ $( _get_os ) == Linux ]] ; then
-    SUDO_COMMAND="sudo "
-    __output=$( $SUDO_COMMAND service php7.4-fpm reload )
-    _error_code=$?
-    __MSG="Command: sudo service php7.4-fpm reload"
-    if [[ "$_error_code" -eq "0" ]]; then
-      _message "$__MSG"
-    else
-      _message "$__MSG" "error" "$_error_code"
-    fi
-  elif [[ $( _get_os ) == Darwin ]]; then
-    __output=$( brew services restart php )
-    _error_code=$?
-    __MSG="Command: brew services restart php"
-    __MSG+="$__output"
-    if [[ "$_error_code" -eq "0" ]]; then
-      echo "$__output"
-    else
-      _message "$__MSG" "error" "$_error_code"
-    fi
+  __output=$( eval "$__command" )
+  _error_code=$?
+  __MSG="Command: $__command"
+  if [[ "$_error_code" -eq "0" ]]; then
+    echo "Command: $__command successfull"
+  else
+    _message "$__MSG" "error" "$_error_code"
   fi
 
   __output=$( php artisan config:cache )
