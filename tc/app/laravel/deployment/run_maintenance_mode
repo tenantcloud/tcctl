@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090,SC2034,SC2154
+
+source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --delay_time)
+    DELAY_TIME="$2"
+    shift 2
+    ;;
+    --terminate_when_finish)
+    TERMINATE_WHEN_FINISH="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function _run_maintenance_mode() {
+  DELAY_TIME=$1
+  TERMINATE_WHEN_FINISH=$2
+  __output=$(php artisan tc:dev:maintenance_mode --time="$DELAY_TIME" --terminate-when-finish="$TERMINATE_WHEN_FINISH")
+  _error_code=$?
+  __MSG="Command: tcctl laravel deployment run_maintenance_mode"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    _message "$__MSG"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+if [ -z "$DELAY_TIME" ]; then
+  __MSG="Command: tcctl laravel deployment run_maintenance_mode missed --delay_time"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$TERMINATE_WHEN_FINISH" ]; then
+  __MSG="Command: tcctl laravel deployment run_maintenance_mode missed --terminate_when_finish"
+else
+  _run_maintenance_mode "$DELAY_TIME" "$TERMINATE_WHEN_FINISH"
+fi
