@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+function laravel_cache_clear() {
+  __output=$( php artisan clear-compiled )
+  _error_code=$?
+  __MSG="Command: tcctl laravel cache clear"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+
+  if [[ $( _get_os ) == Linux ]] ; then
+    SUDO_COMMAND="sudo "
+    __output=$( $SUDO_COMMAND service php7.4-fpm reload )
+    _error_code=$?
+    __MSG="Command: sudo service php7.4-fpm reload"
+    if [[ "$_error_code" -eq "0" ]]; then
+      _message "$__MSG"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  elif [[ $( _get_os ) == Darwin ]]; then
+    __output=$( brew services restart php )
+    _error_code=$?
+    __MSG="Command: brew services restart php"
+    __MSG+="$__output"
+    if [[ "$_error_code" -eq "0" ]]; then
+      echo "$__output"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  fi
+
+  __output=$( php artisan config:cache )
+  _error_code=$?
+  __MSG="Command: tcctl laravel cache clear"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+
+  __output=$( php artisan route:cache )
+  _error_code=$?
+  __MSG="Command: tcctl laravel cache clear"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+
+  __output=$( php artisan event:cache )
+  _error_code=$?
+  __MSG="Command: tcctl laravel cache clear"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+laravel_cache_clear
