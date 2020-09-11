@@ -1,0 +1,4 @@
+
+tcctl helpers env update_version_from_git
+
+Update site version in .env file
