@@ -23,8 +23,8 @@ esac
 done
 
 function _create_symlink() {
-  __source=$1
-  __destination=$2
+  __source="$1"
+  __destination="$2"
   if [[ -z "$(readlink "$__destination" )" ]]; then
     __output=$(ln -s "$(pwd)"/"$__source" "$(pwd)"/"$__destination")
     _error_code=$?

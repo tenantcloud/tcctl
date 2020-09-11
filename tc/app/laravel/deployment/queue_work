@@ -35,35 +35,40 @@ function _queue_work() {
   if  [[ -z $(command -v byobu) ]]; then
     byobu -2 new-session -d -s $__session_name
     _error_code="$?"
+    __MSG="Error when byobu runs"
     if [[ "$_error_code" -gt "0" ]]; then
-      exit 1
+      _message "$__MSG" "error" "$_error_code"
     fi
   else
-    exit 1
+    _message "$__MSG" "error" "$_error_code"
   fi
   for ((i=1;i<="$__parallel_process";i++)); do
     for item in $list; do
       byobu new-window -t $__session_name "php artisan queue:work --force --queue=$item"
       _error_code=$(( "$_error_code" + "$?" ))
+      __MSG="Error when byobu run $item in new-window session"
       if [[ "$_error_code" -gt "0" ]]; then
-        exit 1
+        _message "$__MSG" "error" "$_error_code"
       fi
     done
   done
   php artisan tc:once_run --during_deploy --force
   _error_code=$(( "$_error_code" + "$?" ))
+  __MSG="Error when artisan during deploy command runs"
   if [[ "$_error_code" -gt "0" ]]; then
-    exit 1
+    _message "$__MSG" "error" "$_error_code"
   fi
   php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
   _error_code=$(( "$_error_code" + "$?" ))
+  __MSG="Error on queue state terminate when empty"
   if [[ "$_error_code" -gt "0" ]]; then
-    exit 1
+    _message "$__MSG" "error" "$_error_code"
   fi
   byobu kill-session -t "$__session_name"
   _error_code=$(( "$_error_code" + "$?" ))
+  __MSG="Error while trying to kill byobu session"
   if [[ "$_error_code" -gt "0" ]]; then
-    exit 1
+    _message "$__MSG" "error" "$_error_code"
   fi
   __MSG="Command: tcctl laravel deployment queue_work"
   if [ "$_error_code" -eq "0" ]; then

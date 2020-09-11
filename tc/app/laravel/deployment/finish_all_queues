@@ -6,8 +6,8 @@ source "$CLI_DIR/tc/framework/functions"
 
 set +e
 
-PARALLEL_PROCESS="8"
 QUEUE="deploy"
+PARALLEL_PROCESS="8"
 
 while [[ $# -gt 0 ]]
 do
