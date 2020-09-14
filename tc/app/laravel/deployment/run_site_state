@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --state)
+    STATE="$2"
+    shift 2
+    ;;
+    --site_down_time)
+    SITE_DOWN_TIME="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function _run_site_state() {
+  __state=$1
+  __site_down_time=$2
+  __site_up_time=$(_get_date)
+  [[ ! $__site_down_time ]] && __site_down_time=$__site_up_time
+  DOWN_TIME=$((__site_up_time-__site_down_time))
+  __output=$(tcctl php artisan tc:devops:app_"$__state")
+  _error_code=$?
+  __MSG="Command: tcctl laravel deployment run_site_state"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$DOWN_TIME"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+if [ -z "$STATE" ]; then
+  __MSG="Command: tcctl laravel deployment run_site_state missed --state"
+  _message "$__MSG" "error" "$_error_code"
+else
+  _run_site_state "$STATE" "$SITE_DOWN_TIME"
+fi

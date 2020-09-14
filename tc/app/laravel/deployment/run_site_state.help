@@ -1,0 +1,10 @@
+The commands with which we can run website in up or down state
+
+for example:
+
+tcctl laravel deployment run_site_state --state up --site_down_time 60
+
+where:
+
+up                      - state of site
+60                      - time spent by the site in maintenance mode (parameter is optional - passed in deployment scripts)
