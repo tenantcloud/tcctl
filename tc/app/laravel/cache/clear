@@ -11,7 +11,7 @@ case "${__os_version}" in
     *)
 esac
 
-function check_exit_code {
+function run_programm_with_error_check {
   __output=$( $1 )
   _error_code=$?
   __MSG="Command: tcctl laravel cache clear"
@@ -34,9 +34,9 @@ function reload_php_fpm {
   fi
 }
 
-check_exit_code "php artisan clear-compiled"
+run_programm_with_error_check "php artisan clear-compiled"
 reload_php_fpm
-check_exit_code "php artisan config:cache"
-check_exit_code "php artisan route:cache"
-check_exit_code "php artisan event:cache"
+run_programm_with_error_check "php artisan config:cache"
+run_programm_with_error_check "php artisan route:cache"
+run_programm_with_error_check "php artisan event:cache"
 
