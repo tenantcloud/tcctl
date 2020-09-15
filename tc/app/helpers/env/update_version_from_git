@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+__output=$( git describe --tags "$(git rev-list --tags --max-count=1)" )
+_error_code=$?
+__MSG="Command: tcctl helpers env update_version_from_git"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  export __site_version="$__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+__output=$( sed -i "s/APP_VERSION=.*/APP_VERSION=${__site_version}/" .env )
+_error_code=$?
+__MSG="Command: tcctl helpers env update_version_from_git"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  _message "Site version changed to $__site_version"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi

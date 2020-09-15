@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+__os_version="$(_get_os)"
+case "${__os_version}" in
+    Linux*)     __command="sudo service php7.4-fpm reload";;
+    Darwin*)    __command="brew services restart php";;
+    *)
+esac
+
+function run_programm_with_error_check {
+  __output=$( $1 )
+  _error_code=$?
+  __MSG="Command: tcctl laravel cache clear"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+function reload_php_fpm {
+  __output=$( eval "$__command" )
+  _error_code=$?
+  __MSG="Command: $__command"
+  if [[ "$_error_code" -eq "0" ]]; then
+    echo "Command: $__command successfull"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+run_programm_with_error_check "php artisan clear-compiled"
+reload_php_fpm
+run_programm_with_error_check "php artisan config:cache"
+run_programm_with_error_check "php artisan route:cache"
+run_programm_with_error_check "php artisan event:cache"
+

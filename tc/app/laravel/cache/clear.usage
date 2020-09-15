@@ -1,0 +1,4 @@
+
+tcctl laravel cache clear
+
+Clear services and packages cache and reload php-fpm
