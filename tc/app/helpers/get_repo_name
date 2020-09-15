@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+function _get_repo_name() {
+  __output=$(basename -s .git "$(git config --get remote.origin.url)")
+  _error_code=$?
+  __MSG="Command: tcctl helpers get_repo_name "
+  __MSG+="$__output"
+  if [ $_error_code -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+_get_repo_name

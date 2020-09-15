@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090,SC2086,SC2001
+
+source "$CLI_DIR/tc/framework/functions"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --options)
+    OPTIONS="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+list="${OPTIONS//,/ }"
+GIT_LATEST_COMMIT=$(tcctl run git rev-parse HEAD)
+
+function _get_commits_summary() {
+  for item in $list; do
+    item="$( echo "$item" | sed 's/^/ --/' )"
+    __options+="$item"
+  done
+  __output=$(git log $__options "${GIT_LATEST_COMMIT}"...HEAD)
+  _error_code=$?
+  __MSG="Command: tcctl laravel deployment get commits summary"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+if [ -z "$OPTIONS" ]; then
+  __MSG="Command: tcctl laravel deployment get_commits_summary missed --options"
+  _message "$__MSG" "error" "$_error_code"
+else
+  _get_commits_summary
+fi

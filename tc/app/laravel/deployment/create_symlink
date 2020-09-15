@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1090,SC2034,SC2154
+# shellcheck disable=SC1090
 
 source "$CLI_DIR/tc/framework/functions"
 
@@ -23,10 +23,10 @@ esac
 done
 
 function _create_symlink() {
-  SOURCE=$1
-  DESTINATION=$2
-  if [[ -z "$(readlink "$DESTINATION" )" ]]; then
-    __output=$(ln -s "$(pwd)"/"$SOURCE" "$(pwd)"/"$DESTINATION")
+  __source="$1"
+  __destination="$2"
+  if [[ -z "$(readlink "$__destination" )" ]]; then
+    __output=$(ln -s "$(pwd)"/"$__source" "$(pwd)"/"$__destination")
     _error_code=$?
     __MSG="Command: tcctl laravel deployment create symlink"
     __MSG+="$__output"

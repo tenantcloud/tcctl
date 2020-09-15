@@ -1,0 +1,10 @@
+The commands with which we can run queue
+
+for example:
+
+tcctl laravel deployment queue_work --parallel-process 8 --queue "deploy"
+
+where:
+
+parallel-process        - count of parallel process
+queue                   - type of queue

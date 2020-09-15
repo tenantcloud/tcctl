@@ -27,7 +27,7 @@ function check_deployment_type() {
     _message "$__MSG"
     DEPLOY_TASKS="$__output"
     if [[ $DEPLOY_TASKS -gt "0" ]]; then
-      export FULL_DEPLOY=true
+      echo "true"
     fi
   else
     _message "$__MSG" "error" "$_error_code"

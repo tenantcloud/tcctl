@@ -1,0 +1,9 @@
+The commands with which we can get summary of last commit
+
+for example:
+
+tcctl laravel deployment get_commits_summary --options "pretty=format:"%s",no-merges"
+
+where:
+
+options                 - list of git options

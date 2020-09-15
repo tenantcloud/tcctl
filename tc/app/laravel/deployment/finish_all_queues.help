@@ -2,8 +2,9 @@ The commands with which we can run finish all queues
 
 for example:
 
-tcctl laravel deployment finish_all_queues --proccess_count number
+tcctl laravel deployment finish_all_queues --parallel-process 8 --queue "high,default,export,reports,promo,low,notification,convert-to-pdf,cron,deploy"
 
 where:
 
-number                  - number of byobu sessions
+parallel-process        - count of parallel process
+queue                   - type of queue
