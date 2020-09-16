@@ -6,17 +6,17 @@ source "$CLI_DIR/tc/framework/functions"
 
 function add_horizon() {
   if [[ $( _get_os ) == Linux ]] ; then
-    HORIZON_FILE="/etc/supervisor/conf.d/horizon.conf"
-    SED_COMMAND="sudo sed -i"
-    PHP_PATH="php"
+    __horizon_file="/etc/supervisor/conf.d/horizon.conf"
+    __sed_command="sudo sed -i"
+    __php_path="php"
   elif [[ $( _get_os ) == Darwin ]] ; then
-    HORIZON_FILE="/usr/local/etc/supervisor.d/horizon.ini"
-    SED_COMMAND="sed -i .backup"
-    PHP=$(php -v | head -n 1 | cut -d " " -f 2 | cut -c 1-3)
-    PHP_PATH=$(command -v php)
+    __horizon_file="/usr/local/etc/supervisor.d/horizon.ini"
+    __sed_command="sed -i .backup"
+    __php=$(php -v | head -n 1 | cut -d " " -f 2 | cut -c 1-3)
+    __php_path=$(command -v php)
   fi
-  [[ $( _get_os ) == Linux ]] && [[ ! -f $HORIZON_FILE ]] && SUDO_COMMAND="sudo "
-  __output=$( `echo "$SUDO_COMMAND"` cp "$( _get_project_path )"/docs/installation/supervisor/horizon.conf "$HORIZON_FILE" )
+  [[ $( _get_os ) == Linux ]] && [[ ! -f $__horizon_file ]] && __sudo_command="sudo "
+  __output=$( `echo "$__sudo_command"` cp "$( _get_project_path )"/docs/installation/supervisor/horizon.conf "$__horizon_file" )
   _error_code=$?
   __MSG="Command: tcctl add horizon config"
   __MSG+="$__output"
@@ -25,7 +25,7 @@ function add_horizon() {
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo "$SED_COMMAND"` "s+program:+program:horizon+g" "$HORIZON_FILE" )
+  __output=$( `echo "$__sed_command"` "s+program:+program:horizon+g" "$__horizon_file" )
   _error_code=$?
   __MSG="Command: tcctl add horizon program"
   __MSG+="$__output"
@@ -34,7 +34,7 @@ function add_horizon() {
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo "$SED_COMMAND"` "s+command=+command=$PHP_PATH artisan horizon+g" "$HORIZON_FILE" )
+  __output=$( `echo "$__sed_command"` "s+command=+command=$__php_path artisan horizon+g" "$__horizon_file" )
   _error_code=$?
   __MSG="Command: tcctl add horizon command"
   __MSG+="$__output"
@@ -43,7 +43,7 @@ function add_horizon() {
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo "$SED_COMMAND"` "s+directory=+directory=$( _get_project_path )+g" "$HORIZON_FILE" )
+  __output=$( `echo "$__sed_command"` "s+directory=+directory=$( _get_project_path )+g" "$__horizon_file" )
   _error_code=$?
   __MSG="Command: tcctl add horizon directory"
   __MSG+="$__output"
@@ -52,7 +52,7 @@ function add_horizon() {
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo "$SED_COMMAND"` "s+user=+user=$USER+g" "$HORIZON_FILE" )
+  __output=$( `echo "$__sed_command"` "s+user=+user=$USER+g" "$__horizon_file" )
   _error_code=$?
   __MSG="Command: tcctl add horizon user"
   __MSG+="$__output"
@@ -61,7 +61,7 @@ function add_horizon() {
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( `echo "$SED_COMMAND"` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon.log+g" "$HORIZON_FILE" )
+  __output=$( `echo "$__sed_command"` "s+stdout_logfile=+stdout_logfile=$HOME\/.log\/horizon.log+g" "$__horizon_file" )
   _error_code=$?
   __MSG="Command: tcctl add horizon stdout_logfile"
   __MSG+="$__output"
@@ -70,7 +70,7 @@ function add_horizon() {
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  [ -f "$HORIZON_FILE".backup ] && rm "$HORIZON_FILE".backup
+  [ -f "$__horizon_file".backup ] && rm "$__horizon_file".backup
 }
 
 add_horizon

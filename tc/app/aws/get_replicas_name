@@ -19,14 +19,14 @@ esac
 done
 
 function get_replicas_name() {
-  DB_IDENTIFIER=$1
-  __output=$( aws rds describe-db-instances --db-instance-identifier "$DB_IDENTIFIER" )
+  __db_identifier=$1
+  __output=$( aws rds describe-db-instances --db-instance-identifier "$__db_identifier" )
   _error_code=$?
   __MSG="Command: tcctl aws $1 describe-db-instances"
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
-    REPLICA_DB_INSTANCES=$( aws rds describe-db-instances --db-instance-identifier "$DB_IDENTIFIER" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
-    for i in $REPLICA_DB_INSTANCES; do
+    __replica_db_instances=$( aws rds describe-db-instances --db-instance-identifier "$__db_identifier" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
+    for i in $__replica_db_instances; do
       echo "$i"
     done
   else

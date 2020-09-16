@@ -23,12 +23,12 @@ esac
 done
 
 function _create_dir_along_path() {
-  ALONG_PATH=$1
-  DIR_NAME=$2
-  if [ ! -d "$1"/"$2" ]; then
-    mkdir "$1"/"$2"
+  __along_path=$1
+  __dir_name=$2
+  if [ ! -d "$__along_path"/"$__dir_name" ]; then
+    mkdir "$_along_path"/"$__dir_name"
     _error_code=$?
-  __MSG="Command: tcctl helpers create $2 along path $1"
+  __MSG="Command: tcctl helpers create $__dir_name along path $_along_path"
   __MSG+="$__output"
     if [ "$_error_code" -eq "0" ]; then
       _message "$__MSG"

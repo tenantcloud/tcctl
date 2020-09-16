@@ -19,16 +19,16 @@ esac
 done
 
 function promote_master_replicas() {
-  DB_MASTER_NAME=$1
-  __output=$( aws rds describe-db-instances --db-instance-identifier "$DB_MASTER_NAME" )
+  __db_master_name=$1
+  __output=$( aws rds describe-db-instances --db-instance-identifier "$__db_master_name" )
   _error_code=$?
   __MSG="Command: tcctl aws $1 describe-db-instances"
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
-    REPLICA_DB_INSTANCES=$( echo "$__output" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
-    REPLICA_DB_INSTANCES_COUNT=$(echo "$REPLICA_DB_INSTANCES" | wc -w)
-    echo "$REPLICA_DB_INSTANCES_COUNT"
-    for i in $REPLICA_DB_INSTANCES; do
+    __replica_db_instances=$( echo "$__output" | jq -r '.DBInstances[].ReadReplicaDBInstanceIdentifiers[]' )
+    __replica_db_instances_count=$(echo "$__replica_db_instances" | wc -w)
+    echo "$__replica_db_instances_count"
+    for i in $__replica_db_instances; do
       #echo "Promote read replica $i to instance"
       aws rds promote-read-replica \
             --db-instance-identifier "$i" \

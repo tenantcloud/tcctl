@@ -26,9 +26,9 @@ done
 function vault_put() {
   tcctl helpers check_bin_file --filename vault
   VAULT_TOKEN=$(tcctl vault token)
-  SECRET_PATH=$1
-  PARAM_ENV=$2
-  __output=$( vault kv put "$SECRET_PATH" $(egrep -v '^#' "$PARAM_ENV") 2>&1 )
+  __secret_path=$1
+  __param_env=$2
+  __output=$( vault kv put "$__secret_path" $(egrep -v '^#' "$__param_env") 2>&1 )
   _error_code=$?
   __MSG="Command: tcctl vault put $@"
   __MSG+="$__output"

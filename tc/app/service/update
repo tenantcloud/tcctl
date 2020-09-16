@@ -19,26 +19,26 @@ esac
 done
 
 function update_service() {
-  SERVICE_NAME=$1
+  __service_name=$1
   if [[ $( _get_os ) == Linux ]]; then
-    SUDO_COMMAND="sudo "
-    __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
+    __sudo_command="sudo "
+    __output=$( $__sudo_command "$__service_name" update )
     _error_code=$?
     __MSG="Command: tcctl service $1 update "
     __MSG+="$__output"
     if [[ "$_error_code" -eq "0" ]]; then
-      $SUDO_COMMAND "$SERVICE_NAME" update | column -t
+      $__sudo_command "$__service_name" update | column -t
     else
       _message "$__MSG" "error" "$_error_code"
     fi
   elif [[ $( _get_os ) == Darwin ]]; then
-    SUDO_COMMAND=""
-    __output=$( $SUDO_COMMAND "$SERVICE_NAME" update )
+    __sudo_command=""
+    __output=$( $__sudo_command "$__service_name" update )
     _error_code=$?
     __MSG="Command: tcctl service $1 update "
     __MSG+="$__output"
     if [[ "$_error_code" -eq "0" ]]; then
-      $SUDO_COMMAND "$SERVICE_NAME" update | column -t
+      $__sudo_command "$__service_name" update | column -t
     else
       _message "$__MSG" "error" "$_error_code"
     fi
