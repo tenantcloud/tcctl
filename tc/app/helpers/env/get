@@ -25,12 +25,12 @@ esac
 done
 
 function get_value_from_env() {
-  VAULT_KEY=$1
-  PARAM_ENV=$2
+  __vault_key=$1
+  __param_env=$2
   if [[ ! -f "$2" ]]; then
     _message "$__MSG" "error" "$_error_code"
   fi
-  __output=$( sed -n -e "s/^\s*$VAULT_KEY\s*=//p" "$PARAM_ENV" )
+  __output=$( sed -n -e "s/^\s*$__vault_key\s*=//p" "$__param_env" )
   _error_code=$?
   __MSG="Command: tcctl helpers get value from $1"
   __MSG+="$__output"

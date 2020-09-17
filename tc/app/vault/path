@@ -22,8 +22,8 @@ done
 function vault_check_path() {
   tcctl helpers check_bin_file --filename vault
   VAULT_TOKEN=$(tcctl vault token)
-  SECRET_PATH="$1"
-  __output=$( vault kv get "$SECRET_PATH" 2>&1 )
+  __secret_path="$1"
+  __output=$( vault kv get "$__secret_path" 2>&1 )
   _error_code=$?
   __MSG="Command: tcctl vault path $@"
   __MSG+="$__output"

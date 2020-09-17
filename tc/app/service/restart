@@ -19,10 +19,10 @@ esac
 done
 
 function restart_service() {
-    SERVICE_NAME=$1
+    __service_name=$1
     if [[ $( _get_os ) == Linux ]]; then
-      SUDO_COMMAND="sudo "
-      __output=$( $SUDO_COMMAND "$SERVICE_NAME" restart all )
+      __sudo_command="sudo "
+      __output=$( $__sudo_command "$__service_name" restart all )
       _error_code=$?
       __MSG="Command: tcctl service $1 restart"
       __MSG+="$__output"
@@ -32,7 +32,7 @@ function restart_service() {
         _message "$__MSG" "error" "$_error_code"
       fi
     elif [[ $( _get_os ) == Darwin ]]; then
-      __output=$( $SERVICE_NAME restart all )
+      __output=$( $__service_name restart all )
       _error_code=$?
       __MSG="Command: tcctl service $1 restart"
       __MSG+="$__output"

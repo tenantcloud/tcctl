@@ -27,18 +27,18 @@ esac
 done
 
 function create_master_replicas() {
-  DB_MASTER_NAME=$1
-  DB_INSTANCE_TYPE=$2
-  REPLICA_DB_INSTANCES_COUNT=$3
-  for (( i = 1; i <= $REPLICA_DB_INSTANCES_COUNT; i++ )); do
+  __db_master_name=$1
+  __db_instance_type=$2
+  __replica_db_instances_count=$3
+  for (( i = 1; i <= $__replica_db_instances_count; i++ )); do
     if [[ $i = "1" ]]; then
-      DB_REPLICA_NAME=${DB_MASTER_NAME}-replica-$(date +%Y%m%d-%H%M%S)
+      __db_replica_name=${__db_master_name}-replica-$(date +%Y%m%d-%H%M%S)
       __output=$( aws rds create-db-instance-read-replica \
-              --db-instance-identifier "$DB_REPLICA_NAME" \
-              --source-db-instance-identifier "$DB_MASTER_NAME" \
-              --db-instance-class "$DB_INSTANCE_TYPE" )
+              --db-instance-identifier "$__db_replica_name" \
+              --source-db-instance-identifier "$__db_master_name" \
+              --db-instance-class "$__db_instance_type" )
       _error_code=$?
-      __MSG="Command: tcctl aws create read replica $DB_REPLICA_NAME"
+      __MSG="Command: tcctl aws create read replica $__db_replica_name"
       __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
         _message "$__MSG"
@@ -47,18 +47,18 @@ function create_master_replicas() {
       fi
     fi
     if [[ $i = "2" ]]; then
-      DB_BACKUP_NAME=${DB_MASTER_NAME}-backup-$(date +%Y%m%d-%H%M%S)
+      __db_backup_name=${__db_master_name}-backup-$(date +%Y%m%d-%H%M%S)
       __output=$( aws rds create-db-instance-read-replica \
-              --db-instance-identifier "$DB_BACKUP_NAME" \
-              --source-db-instance-identifier "$DB_MASTER_NAME" \
-              --db-instance-class "$DB_INSTANCE_TYPE" )
+              --db-instance-identifier "$__db_backup_name" \
+              --source-db-instance-identifier "$__db_master_name" \
+              --db-instance-class "$__db_instance_type" )
       _error_code=$?
-      __MSG="Command: tcctl aws create backup read replica: $DB_BACKUP_NAME"
+      __MSG="Command: tcctl aws create backup read replica: $__db_backup_name"
       __MSG+="$__output"
       if [ "$_error_code" -eq "0" ]; then
         _message "$__MSG"
-        DB_URL_SUFFIX=$(.env | grep "^DB_HOST=" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
-        slack chat send "New DB slave: ${DB_BACKUP_NAME}.${DB_URL_SUFFIX}" "#replica-db-access" > /dev/null
+        __db_url_suffix=$(.env | grep "^DB_HOST=" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
+        slack chat send "New DB slave: ${__db_backup_name}.${__db_url_suffix}" "#replica-db-access" > /dev/null
       else
         _message "$__MSG" "error" "$_error_code"
       fi

@@ -23,9 +23,9 @@ esac
 done
 
 function _run_maintenance_mode() {
-  DELAY_TIME=$1
-  TERMINATE_WHEN_FINISH=$2
-  __output=$(php artisan tc:dev:maintenance_mode --time="$DELAY_TIME" --terminate-when-finish="$TERMINATE_WHEN_FINISH")
+  __delay_time=$1
+  __terminate_when_finish=$2
+  __output=$(php artisan tc:dev:maintenance_mode --time="$__delay_time" --terminate-when-finish="$__terminate_when_finish")
   _error_code=$?
   __MSG="Command: tcctl laravel deployment run_maintenance_mode"
   __MSG+="$__output"

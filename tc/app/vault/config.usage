@@ -1,2 +1,5 @@
+[--vault-addr] [--vault-name] [--vault-password]
 
-{cli command}
+  --vault-addr - the vault server address (require)
+  --vault-name - users name on the vault server (require)
+  --vault-password - users password on the vault server (require)

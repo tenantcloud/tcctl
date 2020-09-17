@@ -5,12 +5,12 @@
 source "$CLI_DIR/tc/framework/functions"
 
 function check_deployment_type() {
-  BRANCH=$(tcctl run git branch | grep \* | cut -d ' ' -f2)
-  REPOSITORY_URL=$(tcctl run git config --get remote.origin.url)
-  REPOSITORY_TMP_DIR="/tmp/$(date +%Y%m%d-%H%M%S)"
-  __output=$( git clone --depth 1 "$REPOSITORY_URL" -b "$BRANCH" "$REPOSITORY_TMP_DIR" )
+  __branch=$(tcctl run git branch | grep \* | cut -d ' ' -f2)
+  __repository_url=$(tcctl run git config --get remote.origin.url)
+  __repository_tmp_dir="/tmp/$(date +%Y%m%d-%H%M%S)"
+  __output=$( git clone --depth 1 "$__repository_url" -b "$__branch" "$__repository_tmp_dir" )
   _error_code=$?
-  __MSG="Command: tcctl helpers $REPOSITORY_URL clone to tmp dir"
+  __MSG="Command: tcctl helpers $__repository_url clone to tmp dir"
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
@@ -18,21 +18,21 @@ function check_deployment_type() {
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( php artisan tc:devops:migrations_state \
-                    --base-path="${REPOSITORY_TMP_DIR}" \
+                    --base-path="${__repository_tmp_dir}" \
                     --non-verbose )
   _error_code=$?
-  __MSG="Command: tcctl helpers $REPOSITORY_URL check migrations state"
+  __MSG="Command: tcctl helpers $__repository_url check migrations state"
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
-    DEPLOY_TASKS="$__output"
-    if [[ $DEPLOY_TASKS -gt "0" ]]; then
+    __deploy_tasks="$__output"
+    if [[ $__deploy_tasks -gt "0" ]]; then
       echo "true"
     fi
   else
     _message "$__MSG" "error" "$_error_code"
   fi
-  rm -rf "$REPOSITORY_TMP_DIR"
+  rm -rf "$__repository_tmp_dir"
 }
 
 check_deployment_type

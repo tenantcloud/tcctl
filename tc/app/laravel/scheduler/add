@@ -7,9 +7,9 @@ source "$CLI_DIR/tc/framework/functions"
 set -o pipefail
 
 function add_scheduler() {
-  SCHEDULE_COMMAND="$( _get_project_path )/artisan schedule:run >> /dev/null 2>&1 > $HOME/.log/scheduled.log 2>&1"
+  __schedule_command="$( _get_project_path )/artisan schedule:run >> /dev/null 2>&1 > $HOME/.log/scheduled.log 2>&1"
   __MSG="Command: tcctl add cron scheduler"
-  if [[ $( _get_os ) == Linux ]] && [[ $( cat /etc/crontab | egrep -v "^(#|$)" | grep -q "$SCHEDULE_COMMAND"; echo $? ) == 1 ]]; then
+  if [[ $( _get_os ) == Linux ]] && [[ $( cat /etc/crontab | egrep -v "^(#|$)" | grep -q "$__schedule_command"; echo $? ) == 1 ]]; then
     echo "# Add scheduler for horizon" | sudo tee -a /etc/crontab > /dev/null 2>&1
     _error_code=$?
     if [[ "$_error_code" -eq "0" ]]; then
@@ -17,15 +17,15 @@ function add_scheduler() {
     else
       _message "$__MSG" "error" "$_error_code"
     fi
-    echo "* * * * * $USER $(command -v php) $SCHEDULE_COMMAND" | sudo tee -a /etc/crontab > /dev/null 2>&1
+    echo "* * * * * $USER $(command -v php) $__schedule_command" | sudo tee -a /etc/crontab > /dev/null 2>&1
     _error_code=$?
     if [[ "$_error_code" -eq "0" ]]; then
       _message "$__MSG"
     else
       _message "$__MSG" "error" "$_error_code"
     fi
-  elif [[ $( _get_os ) == Darwin ]] && [[ $(crontab -l | grep -q "$SCHEDULE_COMMAND"; echo $?) == 1 ]]; then
-    echo "* * * * * $(command -v php) $SCHEDULE_COMMAND" | crontab -
+  elif [[ $( _get_os ) == Darwin ]] && [[ $(crontab -l | grep -q "$__schedule_command"; echo $?) == 1 ]]; then
+    echo "* * * * * $(command -v php) $__schedule_command" | crontab -
     _error_code=$?
     if [[ "$_error_code" -eq "0" ]]; then
       _message "$__MSG"
