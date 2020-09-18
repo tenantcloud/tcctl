@@ -32,19 +32,17 @@ list="${QUEUE//,/ }"
 function _queue_work() {
   __session_name="QUEUES"
   __parallel_process=$1
-  if  [[ -z $(command -v byobu) ]]; then
-    byobu -2 new-session -d -s $__session_name
+  if  [[ $(command -v byobu) ]]; then
+    byobu -2 new-session -d -s "$__session_name"
     _error_code="$?"
     __MSG="Error when byobu runs"
     if [[ "$_error_code" -gt "0" ]]; then
       _message "$__MSG" "error" "$_error_code"
     fi
-  else
-    _message "$__MSG" "error" "$_error_code"
   fi
   for ((i=1;i<="$__parallel_process";i++)); do
     for item in $list; do
-      byobu new-window -t $__session_name "php artisan queue:work --force --queue=$item"
+      byobu new-window -t "$__session_name" "php artisan queue:work --force --queue=$item"
       _error_code=$(( "$_error_code" + "$?" ))
       __MSG="Error when byobu run $item in new-window session"
       if [[ "$_error_code" -gt "0" ]]; then
