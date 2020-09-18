@@ -12,9 +12,7 @@ function check_deployment_type() {
   _error_code=$?
   __MSG="Command: tcctl helpers $__repository_url clone to tmp dir"
   __MSG+="$__output"
-  if [[ "$_error_code" -eq "0" ]]; then
-    _message "$__MSG"
-  else
+  if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
   fi
   __output=$( php artisan tc:devops:migrations_state \
@@ -24,7 +22,6 @@ function check_deployment_type() {
   __MSG="Command: tcctl helpers $__repository_url check migrations state "
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
-    _message "$__MSG"
     __deploy_tasks="$__output"
     if [[ $__deploy_tasks -gt "0" ]]; then
       echo "true"

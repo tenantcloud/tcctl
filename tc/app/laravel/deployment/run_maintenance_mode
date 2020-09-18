@@ -27,7 +27,7 @@ function _run_maintenance_mode() {
   __terminate_when_finish=$2
   __output=$(php artisan tc:dev:maintenance_mode --time="$__delay_time" --terminate-when-finish="$__terminate_when_finish")
   _error_code=$?
-  __MSG="Command: tcctl laravel deployment run_maintenance_mode"
+  __MSG="Command: tcctl laravel deployment "
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     _message "$__MSG"
