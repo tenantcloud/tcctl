@@ -32,7 +32,7 @@ list="${QUEUE//,/ }"
 function _finish_all_queues() {
   __session_name="QUEUESFINISH"
   __parallel_process=$1
-  if  [[ -z $(command -v byobu) ]]; then
+  if  [[ $(command -v byobu) ]]; then
     byobu -2 new-session -d -s $__session_name
     _error_code="$?"
     __MSG="Error when byobu runs"
