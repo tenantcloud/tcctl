@@ -29,7 +29,6 @@ function promote_master_replicas() {
     __replica_db_instances_count=$(echo "$__replica_db_instances" | wc -w)
     echo "$__replica_db_instances_count"
     for i in $__replica_db_instances; do
-      #echo "Promote read replica $i to instance"
       aws rds promote-read-replica \
             --db-instance-identifier "$i" \
             --backup-retention-period 1 > /dev/null
