@@ -27,11 +27,10 @@ case $key in
 esac
 done
 
-list="${QUEUE//,/ }"
-
 function _finish_all_queues() {
   __session_name="QUEUESFINISH"
   __parallel_process=$1
+  __queue=$2
   if  [[ $(command -v byobu) ]]; then
     byobu -2 new-session -d -s $__session_name
     _error_code="$?"
@@ -40,17 +39,15 @@ function _finish_all_queues() {
       _message "$__MSG" "error" "$_error_code"
     fi
   else
-    _message "$__MSG" "error" "$_error_code"
+    _message "$__MSG"
   fi
   for ((i=1;i<="$__parallel_process";i++)); do
-    for item in $list; do
-      byobu new-window -t $__session_name "php artisan queue:work --force --queue=$item"
-      _error_code=$(( "$_error_code" + "$?" ))
-      __MSG="Error when byobu run $item in new-window session"
-      if [[ "$_error_code" -gt "0" ]]; then
-        _message "$__MSG" "error" "$_error_code"
-      fi
-    done
+    byobu new-window -t $__session_name "php artisan queue:work --force --queue=$__queue"
+    _error_code=$(( "$_error_code" + "$?" ))
+    __MSG="Error when byobu run $__queue in new-window session"
+    if [[ "$_error_code" -gt "0" ]]; then
+      _message "$__MSG" "error" "$_error_code"
+    fi
   done
   php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
   _error_code=$(( "$_error_code" + "$?" ))
@@ -79,5 +76,5 @@ elif [ -z "$QUEUE" ]; then
   __MSG="Command: tcctl laravel deployment finish_all_queues missed --queue"
   _message "$__MSG" "error" "$_error_code"
 else
-  _finish_all_queues "$PARALLEL_PROCESS"
+  _finish_all_queues "$PARALLEL_PROCESS" "$QUEUE"
 fi
