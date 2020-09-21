@@ -1,0 +1,4 @@
+
+tcctl helpers env update_version_increment
+
+Update site version in .env file
