@@ -14,8 +14,8 @@ case $key in
     SECRET_PATH="$2"
     shift 2
     ;;
-    --param-env)
-    PARAM_ENV="$2"
+    --env)
+    ENV="$2"
     shift 2
     ;;
     *)
@@ -27,8 +27,8 @@ function vault_put() {
   tcctl helpers check_bin_file --filename vault
   VAULT_TOKEN=$(tcctl vault token)
   __secret_path=$1
-  __param_env=$2
-  __output=$( vault kv put "$__secret_path" $(egrep -v '^#' "$__param_env") 2>&1 )
+  __env=$2
+  __output=$( vault kv put "$__secret_path" $(egrep -v '^#' "$__env") 2>&1 )
   _error_code=$?
   __MSG="Command: tcctl vault put $@"
   __MSG+="$__output"
@@ -42,9 +42,9 @@ function vault_put() {
 if [ -z "$SECRET_PATH" ]; then
   __MSG="Command: tcctl vault put missed --secret-path"
   _message_error "$__MSG"
-elif [ -z "$PARAM_ENV" ]; then
-  __MSG="Command: tcctl vault put missed --param-env"
+elif [ -z "$ENV" ]; then
+  __MSG="Command: tcctl vault put missed --env"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_put "$SECRET_PATH" "$PARAM_ENV"
+  vault_put "$SECRET_PATH" "$ENV"
 fi

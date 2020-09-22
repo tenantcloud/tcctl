@@ -3,6 +3,7 @@
 # shellcheck disable=SC1090
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/slack/functions"
 
 SLACK_CHANNEL="#devops-notifications"
 
@@ -34,7 +35,7 @@ function wait_replicas_zero_lag() {
   if [[ "$_error_code" -eq "0" ]]; then
     __replica_db_instances_name=$( tcctl aws get_replicas_name --db-identifier "${__db_master_name}" | grep -e "^${__db_master_name}-replica.*" )
     if [[ -z "$__replica_db_instances_name" ]]; then
-      slack chat send "We were unable to find replica's DB instances and STOP deployment process on $(hostname)" "${__slack_channel}" > /dev/null
+      slack_send_message "We were unable to find replica's DB instances and STOP deployment process on $(hostname)" "${__slack_channel}"
       exit
     else
     __seconds=1200
@@ -52,7 +53,7 @@ function wait_replicas_zero_lag() {
             --dimensions  Name=DBInstanceIdentifier,Value="$__replica_db_instances_name" | jq -r '.Datapoints[].Average')
       __left_time=$(( __end_time - $(date +%s) ))
       if [[ ("$__lag" -gt "$__seconds") || ("$__left_time" -lt "0") ]]; then
-        slack chat send "We can't deploy on $(hostname). We waited ${__seconds} seconds. Replica LAG: $__lag" "${__slack_channel}" > /dev/null
+        slack_send_message "We can't deploy on $(hostname). We waited ${__seconds} seconds. Replica LAG: $__lag" "${__slack_channel}"
         exit;
       fi
       echo -ne "Replica: $__replica_db_instances_name has LAG: $__lag Time: $__left_time         \r"
