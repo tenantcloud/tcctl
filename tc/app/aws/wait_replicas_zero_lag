@@ -4,6 +4,8 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
+SLACK_CHANNEL="#devops-notifications"
+
 while [[ $# -gt 0 ]]
 do
 key="$1"
@@ -66,9 +68,6 @@ function wait_replicas_zero_lag() {
 
 if [ -z "$DB_MASTER_NAME" ]; then
   __MSG="Command: tcctl aws wait_replicas_zero_lag missed --db-master-name"
-  _message "$__MSG" "error" "$_error_code"
-elif [ -z "$SLACK_CHANNEL" ]; then
-  __MSG="Command: tcctl aws wait_replicas_zero_lag missed --slack-channel"
   _message "$__MSG" "error" "$_error_code"
 else
   wait_replicas_zero_lag "$DB_MASTER_NAME" "$SLACK_CHANNEL"
