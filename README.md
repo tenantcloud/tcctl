@@ -5,23 +5,34 @@
 Before install `tcctl` install BASH Cli ([BCL](https://github.com/BrunIF/bcl))
 
 ```bash
-git clone https://github.com/BrunIF/bcl.git
-cd bcl
-./cli setup install
+curl -L -s https://git.io/JU3Fy | bash
 ```
 
 ## Install
 
 Install TCCTL
 
-```bash
+Create file `bcl.json` in a project folder
 
+```json
+{
+    "package": {
+        "tenantcloud/tcctl": "master"
+    }
+}
+```
+
+Install packages
+
+```bash
+bcl package install
 ```
 
 ## Usage
 
 ```bash
 tcctl
+tcctl run command_name
 ```
 
 ## Create new functions
