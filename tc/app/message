@@ -9,8 +9,7 @@ errorcode="0"
 
 while echo "$1" | grep -q ^--; do
   eval "${1//--/}"="$2"
-  shift
-  shift
+  shift 2
 done
 
 if [ -n "$text" ]; then
