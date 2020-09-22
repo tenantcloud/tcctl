@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+source "$CLI_DIR/tc/framework/functions"
+
+text=
+type="info"
+errorcode="0"
+
+while echo "$1" | grep -q ^--; do
+  eval "${1//--/}"="$2"
+  shift
+  shift
+done
+
+if [ -n "$text" ]; then
+  _message "$text" "$type" "$errorcode"
+fi
