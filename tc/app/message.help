@@ -1,0 +1,5 @@
+
+Shows message in the box
+
+    tcctl message --text "Your message is here. You can use variables $USER"
+    tcctl message --text "Error message" --type "error" --errorcode "123"
