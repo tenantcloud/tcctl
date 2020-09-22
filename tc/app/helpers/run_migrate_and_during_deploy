@@ -1,19 +1,92 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2004
+# shellcheck disable=SC1090
 
-function run_migrate_and_during_deploy() {
-  tcctl php artisan migrate --force
-  PROCCESS_COUNT=8
-  SESSION_NAME="QUEUES"
-  tcctl run byobu -2 new-session -d -s $SESSION_NAME
-  for ((i=1;i<=$PROCCESS_COUNT;i++));
-  do
-      tcctl run byobu new-window -t $SESSION_NAME "php artisan queue:work --force --queue=deploy"
+source "$CLI_DIR/tc/framework/functions"
+
+set +e
+
+QUEUE="deploy"
+PARALLEL_PROCESS="8"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --parallel-process)
+    PARALLEL_PROCESS="$2"
+    shift 2
+    ;;
+    --queue )
+    QUEUE="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function _run_migrate_and_during_deploy() {
+  __session_name="QUEUES"
+  __parallel_process=$1
+  __queue=$2
+  php artisan migrate --force
+  _error_code="$?"
+  __MSG="Error when run force migrate"
+  if [[ "$_error_code" -gt "0" ]]; then
+   _message "$__MSG" "error" "$_error_code"
+  fi
+  if  [[ $(command -v byobu) ]]; then
+    byobu -2 new-session -d -s $__session_name
+    _error_code="$?"
+    __MSG="Error when byobu runs"
+    if [[ "$_error_code" -gt "0" ]]; then
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  else
+   _message "$__MSG"
+  fi
+  for ((i=1;i<="$__parallel_process";i++)); do
+    byobu new-window -t $__session_name "php artisan queue:work --force --queue=$__queue"
+    _error_code=$(( "$_error_code" + "$?" ))
+    __MSG="Error when byobu run $__queue in new-window session"
+    if [[ "$_error_code" -gt "0" ]]; then
+      _message "$__MSG" "error" "$_error_code"
+    fi
   done
-  tcctl php artisan tc:once_run --during_deploy --force
-  tcctl php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
-  tcctl run byobu kill-session -t $SESSION_NAME
+  php artisan tc:once_run --during_deploy --force
+  _error_code=$(( "$_error_code" + "$?" ))
+  __MSG="Error when run tc:once_run --during_deploy --force"
+  if [[ "$_error_code" -gt "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
+  _error_code=$(( "$_error_code" + "$?" ))
+  __MSG="Error when run tc:devops:queues_state --terminate-when-empty"
+  if [[ "$_error_code" -gt "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  byobu kill-session -t "$__session_name"
+  _error_code=$(( "$_error_code" + "$?" ))
+  __MSG="Error while trying to kill byobu session"
+  if [[ "$_error_code" -gt "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  __MSG="Command: tcctl helpers run_migrate_and_during_deploy"
+  if [ "$_error_code" -eq "0" ]; then
+    _message "$__MSG"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
 }
 
-run_migrate_and_during_deploy
+if [ -z "$PARALLEL_PROCESS" ]; then
+  __MSG="Command: tcctl helpers run_migrate_and_during_deploy missed --parallel-process"
+  _message "$__MSG" "error" "$_error_code"
+elif [ -z "$QUEUE" ]; then
+  __MSG="Command: tcctl helpers run_migrate_and_during_deploy missed --queue"
+  _message "$__MSG" "error" "$_error_code"
+else
+  _run_migrate_and_during_deploy "$PARALLEL_PROCESS" "$QUEUE"
+fi
