@@ -5,8 +5,6 @@
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/slack/functions"
 
-SLACK_CHANNEL="#devops-notifications"
-
 while [[ $# -gt 0 ]]
 do
 key="$1"
