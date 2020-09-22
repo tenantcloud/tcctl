@@ -1,0 +1,5 @@
+The commands with which we can get name of projects directory
+
+for example:
+
+tcctl helpers get_project_name
