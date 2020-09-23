@@ -8,7 +8,7 @@ type="info"
 errorcode="0"
 
 while echo "$1" | grep -q ^--; do
-  eval "${1//--/}"="$2"
+  eval "${1//--/}"='$2'
   shift 2
 done
 
