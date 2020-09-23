@@ -31,4 +31,3 @@ esac
 done
 
 slack_file_upload "$CHANNEL" "$MESSAGE" "$FILE"
-

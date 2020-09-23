@@ -19,7 +19,7 @@ function slack_send_message() {
     __MSG="Command: tcctl slack update_finish"
     __MSG+="$__output"
     if [[ "$_error_code" -eq "0" ]]; then
-      _message "Message was send into Slack $CHANNEL"
+      _message "Message was send into Slack $__slack_channel"
     else
       _message "$__MSG" "error" "$_error_code"
     fi
@@ -34,18 +34,20 @@ function slack_file_upload() {
     __slack_channel="$1"
     __slack_message="$2"
     __slack_file="$3"
+    if [[ -z $__slack_channel ]]; then
+      __slack_channel="#devops-notifications"
+    fi
     __output=$( slack file upload "$__slack_file" "$__slack_channel" --comment "$__slack_message" )
     _error_code=$?
     __MSG="Command: tcctl slack file_upload"
     __MSG+="$__output"
     if [[ "$_error_code" -eq "0" ]]; then
-      _message "Message was send into Slack $CHANNEL"
+      _message "Message was send into Slack $__slack_channel"
     else
       _message "$__MSG" "warning"
     fi
   else
-    echo "We can't find slack command or commnts_summary file"
+    echo "We can't find slack command or comments_summary file"
     exit 1
   fi
 }
-
