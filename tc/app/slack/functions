@@ -2,13 +2,14 @@
 
 # shellcheck disable=SC1090
 
-__slack_channel="#devops-notifications"
-
 function slack_send_message() {
   if [[ -f $(command -v slack) ]]; then
     __slack_message="$1"
     __slack_color="$3"
     __slack_channel="$2"
+    if [[ -z $__slack_channel ]]; then
+      __slack_channel="#devops-notifications"
+    fi
     if [[ -n $__slack_color ]]; then
       __slack_color="-cl \"$__slack_color\""
     fi
