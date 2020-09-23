@@ -25,7 +25,7 @@ function vault_check_path() {
   __secret_path="$1"
   __output=$( vault kv get "$__secret_path" 2>&1 )
   _error_code=$?
-  __MSG="Command: tcctl vault path $@"
+  __MSG="Command: tcctl vault path $@ "
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     echo "true"

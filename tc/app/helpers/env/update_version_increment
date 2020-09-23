@@ -1,0 +1,105 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+set -o pipefail
+
+__output=$( git log -1 | sed -n 2p | awk '{ print $3 }' )
+_error_code=$?
+__MSG="Error getting the last merges"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  __pr_commit="$__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+__output=$( git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $4 }' )
+_error_code=$?
+__MSG="Error getting the merges branch"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  __pr_branch="$__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+[[ -n "$__source_branch_name" ]] || __source_branch_name="$__pr_branch"
+
+__output=$( git describe --abbrev=0 --tags )
+_error_code=$?
+__MSG="Error getting the branch tags"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  __site_version="$__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+if [[ "$__source_branch_name" =~ ^feature.* ]]; then
+  __output=$( git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2+1 }' )
+  _error_code=$?
+  __MSG="Error increasing tag if the branch name contains feature"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    __site_version="$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+elif [[ "$__source_branch_name" =~ ^release.* ]]; then
+  __output=$( git describe --abbrev=0 --tags | awk -F "." '{ print $1 }' | awk -F "v" '{ print "v" $2 + 1 ".0" }' )
+  _error_code=$?
+  __MSG="Error increasing tag if the branch name contains release"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    __site_version="$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+else
+  __output=$( git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2 "." $3+1 }' )
+  _error_code=$?
+  __MSG="Error increasing tag"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    __site_version="$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+fi
+
+if [[ $(grep "^APP_ENV" .env | awk -F "=" '{ print $2 }') = "release" ]]; then
+  __output=$( grep "^APP_VERSION" .env | awk -F "=" '{ print $2 }' )
+  _error_code=$?
+  __MSG="Error getting APP_VERSION from .env"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    __current_version="$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  __output=$( echo "$__current_version" | awk -F '.' '{ print $1 "." $2 "." $3+1 }' )
+  _error_code=$(( "$_error_code" + "$?" ))
+  __MSG="Error getting site version tag"
+  if [ "$_error_code" -eq "0" ]; then
+    __site_version="$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+fi
+
+echo "Your branch is: $__source_branch_name"
+
+__output=$( sed -i "s/^APP_VERSION=.*/APP_VERSION=${__site_version}/" .env )
+_error_code=$?
+__MSG="Writing new version tag to .env file"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  _message "$__MSG"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+echo "New version: ${__site_version} written to .env file"

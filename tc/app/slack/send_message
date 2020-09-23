@@ -31,4 +31,3 @@ esac
 done
 
 slack_send_message "$MESSAGE" "$CHANNEL" "$COLOR"
-

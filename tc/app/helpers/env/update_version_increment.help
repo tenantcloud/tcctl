@@ -1,0 +1,6 @@
+
+The commands with which we can update site version in .env file
+
+for example:
+
+tcctl helpers env update_version_increment

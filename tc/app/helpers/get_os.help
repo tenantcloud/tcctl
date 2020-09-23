@@ -1,0 +1,5 @@
+The commands with which we can get current os
+
+for example:
+
+tcctl helpers get_os
