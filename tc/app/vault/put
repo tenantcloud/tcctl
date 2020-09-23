@@ -30,7 +30,7 @@ function vault_put() {
   __env=$2
   __output=$( vault kv put "$__secret_path" $(egrep -v '^#' "$__env") 2>&1 )
   _error_code=$?
-  __MSG="Command: tcctl vault put $@"
+  __MSG="Command: tcctl vault put $@ "
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     _vault_kv_put=$( echo "$__output" | xargs )

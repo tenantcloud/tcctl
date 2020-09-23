@@ -28,7 +28,7 @@ function vault_diff() {
   __env2=$2
   __output=$( diff -y --suppress-common-lines "$__env1" "$__env2" )
   _error_code=$?
-  __MSG="Command: tcctl vault diff $@"
+  __MSG="Command: tcctl vault diff $@ "
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
     echo "$__output" | column -t
