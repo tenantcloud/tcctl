@@ -4,6 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 while [[ $# -gt 0 ]]
 do
@@ -24,7 +25,7 @@ esac
 done
 
 function vault_get() {
-  tcctl helpers check_bin_file --filename vault
+  _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   __secret_path=$1
   __env=$2

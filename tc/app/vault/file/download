@@ -4,6 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 set -o pipefail
 
@@ -22,7 +23,7 @@ esac
 done
 
 function vault_download() {
-  tcctl helpers check_bin_file --filename vault
+  _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   export VAULT_TOKEN
   __file=$1
