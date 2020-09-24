@@ -1,0 +1,7 @@
+The command which download the file from vault server
+
+for example:
+
+tcctl vault file download --file filename
+
+file                    - file name

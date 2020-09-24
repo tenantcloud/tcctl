@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/vault/functions"
+
+set -o pipefail
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --file)
+    FILE="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
+
+function vault_download() {
+  tcctl helpers check_bin_file --filename vault
+  VAULT_TOKEN=$(tcctl vault token)
+  export VAULT_TOKEN
+  __file=$1
+  __output=$( vault read public/"$__file" | sed '1,3d' >> "$__file" )
+  _error_code=$?
+  __MSG="Command: tcctl vault download $__file from vault server "
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    if [[ $( _get_os ) == Linux ]] ; then
+      sed "s/$__file *//" -i "$__file" | tee "$__file" > /dev/null
+    elif [[ $( _get_os ) == Darwin ]] ; then
+      sed "s/$__file *//" "$__file" | tee "$__file" > /dev/null
+    fi
+    echo "Success! Data downloaded from: public/$__file"
+  else
+    _remove_file "$__file"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+if [ -z "$FILE" ]; then
+  __MSG="Command: tcctl vault put missed --file"
+  _message_error "$__MSG"
+else
+  vault_download "$FILE"
+fi

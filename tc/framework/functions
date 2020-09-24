@@ -58,3 +58,7 @@ function _get_os() {
 function _get_date() {
   date +%s
 }
+
+function _remove_file() {
+  rm -rf "$1"
+}
