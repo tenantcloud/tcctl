@@ -44,7 +44,7 @@ function vault_download() {
 }
 
 if [ -z "$FILE" ]; then
-  __MSG="Command: tcctl vault put missed --file"
+  __MSG="Command: tcctl vault file download missed --file"
   _message_error "$__MSG"
 else
   vault_download "$FILE"

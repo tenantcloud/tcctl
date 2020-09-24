@@ -36,7 +36,7 @@ function vault_upload() {
 }
 
 if [ -z "$FILE" ]; then
-  __MSG="Command: tcctl vault put missed --file"
+  __MSG="Command: tcctl vault file upload missed --file"
   _message_error "$__MSG"
 else
   vault_upload "$FILE"
