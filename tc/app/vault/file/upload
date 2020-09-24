@@ -20,7 +20,7 @@ case $key in
 esac
 done
 
-function vault_upload() {
+function _vault_upload() {
   _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   export VAULT_TOKEN
@@ -38,7 +38,7 @@ function vault_upload() {
 
 if [ -z "$FILE" ]; then
   __MSG="Command: tcctl vault file upload missed --file"
-  _message_error "$__MSG"
+  _message "$__MSG" "error" "$_error_code"
 else
-  vault_upload "$FILE"
+  _vault_upload "$FILE"
 fi

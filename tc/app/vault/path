@@ -20,7 +20,7 @@ case $key in
 esac
 done
 
-function vault_check_path() {
+function _vault_check_path() {
   _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   __secret_path="$1"
@@ -39,5 +39,5 @@ if [ -z "$SECRET_PATH" ]; then
   __MSG="Command: tcctl vault path missed --secret-path"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_check_path "$SECRET_PATH"
+  _vault_check_path "$SECRET_PATH"
 fi

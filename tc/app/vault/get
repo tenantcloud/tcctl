@@ -24,7 +24,7 @@ case $key in
 esac
 done
 
-function vault_get() {
+function _vault_get() {
   _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   __secret_path=$1
@@ -47,5 +47,5 @@ elif [ -z "$ENV" ]; then
   __MSG="Command: tcctl vault get missed --env"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_get "$SECRET_PATH" "$ENV"
+  _vault_get "$SECRET_PATH" "$ENV"
 fi

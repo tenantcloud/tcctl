@@ -30,7 +30,7 @@ case $key in
 esac
 done
 
-function vault_config() {
+function _vault_config() {
   _check_bin_file vault
   VAULT_ADDR=$1
   VAULT_NAME=$2
@@ -57,5 +57,5 @@ elif [ -z "$VAULT_PASSWORD" ]; then
   __MSG="Command: tcctl vault config missed --vault-password"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
+  _vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
 fi

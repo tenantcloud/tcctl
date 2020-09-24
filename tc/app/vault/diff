@@ -23,7 +23,7 @@ case $key in
 esac
 done
 
-function vault_diff() {
+function _vault_diff() {
   _check_bin_file vault
   __env1=$1
   __env2=$2
@@ -45,5 +45,5 @@ elif [ -z "$ENV2" ]; then
   __MSG="Command: tcctl vault diff missed --env-2"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_diff "$ENV1" "$ENV2"
+  _vault_diff "$ENV1" "$ENV2"
 fi
