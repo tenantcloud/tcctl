@@ -39,7 +39,7 @@ function _vault_download() {
     fi
     echo "Success! Data downloaded from: public/$__file"
   else
-    _remove_file "$__file"
+    rm -rf "$__file"
     _message "$__MSG" "error" "$_error_code"
   fi
 }
