@@ -1,7 +1,4 @@
-The command which upload the file to vault server
 
-for example:
+Upload the file to vault server
 
-tcctl vault file upload --file filename
-
-file                    - file name
+    tcctl vault file upload --file filename
