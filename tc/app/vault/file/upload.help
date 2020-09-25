@@ -1,0 +1,4 @@
+
+Upload the file to vault server
+
+    tcctl vault file upload --file filename

@@ -4,6 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 while [[ $# -gt 0 ]]
 do
@@ -23,8 +24,8 @@ case $key in
 esac
 done
 
-function vault_put() {
-  tcctl helpers check_bin_file --filename vault
+function _vault_put() {
+  _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   __secret_path=$1
   __env=$2
@@ -46,5 +47,5 @@ elif [ -z "$ENV" ]; then
   __MSG="Command: tcctl vault put missed --env"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_put "$SECRET_PATH" "$ENV"
+  _vault_put "$SECRET_PATH" "$ENV"
 fi
