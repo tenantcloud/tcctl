@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2124,SC1090,SC2034
+# shellcheck disable=SC2124,SC1090
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
@@ -27,6 +27,7 @@ done
 function _vault_get() {
   _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
+  export VAULT_TOKEN
   __secret_path=$1
   __env=$2
   __output=$( vault kv get "$__secret_path" 2>&1 )

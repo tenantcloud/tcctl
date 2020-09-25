@@ -27,6 +27,7 @@ done
 function _vault_put() {
   _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
+  export VAULT_TOKEN
   __secret_path=$1
   __env=$2
   __output=$( vault kv put "$__secret_path" $(egrep -v '^#' "$__env") 2>&1 )
