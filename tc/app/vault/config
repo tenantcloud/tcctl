@@ -3,6 +3,7 @@
 # shellcheck disable=SC2124,SC2129,SC2154,SC1090
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 VAULT_CONFIG_FILE=~/.vault-configuration
 VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
@@ -29,8 +30,8 @@ case $key in
 esac
 done
 
-function vault_config() {
-  tcctl helpers check_bin_file --filename vault
+function _vault_config() {
+  _check_bin_file vault
   VAULT_ADDR=$1
   VAULT_NAME=$2
   VAULT_PASSWORD=$3
@@ -56,5 +57,5 @@ elif [ -z "$VAULT_PASSWORD" ]; then
   __MSG="Command: tcctl vault config missed --vault-password"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
+  _vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
 fi

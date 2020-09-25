@@ -3,6 +3,7 @@
 # shellcheck disable=SC1090
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 while [[ $# -gt 0 ]]
 do
@@ -18,20 +19,4 @@ case $key in
 esac
 done
 
-function check_bin_file() {
-  __output=$(command -v "$1")
-  _error_code=$?
-  __MSG="Command: tcctl helpers check_bin_file $1 => "
-  __MSG+="$__output"
-  if [ $_error_code -gt "0" ]; then
-    echo "bin file $1 is missing"
-    _message "$__MSG" "error" "$_error_code"
-  fi
-}
-
-if [ -z "$FILENAME" ]; then
-  __MSG="Command: tcctl helpers check_bin_file missed --filename"
-  _message "$__MSG" "error" "$_error_code"
-else
-  check_bin_file "$FILENAME"
-fi
+_check_bin_file "$FILENAME"

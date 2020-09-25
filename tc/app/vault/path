@@ -4,6 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 while [[ $# -gt 0 ]]
 do
@@ -19,8 +20,8 @@ case $key in
 esac
 done
 
-function vault_check_path() {
-  tcctl helpers check_bin_file --filename vault
+function _vault_check_path() {
+  _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   __secret_path="$1"
   __output=$( vault kv get "$__secret_path" 2>&1 )
@@ -38,5 +39,5 @@ if [ -z "$SECRET_PATH" ]; then
   __MSG="Command: tcctl vault path missed --secret-path"
   _message "$__MSG" "error" "$_error_code"
 else
-  vault_check_path "$SECRET_PATH"
+  _vault_check_path "$SECRET_PATH"
 fi
