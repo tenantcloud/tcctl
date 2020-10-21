@@ -11,3 +11,16 @@ function _vault_get_addr() {
 
 VAULT_ADDR="$(_vault_get_addr)"
 export VAULT_ADDR
+
+function _vault_kv_list() {
+  __secret_path="$1"
+  __output=$( vault kv list "$__secret_path" 2>&1 )
+  _error_code=$?
+  __MSG="Command: tcctl vault kv list $__secret_path"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "true"
+  else
+    echo "false"
+  fi
+}

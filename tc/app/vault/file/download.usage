@@ -1,1 +1,4 @@
---file "filename"
+[--secret-path] [--file]
+
+  --secret-path - secret file path (optional)
+  --file - secret file name (require)

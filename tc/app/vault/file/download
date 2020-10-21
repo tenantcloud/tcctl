@@ -13,6 +13,10 @@ do
 key="$1"
 
 case $key in
+    --secret-path)
+    SECRET_PATH="$2"
+    shift 2
+    ;;
     --file)
     FILE="$2"
     shift 2
@@ -26,21 +30,17 @@ function _vault_download() {
   _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   export VAULT_TOKEN
-  __file=$1
-  __output=$( vault read public/"$__file" | sed '1,3d' >> "$__file" )
-  _error_code=$?
-  __MSG="Command: tcctl vault download $__file from vault server "
-  __MSG+="$__output"
-  if [ "$_error_code" -eq "0" ]; then
-    if [[ $( _get_os ) == Linux ]] ; then
-      sed "s/$__file *//" -i "$__file" | tee "$__file" > /dev/null
-    elif [[ $( _get_os ) == Darwin ]] ; then
-      sed "s/$__file *//" "$__file" | tee "$__file" > /dev/null
+  __secret_path=$1
+  __file=$2
+  rm -rf "$__file"
+  if [ "$__secret_path" ] ; then
+    __output=$( vault read "$__secret_path" -format=json | jq -r .data.key >> "$__file" )
+    _error_code=$?
+    __MSG="Command: tcctl vault download $__file from vault server "
+    __MSG+="$__output"
+    if [ "$_error_code" -eq "0" ]; then
+      echo "Success! Data downloaded: $__secret_path -> $__file"
     fi
-    echo "Success! Data downloaded from: public/$__file"
-  else
-    rm -rf "$__file"
-    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
@@ -48,5 +48,5 @@ if [ -z "$FILE" ]; then
   __MSG="Command: tcctl vault file download missed --file"
   _message "$__MSG" "error" "$_error_code"
 else
-  _vault_download "$FILE"
+  _vault_download "$SECRET_PATH" "$FILE"
 fi

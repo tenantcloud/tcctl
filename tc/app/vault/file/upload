@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090,SC2086
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
@@ -11,6 +11,10 @@ do
 key="$1"
 
 case $key in
+    --secret-path)
+    SECRET_PATH="$2"
+    shift 2
+    ;;
     --file)
     FILE="$2"
     shift 2
@@ -24,15 +28,18 @@ function _vault_upload() {
   _check_bin_file vault
   VAULT_TOKEN=$(tcctl vault token)
   export VAULT_TOKEN
-  __file=$1
-  __output=$( vault write public/"$__file" "$__file"=@"$__file" 2>&1 )
-  _error_code=$?
-  __MSG="Command: tcctl vault upload $__file to vault server "
-  __MSG+="$__output"
-  if [ "$_error_code" -eq "0" ]; then
-    echo "Success! Data written to: public/$__file"
-  else
-    _message "$__MSG" "error" "$_error_code"
+  __secret_path=$1
+  __file=$2
+  if [ "$__secret_path" ] ; then
+    __output=$( vault write "$__secret_path" "key"=@"$__file" 2>&1 )
+    _error_code=$?
+    __MSG="Command: tcctl vault upload $__file to vault server "
+    __MSG+="$__output"
+    if [ "$_error_code" -eq "0" ]; then
+      echo "Success! Data written to: $__secret_path"
+    else
+      _message "$__MSG" "error" "$_error_code"
+    fi
   fi
 }
 
@@ -40,5 +47,5 @@ if [ -z "$FILE" ]; then
   __MSG="Command: tcctl vault file upload missed --file"
   _message "$__MSG" "error" "$_error_code"
 else
-  _vault_upload "$FILE"
+  _vault_upload "$SECRET_PATH" "$FILE"
 fi

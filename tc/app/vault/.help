@@ -6,3 +6,7 @@ tcctl vault path
 tcctl vault get
 tcctl vault put
 tcctl vault diff
+tcctl vault file upload
+tcctl vault file download
+tcctl vault secrets create
+tcctl vault secrets delete

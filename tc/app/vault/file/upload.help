@@ -1,4 +1,4 @@
 
 Upload the file to vault server
 
-    tcctl vault file upload --file filename
+    tcctl vault file upload --secret-path "path" --file filename

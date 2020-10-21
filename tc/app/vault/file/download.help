@@ -1,4 +1,4 @@
 
 Download the file from vault server
 
-    tcctl vault file download --file filename
+    tcctl vault file download --secret-path "path" --file "filename"
