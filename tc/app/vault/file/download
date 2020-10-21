@@ -34,7 +34,7 @@ function _vault_download() {
   __file=$2
   rm -rf "$__file"
   if [ "$__secret_path" ] ; then
-    __output=$( vault read "$__secret_path"/"$__file" | sed '1,3d' >> "$__file" )
+    __output=$( vault read "$__secret_path" -format=json | jq -r .data.key >> "$__file" )
     _error_code=$?
     __MSG="Command: tcctl vault download $__file from vault server "
     __MSG+="$__output"
@@ -42,30 +42,11 @@ function _vault_download() {
       if [[ $( _get_os ) == Linux ]] ; then
         sed "s/$__file *//" -i "$__file" | tee "$__file" > /dev/null
 #        sed "s/$__secret_path *//" -i "$__file" | cut -c 2- | tee "$__file" > /dev/null
-        echo "Success! Data downloaded from: $__secret_path/$__file"
+        echo "Success! Data downloaded: $__secret_path -> $__file"
       elif [[ $( _get_os ) == Darwin ]] ; then
         sed "s/$__file *//" "$__file" | tee "$__file" > /dev/null
 #        sed "s/$__secret_path *//" "$__file" | cut -c 2- | tee "$__file" > /dev/null
-        echo "Success! Data downloaded from: $__secret_path/$__file"
-      else
-        rm -rf "$__file"
-        _message "$__MSG" "error" "$_error_code"
-      fi
-    fi
-  else
-    __output=$( vault read public/"$__file" | sed '1,3d' >> "$__file" )
-    _error_code=$?
-    __MSG="Command: tcctl vault download $__file from vault server "
-    __MSG+="$__output"
-    if [ "$_error_code" -eq "0" ]; then
-      if [[ $( _get_os ) == Linux ]] ; then
-        sed "s/$__file *//" -i "$__file" | tee "$__file" > /dev/null
-#        sed "s/$__secret_path *//" -i "$__file" | cut -c 2- | tee "$__file" > /dev/null
-        echo "Success! Data downloaded from: public/$__file"
-      elif [[ $( _get_os ) == Darwin ]] ; then
-        sed "s/$__file *//" "$__file" | tee "$__file" > /dev/null
-#        sed "s/$__secret_path *//" "$__file" | cut -c 2- | tee "$__file" > /dev/null
-        echo "Success! Data downloaded from: public/$__file"
+        echo "Success! Data downloaded: $__secret_path -> $__file"
       else
         rm -rf "$__file"
         _message "$__MSG" "error" "$_error_code"

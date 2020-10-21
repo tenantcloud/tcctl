@@ -31,25 +31,12 @@ function _vault_upload() {
   __secret_path=$1
   __file=$2
   if [ "$__secret_path" ] ; then
-    if [[ $( _vault_kv_list $__secret_path ) == false ]]; then
-      vault secrets enable -path=$__secret_path -version=1 kv
-    fi
-    __output=$( vault write "$__secret_path"/"$__file" "$__file"=@"$__file" 2>&1 )
+    __output=$( vault write "$__secret_path" "key"=@"$__file" 2>&1 )
     _error_code=$?
     __MSG="Command: tcctl vault upload $__file to vault server "
     __MSG+="$__output"
     if [ "$_error_code" -eq "0" ]; then
-      echo "Success! Data written to: $__secret_path/$__file"
-    else
-      _message "$__MSG" "error" "$_error_code"
-    fi
-  else
-    __output=$( vault write public/"$__file" "$__file"=@"$__file" 2>&1 )
-        _error_code=$?
-    __MSG="Command: tcctl vault upload $__file to vault server "
-    __MSG+="$__output"
-    if [ "$_error_code" -eq "0" ]; then
-      echo "Success! Data written to: public/$__file"
+      echo "Success! Data written to: $__secret_path"
     else
       _message "$__MSG" "error" "$_error_code"
     fi
