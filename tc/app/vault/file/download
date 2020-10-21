@@ -39,18 +39,7 @@ function _vault_download() {
     __MSG="Command: tcctl vault download $__file from vault server "
     __MSG+="$__output"
     if [ "$_error_code" -eq "0" ]; then
-      if [[ $( _get_os ) == Linux ]] ; then
-        sed "s/$__file *//" -i "$__file" | tee "$__file" > /dev/null
-#        sed "s/$__secret_path *//" -i "$__file" | cut -c 2- | tee "$__file" > /dev/null
-        echo "Success! Data downloaded: $__secret_path -> $__file"
-      elif [[ $( _get_os ) == Darwin ]] ; then
-        sed "s/$__file *//" "$__file" | tee "$__file" > /dev/null
-#        sed "s/$__secret_path *//" "$__file" | cut -c 2- | tee "$__file" > /dev/null
-        echo "Success! Data downloaded: $__secret_path -> $__file"
-      else
-        rm -rf "$__file"
-        _message "$__MSG" "error" "$_error_code"
-      fi
+      echo "Success! Data downloaded: $__secret_path -> $__file"
     fi
   fi
 }
