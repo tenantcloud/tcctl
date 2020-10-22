@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2063,SC2034
+# shellcheck disable=SC2034
 
 function update_project_promo() {
   APP_ENV=$( tcctl helpers env get --vault-key APP_ENV )
   COMPOSER_LOCK=$( tcctl helpers file_md5_sum --filename composer.lock )
   PACKAGE_LOCK=$( tcctl helpers file_md5_sum --filename yarn.lock )
-  BRANCH=$(tcctl run git branch | grep \* | cut -d ' ' -f2)
+  BRANCH=$(tcctl run git branch | grep '\*' | cut -d ' ' -f2)
   if [[ ! -d "vendor" ]]; then
     echo "We need to install composer to run the following commands"
     tcctl run composer install --no-interaction --prefer-dist --optimize-autoloader
