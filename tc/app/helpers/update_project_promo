@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2034
+
+function update_project_promo() {
+  APP_ENV=$( tcctl helpers env get --vault-key APP_ENV )
+  COMPOSER_LOCK=$( tcctl helpers file_md5_sum --filename composer.lock )
+  PACKAGE_LOCK=$( tcctl helpers file_md5_sum --filename yarn.lock )
+  BRANCH=$(tcctl run git branch | grep '\*' | cut -d ' ' -f2)
+  if [[ ! -d "vendor" ]]; then
+    echo "We need to install composer to run the following commands"
+    tcctl run composer install --no-interaction --prefer-dist --optimize-autoloader
+    tcctl run yarn ci
+  fi
+
+  tcctl laravel cache clear
+
+  if [[ -z "$(tcctl run git status --short)" ]]; then
+    echo "working tree clean"
+  else
+    echo "working tree isn't clean"
+    tcctl run git status --short
+    tcctl run git reset --hard HEAD
+    tcctl run git clean -f -d
+    echo "We fix it ;)"
+  fi
+
+  tcctl run git pull origin "$BRANCH" --tags
+  tcctl run composer install --no-interaction --prefer-dist --optimize-autoloader
+
+  if [[ $PACKAGE_LOCK != "$( tcctl helpers file_md5_sum --filename yarn.lock )" && $APP_ENV != "production" && $APP_ENV != "staging" ]]; then
+    tcctl run yarn ci
+  fi
+}
+
+update_project_promo
+
