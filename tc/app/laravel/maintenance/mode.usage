@@ -1,4 +1,4 @@
 
-tcctl laravel maintenance on
+tcctl laravel maintenance mode
 
 Activate maintenance mode on remote host
