@@ -29,7 +29,6 @@ function maintenance_mode_off() {
     __maintenance_mode_command="curl --location --request DELETE 'https://$__maintenance_mode_url/administration/maintenance-mode' \
       --header 'administration-api-token: $__maintenance_mode_token' \
       --header 'Content-Type: application/x-www-form-urlencoded'"
-    echo $__maintenance_mode_command
     __output=$( eval "$__maintenance_mode_command" )
     _error_code=$?
     __MSG="Command: tcctl maintenance off"

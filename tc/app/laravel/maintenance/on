@@ -37,7 +37,6 @@ function maintenance_mode_on() {
       --header 'administration-api-token: $__maintenance_mode_token' \
       --header 'Content-Type: application/x-www-form-urlencoded' \
       --data-urlencode 'minutes=$__maintenance_mode_time'"
-    echo $__maintenance_mode_command
     __output=$( eval "$__maintenance_mode_command" )
     _error_code=$?
     __MSG="Command: tcctl maintenance on"
