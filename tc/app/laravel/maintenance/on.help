@@ -1,0 +1,14 @@
+The commands with which we can activate maintenance mode
+
+for example:
+
+tcctl laravel maintenance on \
+    --url "www.google.com" \
+    --token "secret_token_for_api_calls" \
+    --time "2"
+
+where:
+
+url		- (required variable) url where maintenance mode must be activate
+token           - (optional variable) access token for command accept
+time            - (required variable) time after which the maintenance mode will be activated
