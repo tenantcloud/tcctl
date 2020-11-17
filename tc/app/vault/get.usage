@@ -1,2 +1,4 @@
+[--secret-path] [--env]
 
-{cli command}
+  --secret-path - secret file path (require)
+  --env - file name from the vault server (require)
