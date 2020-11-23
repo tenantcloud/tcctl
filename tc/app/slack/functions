@@ -33,13 +33,18 @@ function slack_file_upload() {
   __slack_channel="$1"
   __slack_message="$2"
   __slack_file="$3"
-  if [[ ! -f "$__slack_file" ]]; then
-    __MSG="File $__slack_file not found"
-    _message "$__MSG" "warning"
-  fi
   if [[ -f $(command -v slack) ]]; then
     if [[ -z $__slack_channel ]]; then
       __slack_channel="#devops-notifications"
+    fi
+    if [[ ! -f "$__slack_file" ]]; then
+      __MSG="File $__slack_file not found"
+      _message "$__MSG" "warning"
+      exit 0
+    elif [[ ! -s "$__slack_file" ]]; then
+      __MSG="File $__slack_file is empty"
+      _message "$__MSG" "warning"
+      exit 0
     fi
     __output=$( slack file upload "$__slack_file" "$__slack_channel" --comment "$__slack_message" )
     _error_code=$?

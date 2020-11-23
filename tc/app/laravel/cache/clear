@@ -39,4 +39,4 @@ reload_php_fpm
 run_programm_with_error_check "php artisan config:cache"
 run_programm_with_error_check "php artisan route:cache"
 run_programm_with_error_check "php artisan event:cache"
-
+run_programm_with_error_check "php artisan view:cache"
