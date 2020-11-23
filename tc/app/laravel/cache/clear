@@ -34,9 +34,22 @@ function reload_php_fpm {
   fi
 }
 
+function restart_supervisorctl_horizon {
+  __command="sudo supervisorctl restart horizon:*"
+  __output=$( $__command )
+  _error_code=$?
+  __MSG="Command: $__command"
+  if [[ "$_error_code" -eq "0" ]]; then
+    echo "Command: $__command successfull"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
 run_programm_with_error_check "php artisan clear-compiled"
 reload_php_fpm
 run_programm_with_error_check "php artisan config:cache"
 run_programm_with_error_check "php artisan route:cache"
 run_programm_with_error_check "php artisan event:cache"
 run_programm_with_error_check "php artisan view:cache"
+restart_supervisorctl_horizon
