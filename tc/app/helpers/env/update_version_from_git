@@ -14,7 +14,7 @@ else
   _message "$__MSG" "error" "$_error_code"
 fi
 
-__output=$( sed -i "s/APP_VERSION=.*/APP_VERSION=${__site_version}/" .env )
+__output=$( sed -i "s/^APP_VERSION=.*/APP_VERSION=${__site_version}/" .env )
 _error_code=$?
 __MSG="Command: tcctl helpers env update_version_from_git"
 __MSG+="$__output"
