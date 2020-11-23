@@ -1,0 +1,100 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+__output=$( git log -1 | sed -n 2p | awk '{ print $3 }' )
+_error_code=$?
+__MSG="Error getting the last merges"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  __pr_commit="$__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+__output=$( git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $4 }' )
+_error_code=$?
+__MSG="Error getting the merges branch"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  __pr_branch="$__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+[[ -n "$__source_branch_name" ]] || __source_branch_name="$__pr_branch"
+
+echo "PR_COMMIT: $__pr_commit PR_BRANCH: $__pr_branch SOURCE_BRANCH_NAME: $__source_branch_name"
+
+__output=$( git describe --abbrev=0 --tags )
+_error_code=$?
+__MSG="Error getting the branch tags"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  echo "Current git version: $__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+__output=$( grep "^APP_VERSION" .env | awk -F "=" '{ print $2 }' )
+_error_code=$?
+__MSG="Error getting APP_VERSION from .env"
+__MSG+="$__output"
+if [ "$_error_code" -eq "0" ]; then
+  __site_version="$__output"
+else
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+echo "New version: $__site_version"
+
+if [[ "$__source_branch_name" =~ ^feature.* ]]; then
+  __output=$( git add . )
+  _error_code=$?
+  __MSG="Error added new files"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "Added new files"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  __output=$( git commit -am "release: Release $__site_version" )
+  _error_code=$?
+  __MSG="Error git commit"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "Commit files. Release $__site_version"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  __output=$( git tag -a "$__site_version" -m "Release $__site_version" )
+  _error_code=$?
+  __MSG="Error git tag -a $__site_version"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "Create new tag: $__site_version"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  __output=$( git remote get-url --push origin )
+  _error_code=$?
+  __MSG="Error git remote get-url --push origin"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    __git_remote_url="$__output"
+    echo "Push code to remote repository $__git_remote_url"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  __output=$( git push origin "$__site_version" )
+  _error_code=$?
+  __MSG="Error git push origin $__site_version"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "Tag $__site_version pushed to remote"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+fi
