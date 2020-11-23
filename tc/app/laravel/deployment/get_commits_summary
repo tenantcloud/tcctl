@@ -18,8 +18,9 @@ case $key in
 esac
 done
 
+# TODO: source functions
 list="${OPTIONS//,/ }"
-GIT_LATEST_COMMIT=$(tcctl run git rev-parse HEAD)
+GIT_LATEST_COMMIT=$(git log -1 | sed -n 2p | awk '{ print $3 }')
 
 function _get_commits_summary() {
   for item in $list; do

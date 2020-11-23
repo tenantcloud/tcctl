@@ -30,10 +30,14 @@ function slack_send_message() {
 }
 
 function slack_file_upload() {
-  if [[ -f $(command -v slack) ]] && [[ -f "$FILE" ]]; then
-    __slack_channel="$1"
-    __slack_message="$2"
-    __slack_file="$3"
+  __slack_channel="$1"
+  __slack_message="$2"
+  __slack_file="$3"
+  if [[ ! -f "$__slack_file" ]]; then
+    __MSG="File $__slack_file not found"
+    _message "$__MSG" "warning"
+  fi
+  if [[ -f $(command -v slack) ]]; then
     if [[ -z $__slack_channel ]]; then
       __slack_channel="#devops-notifications"
     fi
@@ -47,7 +51,6 @@ function slack_file_upload() {
       _message "$__MSG" "warning"
     fi
   else
-    echo "We can't find slack command or comments_summary file"
-    exit 1
+    _message "$__MSG" "warning"
   fi
 }
