@@ -28,14 +28,14 @@ fi
 
 [[ -n "$__source_branch_name" ]] || __source_branch_name="$__pr_branch"
 
-tcctl message --text "PR_COMMIT: $__pr_commit PR_BRANCH: $__pr_branch SOURCE_BRANCH_NAME: $__source_branch_name"
+_message "PR_COMMIT: $__pr_commit PR_BRANCH: $__pr_branch SOURCE_BRANCH_NAME: $__source_branch_name"
 
 __output=$( git describe --abbrev=0 --tags )
 _error_code=$?
 __MSG="Error getting the branch tags"
 __MSG+="$__output"
 if [ "$_error_code" -eq "0" ]; then
-  tcctl message --text "Current git version: $__output"
+  _message "Current git version: $__output"
 else
   _message "$__MSG" "error" "$_error_code"
 fi
@@ -50,7 +50,7 @@ else
   _message "$__MSG" "error" "$_error_code"
 fi
 
-tcctl message --text "New version: $__site_version"
+_message "New version: $__site_version"
 
 if [[ "$__source_branch_name" =~ ^feature.* ]]; then
   __output=$( git add . )
@@ -58,7 +58,7 @@ if [[ "$__source_branch_name" =~ ^feature.* ]]; then
   __MSG="Error added new files"
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
-    tcctl message --text "Added new files"
+    _message "Added new files"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -68,7 +68,7 @@ if [[ "$__source_branch_name" =~ ^feature.* ]]; then
   __MSG="Error git commit"
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
-    tcctl message --text "Commit files. Release $__site_version"
+    _message "Commit files. Release $__site_version"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -78,7 +78,7 @@ if [[ "$__source_branch_name" =~ ^feature.* ]]; then
   __MSG="Error git tag -a $__site_version"
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
-    tcctl message --text "Create new tag: $__site_version"
+    _message "Create new tag: $__site_version"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -89,7 +89,7 @@ if [[ "$__source_branch_name" =~ ^feature.* ]]; then
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     __git_remote_url="$__output"
-    tcctl message --text "Push code to remote repository $__git_remote_url"
+    _message "Push code to remote repository $__git_remote_url"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
@@ -99,7 +99,7 @@ if [[ "$__source_branch_name" =~ ^feature.* ]]; then
   __MSG="Error git push origin $__site_version"
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
-    tcctl message --text "Tag $__site_version pushed to remote"
+    _message "Tag $__site_version pushed to remote"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
