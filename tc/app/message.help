@@ -1,5 +1,14 @@
 
-Shows message in the box
+tcctl message --text "Your message is here. You can use variables $USER"
+tcctl message --text "Error message" --type "error" --errorcode "123"
 
-    tcctl message --text "Your message is here. You can use variables $USER"
-    tcctl message --text "Error message" --type "error" --errorcode "123"
+--text "message" [OPTIONS]
+
+Optional options:
+    --type - message type. 
+                Available type:
+                - info (default)
+                - error
+                - warning
+
+    --errorcode - error number. Greater than 0

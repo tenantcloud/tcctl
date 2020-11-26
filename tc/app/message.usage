@@ -1,10 +1,1 @@
---text "message" [OPTIONS]
-
-    Optional options:
-    --type - message type. 
-             Available type:
-                - info (default)
-                - error
-                - warning
-
-    --errorcode - error number. Greater than 0
+Shows message in the box

@@ -1,10 +1,4 @@
-The command which get value of the variable from the .env project file
+tcctl helpers env get --key APP_ENV --env .env
 
-for example:
-
-tcctl helpers env get --vault-key APP_ENV --param-env .env
-
-where:
-
-APP_ENV                 - the variable from the .env project file
-.env                    - project file in which we work
+APP_ENV - The variable whose value you want to get
+.env - The name of the file in which to search for the variable
