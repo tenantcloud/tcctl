@@ -39,7 +39,9 @@ function _message {
 
   __draw_line -
 
-  [[ $__message_type == "error" ]] && exit "$__message_error_code"
+  if [[ $__message_type == "error" ]]; then
+    exit "$__message_error_code"
+  fi
 }
 
 function _get_project_path() {
