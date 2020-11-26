@@ -20,7 +20,9 @@ done
 
 function get_db_identifier() {
   __db_master_name=$1
+  set +e
   __output=$( echo "$__db_master_name" | grep ".*\.amazonaws.com" )
+  set -e
   _error_code=$?
   if [[ -z "$__output" ]]; then
     __output="$( dig cname "$__db_master_name" +short )"
