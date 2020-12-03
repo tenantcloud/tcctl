@@ -1,0 +1,3 @@
+tcctl services status --names "nginx cron mysql"
+
+--names "services names"
