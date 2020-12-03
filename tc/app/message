@@ -11,11 +11,9 @@ while echo "$1" | grep -q ^--; do
   __key=${1//--/}
   __key=${__key//-/_}
   if [[ -n "$2" ]]; then
-    echo "$__key"
     eval "${__key}"='$2'
     shift 2
   else
-    echo "$__key"
     set "${__key}"
     shift
   fi
