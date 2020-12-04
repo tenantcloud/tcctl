@@ -57,7 +57,7 @@ function create_master_replicas() {
       __MSG+="$__output"
       if [ "$_error_code" -eq "0" ]; then
         _message "$__MSG"
-        __db_url_suffix=$(.env | grep "^DB_HOST=" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
+        __db_url_suffix=$(grep "^DB_HOST=" .env | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
         slack chat send "New DB slave: ${__db_backup_name}.${__db_url_suffix}" "#replica-db-access" > /dev/null
       else
         _message "$__MSG" "error" "$_error_code"
