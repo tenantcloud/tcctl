@@ -20,27 +20,9 @@ done
 
 function status_service() {
   __service_name=$1
-  if [[ $( _get_os ) == Linux ]]; then
-    __output=$( systemctl is-active "$__service_name" )
-    _error_code=$?
-    __MSG="Command: tcctl service $1 status"
-    __MSG+="$__output"
-    if [[ "$_error_code" -eq "0" ]]; then
-      systemctl is-active "$__service_name" | column -t
-    else
-      _message "$__MSG" "error" "$_error_code"
-    fi
-  elif [[ $( _get_os ) == Darwin ]]; then
-    __output=$( $__service_name status )
-    _error_code=$?
-    __MSG="Command: tcctl service $1 status"
-    __MSG+="$__output"
-    if [[ "$_error_code" -eq "0" ]]; then
-      $__service_name status | awk '{ print $2 }'
-    else
-      _message "$__MSG" "error" "$_error_code"
-    fi
-  fi
+  __output=$( systemctl is-active "$__service_name" )
+  _error_code=$?
+  echo "$__output"
 }
 
 if [ -z "$SERVICE_NAME" ]; then
