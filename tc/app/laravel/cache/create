@@ -14,7 +14,8 @@ esac
 
 run_programm_with_error_check "php artisan clear-compiled"
 reload_php_fpm
-run_programm_with_error_check "php artisan config:clear"
-run_programm_with_error_check "php artisan route:clear"
-run_programm_with_error_check "php artisan event:clear"
-run_programm_with_error_check "php artisan view:clear"
+run_programm_with_error_check "php artisan config:cache"
+run_programm_with_error_check "php artisan route:cache"
+run_programm_with_error_check "php artisan event:cache"
+run_programm_with_error_check "php artisan view:cache"
+restart_supervisorctl_horizon

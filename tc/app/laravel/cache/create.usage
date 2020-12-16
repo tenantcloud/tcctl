@@ -1,0 +1,4 @@
+
+tcctl laravel cache create
+
+Create services and packages cache and reload php-fpm
