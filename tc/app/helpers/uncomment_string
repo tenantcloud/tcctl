@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+_comment_symbol="# "
+search_string=
+file_name=
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+if [[ -n $search_string && -n $file_name ]]; then
+  sed -i "/^${_comment_symbol}${search_string}/s/^${_comment_symbol}//g" "$file_name"
+  __error_code=$?
+  if [[ $__error_code -gt "0" ]]; then
+      __MSG+="Error when editing file $file_name"
+      _message "$__MSG" "error" "$__error_code"
+  fi
+fi
