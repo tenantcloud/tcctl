@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+function run_programm_with_error_check {
+  __output=$( $1 )
+  _error_code=$?
+  __MSG="Command: tcctl laravel cache"
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+function reload_php_fpm {
+  __output=$( eval "$__command" )
+  _error_code=$?
+  __MSG="Command: $__command"
+  if [[ "$_error_code" -eq "0" ]]; then
+    echo "Command: $__command successfull"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+function restart_supervisorctl_horizon {
+  __command="sudo supervisorctl restart horizon:*"
+  __output=$( $__command )
+  _error_code=$?
+  __MSG="Command: $__command"
+  if [[ "$_error_code" -eq "0" ]]; then
+    echo "Command: $__command successfull"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
