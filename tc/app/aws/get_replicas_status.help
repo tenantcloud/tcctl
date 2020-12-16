@@ -1,1 +1,2 @@
 
+tcctl aws get_replicas_status --db-identifier "aws-rds-db-identifier"
