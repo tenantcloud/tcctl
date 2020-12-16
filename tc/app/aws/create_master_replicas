@@ -4,6 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/aws/functions"
+source "$CLI_DIR/tc/app/slack/functions"
 
 while [[ $# -gt 0 ]]
 do
@@ -54,7 +55,7 @@ function create_master_replicas() {
         fi
       fi
       __db_host_suffix=$( echo "$__db_host" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }' )
-      sed -i "s/DB_SLAVE_HOST=.*/\# DB_SLAVE_HOST=${__db_replica_name}.${__db_host_suffix}/g" .env
+      sed -i "s/DB_SLAVE_HOST=.*/DB_SLAVE_HOST=${__db_replica_name}.${__db_host_suffix}/g" .env
       __error_code=$?
       if [ $_error_code -gt "0" ]; then
         __MSG+="Error when get cname"
@@ -81,7 +82,7 @@ function create_master_replicas() {
       if [ "$_error_code" -eq "0" ]; then
         _message "$__MSG"
         __db_url_suffix=$(grep "^DB_HOST=" .env | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
-        slack chat send "New DB slave: ${__db_backup_name}.${__db_url_suffix}" "#replica-db-access" > /dev/null
+        slack_send_message "New DB slave: ${__db_backup_name}.${__db_url_suffix}" "#replica-db-access" "#18db12"
       else
         _message "$__MSG" "error" "$_error_code"
       fi
