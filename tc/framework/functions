@@ -3,7 +3,7 @@
 __draw_line() {
   __count=$2
   __symbol_count=${__count:=80}
-  for (( i=1; i <= __symbol_count; i++ )) ; do printf "%s" "$1"; done
+  for (( __i_count=1; __i_count <= __symbol_count; __i_count++ )) ; do printf "%s" "$1"; done
   echo
 }
 
