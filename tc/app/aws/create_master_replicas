@@ -32,27 +32,25 @@ function create_master_replicas() {
   __db_master_name=$1
   __db_instance_type=$2
   __replica_db_instances_count=$3
-  for (( i = 1; i <= $__replica_db_instances_count; i++ )); do
-    if [[ $i = "1" ]]; then
+  for (( m = 1; m <= $__replica_db_instances_count; m++ )); do
+    if [[ $m = "1" ]]; then
       __db_replica_name=${__db_master_name}-replica-$(date +%Y%m%d-%H%M%S)
       __output=$( aws rds create-db-instance-read-replica \
               --db-instance-identifier "$__db_replica_name" \
               --source-db-instance-identifier "$__db_master_name" \
               --db-instance-class "$__db_instance_type" )
       _error_code=$?
-      if [ $_error_code -gt "0" ]; then
-        __MSG="Error, when create replica"
-      fi
-
       __MSG="Command: tcctl aws create read replica $__db_replica_name"
       __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
-        _message "$__MSG"
+        echo $_error_code
+        _message $__MSG
       else
-        _message "$__MSG" "error" "$_error_code"
+        __MSG="Error, when create replica"
+        _message $__MSG "error" "$_error_code"
       fi
     fi
-    if [[ $i = "2" ]]; then
+    if [[ $m = "2" ]]; then
       __db_backup_name=${__db_master_name}-backup-$(date +%Y%m%d-%H%M%S)
       __output=$( aws rds create-db-instance-read-replica \
               --db-instance-identifier "$__db_backup_name" \
