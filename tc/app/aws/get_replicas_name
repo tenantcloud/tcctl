@@ -5,6 +5,8 @@
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/aws/functions"
 
+_error_code=
+
 while [[ $# -gt 0 ]]
 do
 key="$1"
