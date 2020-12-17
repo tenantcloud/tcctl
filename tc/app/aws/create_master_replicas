@@ -44,10 +44,10 @@ function create_master_replicas() {
       __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
         echo $_error_code
-        _message $__MSG
+        _message "$__MSG"
       else
         __MSG="Error, when create replica"
-        _message $__MSG "error" "$_error_code"
+        _message "$__MSG" "error" "$_error_code"
       fi
     fi
     if [[ $m = "2" ]]; then
