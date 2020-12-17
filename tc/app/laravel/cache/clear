@@ -18,3 +18,4 @@ run_programm_with_error_check "php artisan config:clear"
 run_programm_with_error_check "php artisan route:clear"
 run_programm_with_error_check "php artisan event:clear"
 run_programm_with_error_check "php artisan view:clear"
+restart_supervisorctl_horizon
