@@ -43,10 +43,10 @@ function create_master_replicas() {
       __MSG="Command: tcctl aws create read replica $__db_replica_name"
       __MSG+="$__output"
       if [ $_error_code -eq "0" ]; then
-        echo $_error_code
         _message "$__MSG"
       else
         __MSG="Error, when create replica"
+        __MSG+="$__output"
         _message "$__MSG" "error" "$_error_code"
       fi
     fi
@@ -58,12 +58,13 @@ function create_master_replicas() {
               --db-instance-class "$__db_instance_type" )
       _error_code=$?
       __MSG="Command: tcctl aws create backup read replica: $__db_backup_name"
-      __MSG+="$__output"
       if [ "$_error_code" -eq "0" ]; then
         _message "$__MSG"
         __db_url_suffix=$(grep "^DB_HOST=" .env | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }')
         slack_send_message "New DB slave: ${__db_backup_name}.${__db_url_suffix}" "#replica-db-access" "#18db12"
       else
+        __MSG="Error, when create backup replica"
+        __MSG+="$__output"
         _message "$__MSG" "error" "$_error_code"
       fi
     fi
