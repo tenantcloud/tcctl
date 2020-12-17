@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/slack/functions"
+
 # Return status of services
 # "nginx php7.4-fpm supervisor cron filebeat metricbeat ssh"
-names=
+names="nginx php7.4-fpm supervisor cron filebeat metricbeat ssh"
 STOPPED_SERVICES_NAME=
+CHANNEL="#devops-notifications"
+COLOR="#f00"
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -23,5 +30,7 @@ if [[ -n $names ]]; then
       STOPPED_SERVICES_NAME+="$service_name is in-active\n"
     fi
   done
-  echo "$STOPPED_SERVICES_NAME"
+  if [[ -n $STOPPED_SERVICES_NAME ]]; then
+    slack_send_message "$STOPPED_SERVICES_NAME" "$CHANNEL" "$COLOR"
+  fi
 fi
