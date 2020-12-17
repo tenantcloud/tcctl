@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/aws/functions"
+
+if [ -f ".env" ]; then
+  # Change DB slave host in .env file
+  _error_code=0
+  __db_host=$(grep "^DB_HOST=" .env | awk -F '=' '{print $2}')
+  if [[ $__db_host != *".rds.amazonaws.com" ]]; then
+    __db_host=$( dig cname "$__db_host" +short )
+    _error_code=$?
+    if [ $_error_code -gt "0" ]; then
+      __MSG+="Error when get cname"
+    fi
+  fi
+
+  __db_host_name=$( echo "$__db_host" | awk -F'.' '{ print $1 }' )
+  __db_replica_name=$( get_replicas_name "$__db_host_name" | grep replica )
+  __db_host_suffix=$( echo "$__db_host" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }' )
+  sed -i -e "s/DB_SLAVE_HOST=.*/DB_SLAVE_HOST=${__db_replica_name}.${__db_host_suffix}/g" .env
+  _error_code=$(( "$_error_code" + "$?" ))
+  if [ $_error_code -gt "0" ]; then
+    __MSG+="When edit .env file"
+    _message "$__MSG" "error" "$_error_code"
+  else
+    _message "DB_SLAVE_HOST updated successfully"
+  fi
+else
+  _message "We can't find .env file in current directory" "warning"
+fi
