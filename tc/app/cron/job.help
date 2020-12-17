@@ -1,0 +1,12 @@
+
+tcctl cron job --script-path "/home/user/path/to/script.sh"
+
+Optional:
+  --exec-time "45 13 25 01 *"
+    Time when need run cron job
+    By default 5 minutes after job was created
+ToDo:
+  --delete-job "45 13 25 01 *"
+    Add date when need delete this cron job
+    By default it's day after job was created
+  --user-name "username"

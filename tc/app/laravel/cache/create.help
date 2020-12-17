@@ -1,0 +1,6 @@
+
+The commands with which we can create services and packages cache and reload php-fpm
+
+for example:
+
+tcctl laravel cache create
