@@ -18,7 +18,7 @@ if [ -f ".env" ]; then
   fi
 
   __db_host_name=$( echo "$__db_host" | awk -F'.' '{ print $1 }' )
-  __db_replica_name=$( get_replicas_name "$__db_host_name" | grep replica )
+  __db_replica_name=$( get_replicas_name "$__db_host_name" | grep replica | head -1 )
   __db_host_suffix=$( echo "$__db_host" | awk -F'.' '{ print $2"."$3"."$4"."$5"."$6 }' )
   sed -i "s/DB_SLAVE_HOST=.*/DB_SLAVE_HOST=${__db_replica_name}.${__db_host_suffix}/g" .env
   _error_code=$(( "$_error_code" + "$?" ))
