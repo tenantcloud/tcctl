@@ -1,0 +1,15 @@
+The commands with which we can clear appcenter build
+
+for example:
+
+tcctl laravel appcenter-release --team-name "team-tenantcloud.com" \
+    --app-name "TenantCloud" \
+    --host-name "example.com" \
+    --mobile-files-path "resources/mobile/public"
+
+where:
+
+--team-name          - Appcenter team profile name
+--app-name           - Appcenter space name
+--host-name          - Link name
+--mobile-files-path  - Path to mobile files which will be upload on Appcenter
