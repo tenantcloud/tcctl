@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+source "$CLI_DIR/tc/framework/functions"
+
+team_name=
+app_name=
+host_name=
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+if [ -n "$host_name" ]; then
+  __output="$( echo y | appcenter codepush deployment clear -a "$team_name"/"$app_name" "$host_name" )"
+  _error_code=$?
+  __MSG="Command: appcenter codepush deployment clear"
+  __MSG+="$__output"
+
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+fi

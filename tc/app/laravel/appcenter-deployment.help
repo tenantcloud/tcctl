@@ -1,0 +1,11 @@
+The commands with which we can clear appcenter build
+
+for example:
+
+tcctl laravel appcenter-deployment --team-name "team-tenantcloud.com" --app-name "TenantCloud" --host-name "example.com"
+
+where:
+
+--team-name          - Appcenter team profile name
+--app-name           - Appcenter space name
+--host-name          - Link name
