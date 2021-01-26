@@ -13,7 +13,6 @@ case "${__os_version}" in
 esac
 
 run_programm_with_error_check "php artisan clear-compiled"
-reload_php_fpm
 run_programm_with_error_check "php artisan config:clear"
 run_programm_with_error_check "php artisan route:clear"
 run_programm_with_error_check "php artisan event:clear"
