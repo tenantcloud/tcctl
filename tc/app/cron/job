@@ -22,6 +22,8 @@ fi
 
 sudo tee -a "${__cron_folder}/${__job_name}" > /dev/null << EOF
 # Job name: ${__job_name}
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin:$PWD:$PWD/cli
+
 ${exec_time}    ${USER}     ${script_path}
 $(date -d '1 day' +'%M %H %d %m %u')    root     rm ${__cron_folder}/${__job_name}
 EOF
