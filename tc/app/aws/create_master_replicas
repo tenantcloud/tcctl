@@ -35,10 +35,15 @@ function create_master_replicas() {
   for (( m = 1; m <= $__replica_db_instances_count; m++ )); do
     if [[ $m = "1" ]]; then
       __db_replica_name=${__db_master_name}-replica-$(date +%Y%m%d-%H%M%S)
+      if [[ $__replica_db_instances_count == 2 ]]; then
+        __db_instance_type_prod="db.r5.xlarge"
+      else
+        __db_instance_type_prod=$__db_instance_type
+      fi
       __output=$( aws rds create-db-instance-read-replica \
               --db-instance-identifier "$__db_replica_name" \
               --source-db-instance-identifier "$__db_master_name" \
-              --db-instance-class "$__db_instance_type" )
+              --db-instance-class "$__db_instance_type_prod" )
       _error_code=$?
       __MSG="Command: tcctl aws create read replica $__db_replica_name"
       __MSG+="$__output"
