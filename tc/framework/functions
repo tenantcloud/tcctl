@@ -62,7 +62,7 @@ function _get_date() {
 }
 
 function replace_string() {
-  __OS=$(uname -s)
+  __OS=$(_get_os)
   __find_string=$1
   __replace_string=$2
   __file_to_edit=$3
@@ -77,7 +77,7 @@ function replace_string() {
 }
 
 function replace_string_with_escapes() {
-  __OS=$(uname -s)
+  __OS=$(_get_os)
   __find_string=$1
   __replace_string=$2
   __file_to_edit=$3
