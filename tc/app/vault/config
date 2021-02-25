@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-
-# shellcheck disable=SC2124,SC2129,SC2154,SC1090
+# shellcheck disable=SC1090
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
@@ -35,13 +34,33 @@ function _vault_config() {
   VAULT_ADDR=$1
   VAULT_NAME=$2
   VAULT_PASSWORD=$3
-  echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
-  echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
+  if grep -q "export VAULT_ADDR=" "$VAULT_CONFIG_FILE"; then
+    replace_string_with_escapes \
+    "^export VAULT_ADDR=.*" \
+    "export VAULT_ADDR=$VAULT_ADDR" \
+    $VAULT_CONFIG_FILE
+  else
+    echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
+  fi
+  if grep -q "export VAULT_NAME=" "$VAULT_CONFIG_FILE"; then
+    replace_string_with_escapes \
+    "^export VAULT_NAME=.*" \
+    "export VAULT_NAME=$VAULT_NAME" \
+    $VAULT_CONFIG_FILE
+  else
+    echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
+  fi
+  if grep -q "export VAULT_PASSWORD="  "$VAULT_CONFIG_FILE"; then
+    replace_string_with_escapes \
+    "^export VAULT_PASSWORD=.*" \
+    "export VAULT_PASSWORD=$VAULT_PASSWORD" \
+    $VAULT_CONFIG_FILE
+  else
+    echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
+  fi
   source $VAULT_CONFIG_FILE
   _error_code=$?
-  __MSG="Command: tcctl vault config $@ "
-  __MSG+="$__output"
+  __MSG="Command: tcctl vault config"
   if [[ "$_error_code" -eq "0" ]]; then
     _message "$__MSG"
   else
