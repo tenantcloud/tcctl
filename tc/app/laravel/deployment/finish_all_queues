@@ -6,31 +6,29 @@ source "$CLI_DIR/tc/framework/functions"
 
 set +e
 
-QUEUE="deploy"
-PARALLEL_PROCESS="8"
+parallel_process="8"
+queue="deploy"
+skip_queues=
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
-
-case $key in
-    --parallel-process)
-    PARALLEL_PROCESS="$2"
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
     shift 2
-    ;;
-    --queue )
-    QUEUE="$2"
-    shift 2
-    ;;
-    *)
-    ;;
-esac
+  else
+    set "${__key}"
+    shift
+  fi
 done
+
+echo "$parallel_process $queue $skip_queues"
 
 function _finish_all_queues() {
   __session_name="QUEUESFINISH"
   __parallel_process=$1
   __queue=$2
+  __skip_queues=$3
   if  [[ $(command -v byobu) ]]; then
     byobu -2 new-session -d -s $__session_name
     _error_code="$?"
@@ -41,8 +39,12 @@ function _finish_all_queues() {
   else
     _message "$__MSG"
   fi
+  __command="php artisan queue:work --force --queue=$__queue"
+  if [[ -n $__skip_queues ]]; then
+    __command="$__command --skip-queues=$__skip_queues"
+  fi
   for ((i=1;i<="$__parallel_process";i++)); do
-    byobu new-window -t $__session_name "php artisan queue:work --force --queue=$__queue"
+    byobu new-window -t $__session_name "$__command"
     _error_code=$(( "$_error_code" + "$?" ))
     __MSG="Error when byobu run $__queue in new-window session"
     if [[ "$_error_code" -gt "0" ]]; then
@@ -69,12 +71,5 @@ function _finish_all_queues() {
   fi
 }
 
-if [ -z "$PARALLEL_PROCESS" ]; then
-  __MSG="Command: tcctl laravel deployment finish_all_queues missed --parallel-process"
-  _message "$__MSG" "error" "$_error_code"
-elif [ -z "$QUEUE" ]; then
-  __MSG="Command: tcctl laravel deployment finish_all_queues missed --queue"
-  _message "$__MSG" "error" "$_error_code"
-else
-  _finish_all_queues "$PARALLEL_PROCESS" "$QUEUE"
-fi
+_finish_all_queues "$parallel_process" "$queue" "$skip_queues"
+
