@@ -3,4 +3,4 @@ tcctl cron fargate-job --state enable --cron-file /var/spool/cron/job
 
 where:
   --state           - (required variable) state cronjobs (enable or disable)
-  --cron-file       - (required variable) path to cronjob file
+  --cron-file       - (optional variable) path to cronjob file
