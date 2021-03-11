@@ -3,7 +3,7 @@
 # shellcheck disable=SC2034
 
 function update_project_promo() {
-  APP_ENV=$( tcctl helpers env get --vault-key APP_ENV )
+  APP_ENV=$( tcctl helpers env get --key APP_ENV )
   COMPOSER_LOCK=$( tcctl helpers file_md5_sum --filename composer.lock )
   PACKAGE_LOCK=$( tcctl helpers file_md5_sum --filename yarn.lock )
   BRANCH=$(tcctl run git branch | grep '\*' | cut -d ' ' -f2)
@@ -13,7 +13,12 @@ function update_project_promo() {
     tcctl run yarn ci
   fi
 
-  tcctl laravel cache clear
+  tcctl message --text "Clear cache"
+  tcctl run php artisan clear-compiled
+  tcctl run sudo service php7.4-fpm reload
+  tcctl run php artisan config:clear
+  tcctl run php artisan route:clear
+  tcctl run php artisan event:clear
 
   if [[ -z "$(tcctl run git status --short)" ]]; then
     echo "working tree clean"
