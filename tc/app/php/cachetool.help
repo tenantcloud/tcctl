@@ -1,0 +1,2 @@
+
+tcctl php cachetool --parameters "opcache:reset"
