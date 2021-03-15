@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+cron_file="/var/spool/cron/crontabs/root"
+state=
+
+function cron_enable {
+  sed -i -r '1s/#//' $cron_file
+  _error_code=$?
+  __MSG="We are enable cronjobs"
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "$__MSG"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+function cron_disable {
+  __cron_state=$( grep "^#" $cron_file )
+  if [[ -n $__cron_state ]]; then
+    _message "Cronjobs already disabled"
+  else
+    sed -i -r '1s/^/#/' $cron_file
+    _error_code=$?
+    __MSG="We are disable cronjobs"
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "$__MSG"
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+if [[ -f $cron_file ]]; then
+  case $state in
+    enable)
+      cron_enable
+      ;;
+    disable)
+      cron_disable
+      ;;
+    *)
+      _message "Wrong key values"
+      ;;
+  esac
+fi
