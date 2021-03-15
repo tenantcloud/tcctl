@@ -4,16 +4,11 @@
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/laravel/cache/functions"
-
-__os_version="$(_get_os)"
-case "${__os_version}" in
-    Linux*)     __command="sudo service php7.4-fpm reload";;
-    Darwin*)    __command="brew services restart php";;
-    *)
-esac
+source "$CLI_DIR/tc/app/php/functions"
 
 run_programm_with_error_check "php artisan clear-compiled"
-reload_php_fpm
+_message "Reset OPCache"
+cachetool_run "opcache:reset"
 run_programm_with_error_check "php artisan config:cache"
 run_programm_with_error_check "php artisan route:cache"
 run_programm_with_error_check "php artisan event:cache"

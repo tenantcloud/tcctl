@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+function cachetool_run () {
+  __parameters=$1
+  if [[ $( command -v cachetool ) ]]; then
+    __cachetool_path=$( command -v cachetool )
+    __error_code=$?
+  elif [[ $( command -v cachetool.phar ) ]]; then
+    __cachetool_path=$( command -v cachetool.phar )
+    __error_code=$?
+  else
+    _message "Cachetool utilites not found" "warning"
+    exit $__error_code
+  fi
+
+  __command=$( sudo "$__cachetool_path" "$__parameters" )
+  __error_code=$?
+  if [[ $__error_code -gt "0" ]]; then
+    _message "$__command" "error" "$__error_code"
+  fi
+}
