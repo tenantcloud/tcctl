@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC1090
+
 function _check_bin_file() {
   __output=$(command -v "$1")
   _error_code=$?
