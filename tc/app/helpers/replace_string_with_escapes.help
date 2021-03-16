@@ -1,0 +1,6 @@
+
+tcctl helpers replace_string_with_escapes --find-string "STRING1" --replace-string "STRING2" --file-name "FILE"
+
+--find-string        "the string to replace" [REQUIRE]
+--replace-string     "the string to which we replace" [REQUIRE]
+--file-name          "file name" [REQUIRE]

@@ -10,3 +10,124 @@ function _check_bin_file() {
     _message "$__MSG" "error" "$_error_code"
   fi
 }
+
+function _replace_string() {
+  __OS=$(tcctl helpers get_os)
+  __find_string=$1
+  __replace_string=$2
+  __file_to_edit=$3
+  if [[ $__OS == "Darwin" ]]; then
+    __command="gsed "
+  else
+    __command="sed "
+  fi
+  __command+="-i "
+  __command+="'s/$__find_string/$__replace_string/g' $__file_to_edit"
+  if ! grep -q "$__replace_string" "$__file_to_edit"; then
+    __output=$( eval "$__command" )
+    _error_code=$?
+    __MSG="Command: replace $1 in $3 file"
+    __MSG+="$__output"
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $1 was replacing in $3 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}
+
+function _append_string_after() {
+  __OS=$(tcctl helpers get_os)
+  __find_string=$1
+  __replace_string=$2
+  __file_to_edit=$3
+  if [[ $__OS == "Darwin" ]]; then
+    __command="gsed "
+  else
+    __command="sed "
+  fi
+  __command+="-i "
+  __command+="'/$__find_string/a$__replace_string' $__file_to_edit"
+  if ! grep -q "$__replace_string" "$__file_to_edit"; then
+    __output=$( eval "$__command" )
+    _error_code=$?
+    __MSG="Command: replace $1 in $3 file"
+    __MSG+="$__output"
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $1 was replacing in $3 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}
+
+function _replace_string_with_escapes() {
+  __OS=$(uname -s)
+  __find_string=$1
+  __replace_string=$2
+  __file_to_edit=$3
+  if [[ $__OS == "Darwin" ]]; then
+    __command="gsed "
+  else
+    __command="sed "
+  fi
+  __command+="-i "
+  __command+="'s+$__find_string+$__replace_string+' $__file_to_edit"
+  __output=$( eval "$__command" )
+  _error_code=$?
+  __MSG="Command: replace $1 in $3 file"
+  __MSG+="$__output"
+  if [[ "$_error_code" -ne "0" ]]; then
+    echo "Error -" "$__command"
+    exit 1
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $1 was replacing in $3 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}
+
+function _delete_string() {
+  __OS=$(uname -s)
+  __delete_string=$1
+  __file_to_edit=$2
+  if [[ $__OS == "Darwin" ]]; then
+    __command="gsed "
+  else
+    __command="sed "
+  fi
+  __command+="-i "
+  __command+="'/$__delete_string/d' $__file_to_edit"
+  __output=$( eval "$__command" )
+  _error_code=$?
+  __MSG="Command: String $1 was deleting in $3 file"
+  __MSG+="$__output"
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $1 was replacing in $3 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}
+
+function _insert_string() {
+  __insert_string=$1
+  __file_to_edit=$2
+  __command="echo $__insert_string | sudo tee -a $__file_to_edit"
+  if ! grep "$__insert_string" "$__file_to_edit"; then
+    __output=$( eval "$__command" )
+    _error_code=$?
+    __MSG="Command: Insert $1 in $2 file"
+    __MSG+="$__output"
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $1 was inserting in $2 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}

@@ -1,0 +1,6 @@
+
+tcctl helpers append_string_after --find-string "STRING1" --append-string "STRING2" --file-name "FILE"
+
+--find-string        "the string after which add the line" [REQUIRE]
+--append-string      "the string to which we append" [REQUIRE]
+--file-name          "file name" [REQUIRE]

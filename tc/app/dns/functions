@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2140,SC2002
+
+source "$CLI_DIR/tc/framework/functions"
+
+function _get_all_custom_dns_name_from_nginx() {
+  array=$(find /usr/local/etc/nginx/servers -regex '.*\tc.loc.conf\.*' \
+  | sed '/socket.tc.loc.conf/d' | sed '/home.tc.loc.conf/d';)
+  if [[ "$array" ]]; then
+    _message "You must delete all custom domains and restart nginx server:"
+    for i in "${array[@]}"; do
+      _message "$i" | cut -d/ -f '7' | sed '/socket.tc.loc.conf/d' | sed '/home.tc.loc.conf/d';
+    done
+  fi
+}
+
+function _cert_gen() {
+  __dns_name=$1
+  __dns_names=$(for i in $( cat /usr/local/etc/nginx/ssl/tc.loc.crt | openssl x509 -text | grep DNS ); do
+                  echo "$i" | sed -e "s/^DNS://" -e "s/,$//"
+                done)
+  __dns_names_result="$__dns_names $__dns_name "\*."$__dns_name"
+  __dns_names=$(echo "$__dns_names_result" | gsed -e "s/ /,/g")
+  _message "Download cert-gen"
+  git -C /tmp clone https://github.com/devilbox/cert-gen.git
+  _message "Copy root certs to tmp directory"
+  cp -r docs/installation/ssl/tenantcloud-rootCA.* /tmp/
+  _message "Generate cert for ${__dns_name}"
+  /tmp/cert-gen/bin/cert-gen -v -c UA -s Ivano-Frankivsk -l Ivano-Frankivsk -o TC -u TC \
+             -n tc.loc -e i.bronovskyi@root.devops \
+             -a "${__dns_names}" \
+             /tmp/tenantcloud-rootCA.key \
+             /tmp/tenantcloud-rootCA.crt \
+             /tmp/tc.loc.key \
+             /tmp/tc.loc.csr \
+             /tmp/tc.loc.crt >> /dev/null
+  _message "Clear directory from cert-gen and cert files"
+  rm -rf /tmp/cert-gen/ $$ /tmp/tenantcloud-rootCA.*
+}

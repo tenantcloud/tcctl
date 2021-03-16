@@ -1,0 +1,5 @@
+
+tcctl helpers delete_string --find-string "STRING1" --file-name "FILE"
+
+--find-string        "the string to delete" [REQUIRE]
+--file-name          "file name"  [REQUIRE]

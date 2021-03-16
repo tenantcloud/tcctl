@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
+
+insert_string=
+file_name=
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+if [ -f "$file_name" ]; then
+  _insert_string "$insert_string" "$file_name"
+  __error_code=$?
+  if [[ $__error_code -gt "0" ]]; then
+    __MSG="File $file_name doesn't exists"
+    _message "$__MSG" "error" "$__error_code"
+  fi
+fi
