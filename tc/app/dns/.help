@@ -1,3 +1,4 @@
 The functions and commands for create custom dns and certs operation
 
 tcctl dns cert_gen
+tcctl dns cert_trust

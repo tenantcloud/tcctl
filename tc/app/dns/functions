@@ -38,3 +38,18 @@ function _cert_gen() {
   _message "Clear directory from cert-gen and cert files"
   rm -rf /tmp/cert-gen/ $$ /tmp/tenantcloud-rootCA.*
 }
+
+function _cert_trust() {
+  __root_cert_path=$1
+  __command="sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain $__root_cert_path"
+  __output=$( eval "$__command" )
+  _error_code=$?
+  __MSG="Command: Add trusted root certificate"
+  __MSG+="$__output"
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "Root certificate successfully trusted "
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}

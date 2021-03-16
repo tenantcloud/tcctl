@@ -3,7 +3,7 @@
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/dns/functions"
 
-dns_name=
+root_cert_path=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -17,4 +17,11 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-_cert_gen "$dns_name"
+if [ -f "$root_cert_path" ]; then
+  _cert_trust "$root_cert_path"
+  __error_code=$?
+  if [[ $__error_code -gt "0" ]]; then
+    __MSG="File $root_cert_path doesn't exists"
+    _message "$__MSG" "error" "$__error_code"
+  fi
+fi

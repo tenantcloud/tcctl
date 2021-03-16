@@ -1,0 +1,4 @@
+
+tcctl dns cert_trust --root-cert-path "NAME"
+
+--root-cert-path     "path to root certificate"  [REQUIRE]
