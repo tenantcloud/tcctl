@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-source "$CLI_DIR/tc/framework/functions"
-source "$CLI_DIR/tc/app/helpers/functions"
+# shellcheck source=$CLI_DIR/tc/framework/functions
+. "${$CLI_DIR/tc/framework/functions}"
+
+# shellcheck source=$CLI_DIR/tc/app/dns/functions
+. "${$CLI_DIR/tc/app/dns/functions}"
 
 find_string=
 append_string=

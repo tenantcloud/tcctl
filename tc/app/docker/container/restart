@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source "$CLI_DIR/tc/framework/functions"
+# shellcheck source=$CLI_DIR/tc/framework/functions
+. "${$CLI_DIR/tc/framework/functions}"
 
 container_name=
 
