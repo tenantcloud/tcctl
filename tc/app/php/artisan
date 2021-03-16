@@ -8,7 +8,7 @@ for __param in "$@"; do
   __parameters+="$__param "
 done
 
-__output="$( php artisan $__parameters 2>&1 )"
+__output="$( php artisan $__parameters >&2>&1 )"
 _error_code=$?
 __MSG="Command: php artisan $__parameters"
 __MSG+="$__output"

@@ -1,9 +1,7 @@
+
 The commands with which we run typical laravel project deployment tasks
-
 Importantly:
-
-Through this pass functionality only non-interactive command
-
-for example:
+  Through this pass functionality only non-interactive command
 
 tcctl run {cli command}
+tcctl run date
