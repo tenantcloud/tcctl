@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/dns/functions"
+
+_get_all_custom_dns_name_from_nginx
