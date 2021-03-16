@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-# shellcheck source=$CLI_DIR/tc/framework/functions
-. "${$CLI_DIR/tc/framework/functions}"
+# shellcheck disable=SC1090
 
-# shellcheck source=$CLI_DIR/tc/app/dns/functions
-. "${$CLI_DIR/tc/app/dns/functions}"
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/dns/functions"
 
 insert_string=
 file_name=

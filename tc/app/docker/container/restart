@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# shellcheck source=$CLI_DIR/tc/framework/functions
-. "${$CLI_DIR/tc/framework/functions}"
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
 
 container_name=
 
