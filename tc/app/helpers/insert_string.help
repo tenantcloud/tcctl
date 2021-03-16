@@ -1,5 +1,7 @@
 
 tcctl helpers insert_string --insert-string "STRING1" --file-name "FILE NAME"
 
---insert-string      "the string to insert" [REQUIRE]
---file-name          "the name of file"  [REQUIRE]
+Require:
+
+--insert-string      "the string to insert"
+--file-name          "the name of file"

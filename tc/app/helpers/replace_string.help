@@ -1,6 +1,8 @@
 
 tcctl helpers replace_string --find-string "STRING1" --replace-string "STRING2" --file-name "FILE NAME"
 
---find-string        "the string to replace" [REQUIRE]
---replace-string     "the string to which we replace" [REQUIRE]
---file-name          "the name of file"  [REQUIRE]
+Require:
+
+--find-string        "the string to replace"
+--replace-string     "the string to which we replace"
+--file-name          "the name of file"

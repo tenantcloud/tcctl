@@ -1,4 +1,6 @@
 
 tcctl dns cert_gen --dns-name " DNS NAME"
 
---dns-name     "custom domain name"  [REQUIRE]
+Require:
+
+--dns-name     "custom domain name"

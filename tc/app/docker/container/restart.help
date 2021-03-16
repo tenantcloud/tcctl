@@ -1,4 +1,6 @@
 
 tcctl docker container restart --container-name "CONTAINER NAME"
 
---container-name     "container name for restart"  [REQUIRE]
+Require:
+
+--container-name        "container name for restart"

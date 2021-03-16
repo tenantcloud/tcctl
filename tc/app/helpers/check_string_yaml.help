@@ -1,6 +1,8 @@
 
 tcctl helpers check_string_yaml --yaml-path "PATH" --yaml-value "VALUE" --file-name "FILE NAME"
 
---yaml-path          "path to value in the yaml file" [REQUIRE]
---yaml-value         "value to insert"  [REQUIRE]
---file-name          "the name of yaml file" [REQUIRE]
+Require:
+
+--yaml-path          "path to value in the yaml file"
+--yaml-value         "value to insert"
+--file-name          "the name of yaml file"
