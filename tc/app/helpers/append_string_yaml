@@ -5,8 +5,8 @@
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
-find_string=
-append_string=
+yaml_path=
+yaml_value=
 file_name=
 
 while echo "$1" | grep -q ^--; do
@@ -22,7 +22,7 @@ while echo "$1" | grep -q ^--; do
 done
 
 if [ -f "$file_name" ]; then
-  _append_string_after "$find_string" "$append_string" "$file_name"
+  _append_string_yaml "$yaml_path" "$yaml_value" "$file_name"
 else
   __MSG="File $file_name doesn't exists"
   _message "$__MSG" "error"

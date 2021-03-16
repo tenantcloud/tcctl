@@ -22,9 +22,7 @@ done
 
 if [ -f "$file_name" ]; then
   _insert_string "$insert_string" "$file_name"
-  __error_code=$?
-  if [[ $__error_code -gt "0" ]]; then
-    __MSG="File $file_name doesn't exists"
-    _message "$__MSG" "error" "$__error_code"
-  fi
+else
+  __MSG="File $file_name doesn't exists"
+  _message "$__MSG" "error"
 fi

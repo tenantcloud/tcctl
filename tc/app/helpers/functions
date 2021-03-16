@@ -12,19 +12,13 @@ function _check_bin_file() {
 }
 
 function _replace_string() {
-  __OS=$(tcctl helpers get_os)
   __find_string=$1
   __replace_string=$2
   __file_to_edit=$3
-  if [[ $__OS == "Darwin" ]]; then
-    __command="gsed "
-  else
-    __command="sed "
-  fi
-  __command+="-i "
+  __command=$(_get_sed)
   __command+="'s/$__find_string/$__replace_string/g' $__file_to_edit"
   if ! grep -q "$__replace_string" "$__file_to_edit"; then
-    __output=$( eval "$__command" )
+    __output=$(eval "$__command")
     _error_code=$?
     __MSG="Command: replace $1 in $3 file"
     __MSG+="$__output"
@@ -38,16 +32,10 @@ function _replace_string() {
 }
 
 function _append_string_after() {
-  __OS=$(tcctl helpers get_os)
   __find_string=$1
   __replace_string=$2
   __file_to_edit=$3
-  if [[ $__OS == "Darwin" ]]; then
-    __command="gsed "
-  else
-    __command="sed "
-  fi
-  __command+="-i "
+  __command=$(_get_sed)
   __command+="'/$__find_string/a$__replace_string' $__file_to_edit"
   if ! grep -q "$__replace_string" "$__file_to_edit"; then
     __output=$( eval "$__command" )
@@ -64,18 +52,12 @@ function _append_string_after() {
 }
 
 function _replace_string_with_escapes() {
-  __OS=$(uname -s)
   __find_string=$1
   __replace_string=$2
   __file_to_edit=$3
-  if [[ $__OS == "Darwin" ]]; then
-    __command="gsed "
-  else
-    __command="sed "
-  fi
-  __command+="-i "
+  __command=$(_get_sed)
   __command+="'s+$__find_string+$__replace_string+' $__file_to_edit"
-  __output=$( eval "$__command" )
+  __output=$(eval "$__command")
   _error_code=$?
   __MSG="Command: replace $1 in $3 file"
   __MSG+="$__output"
@@ -92,17 +74,11 @@ function _replace_string_with_escapes() {
 }
 
 function _delete_string() {
-  __OS=$(uname -s)
   __delete_string=$1
   __file_to_edit=$2
-  if [[ $__OS == "Darwin" ]]; then
-    __command="gsed "
-  else
-    __command="sed "
-  fi
-  __command+="-i "
+  __command=$(_get_sed)
   __command+="'/$__delete_string/d' $__file_to_edit"
-  __output=$( eval "$__command" )
+  __output=$(eval "$__command")
   _error_code=$?
   __MSG="Command: String $1 was deleting in $3 file"
   __MSG+="$__output"
@@ -119,7 +95,7 @@ function _insert_string() {
   __file_to_edit=$2
   __command="echo $__insert_string | sudo tee -a $__file_to_edit"
   if ! grep "$__insert_string" "$__file_to_edit"; then
-    __output=$( eval "$__command" )
+    __output=$(eval "$__command")
     _error_code=$?
     __MSG="Command: Insert $1 in $2 file"
     __MSG+="$__output"
@@ -130,4 +106,48 @@ function _insert_string() {
     _message "$__MSG" "error" "$_error_code"
     exit 1
   fi
+}
+
+function _append_string_yaml() {
+  __yaml_path=$1
+  __yaml_value=$2
+  __file_name=$3
+  __command="__dns_name=$__yaml_value \
+  yq e '${__yaml_path} += env(__dns_name)' -i ${__file_name}"
+  __output=$(eval "$__command")
+  _error_code=$?
+  __MSG="Command: Insert $2 in $3 file"
+  __MSG+="$__output"
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $2 was inserting in $3 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}
+
+function _check_string_yaml() {
+  __yaml_path=$1
+  __yaml_value=$2
+  __file_name=$3
+  __command="__dns_name=${__yaml_value} \
+  yq eval '${__yaml_path}| select(. == env(__dns_name))' ${__file_name}"
+  __output=$(eval "$__command")
+  _error_code=$?
+  echo "$__output"
+  if [[ "$_error_code" -gt "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}
+
+function _get_sed() {
+  __OS=$(uname -s)
+  if [[ $__OS == "Darwin" ]]; then
+    __output=$(command -v "gsed")
+  else
+    __output=$(command -v "sed")
+  fi
+  __output+=" -i "
+  echo "$__output"
 }
