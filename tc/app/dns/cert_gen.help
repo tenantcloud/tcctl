@@ -1,5 +1,5 @@
 
-tcctl dns cert_gen --dns-name " DNS NAME"
+tcctl dns cert_gen --dns-name "DNS NAME"
 
 Require:
 
