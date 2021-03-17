@@ -16,16 +16,22 @@ function _get_all_custom_dns_name_from_nginx() {
 }
 
 function _cert_gen() {
-  __dns_name=$1
-  __dns_names=$2
-  __root_cert_path=$3
-  __root_key_path=$4
-  __cert_path=$5
-  __key_path=$6
-  __csr_path=$7
-  git -C /tmp clone https://github.com/devilbox/cert-gen.git
+  __dns_names=$1
+  __root_cert_path=$2
+  __root_key_path=$3
+  __cert_path=$4
+  __key_path=$5
+  __csr_path=$6
+  if ping -c 2 8.8.8.8 > /dev/null 2>&1; then
+    git -C /tmp clone https://github.com/devilbox/cert-gen.git
+  else
+    __MSG="Check your internet connection"
+    _message "$__MSG" "error"
+    exit 1
+  fi
+  __cert_name=$(echo "$__dns_names" | cut -f1 -d,)
   __command="/tmp/cert-gen/bin/cert-gen -v -c UA -s Ivano-Frankivsk -l Ivano-Frankivsk -o TC -u TC \
-             -n ${__dns_name} -e i.bronovskyi@root.devops \
+             -n ${__cert_name} -e i.bronovskyi@root.devops \
              -a ${__dns_names} \
              ${__root_key_path} \
              ${__root_cert_path} \

@@ -18,21 +18,27 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-__cid=$(docker ps -q -f "status=running" -f "name=^/tc-home-$container_name")
-if [ "$container_name" == "app" ]; then
-  container_name="home"
-fi
-if [ ! "${__cid}" ]; then
-  _message "Container doesn't exist"
+if ( docker stats --no-stream > /dev/null 2>&1 ); then
+  __cid=$(docker ps -q -f "status=running" -f "name=^/tc-home-$container_name")
+  if [ "$container_name" == "app" ]; then
+    container_name="home"
+  fi
+  if [ ! "${__cid}" ]; then
+    _message "Container doesn't exist"
+  else
+    _message "Stop $container_name container"
+    docker-compose rm -s -v -f "$container_name"
+    __error_code=$?
+    _message "Start $container_name container"
+    docker-compose up -d "$container_name"
+    __error_code+=$?
+  fi
+  if [[ $__error_code -gt "0" ]]; then
+    __MSG="Error when restarting $container_name container"
+    _message "$__MSG" "error" "$__error_code"
+  fi
 else
-  _message "Stop $container_name container"
-  docker-compose rm -s -v -f "$container_name"
-  __error_code=$?
-  _message "Start $container_name container"
-  docker-compose up -d "$container_name"
-  __error_code+=$?
-fi
-if [[ $__error_code -gt "0" ]]; then
-  __MSG="Error when restarting $1 container"
-  _message "$__MSG" "error" "$__error_code"
+  __MSG="Docker daemon is not launched for the local machine"
+  _message "$__MSG" "error"
+  exit 1
 fi

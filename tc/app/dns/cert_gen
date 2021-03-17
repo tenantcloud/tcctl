@@ -5,7 +5,6 @@
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/dns/functions"
 
-dns_name=
 domains=
 root_cert_path=
 root_key_path=
@@ -26,7 +25,7 @@ while echo "$1" | grep -q ^--; do
 done
 
 if [ -f "$root_cert_path" ]; then
-  _cert_gen "$dns_name" "$domains" "$root_cert_path" "$root_key_path" "$cert_path" "$key_path" "$csr_path"
+  _cert_gen "$domains" "$root_cert_path" "$root_key_path" "$cert_path" "$key_path" "$csr_path"
 else
   __MSG="File $root_cert_path doesn't exists"
   _message "$__MSG" "error"

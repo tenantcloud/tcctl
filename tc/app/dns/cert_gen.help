@@ -1,6 +1,5 @@
 
-tcctl dns cert_gen --dns-name "FILE NAME"
-                   --domains "DNS NAMES"
+tcctl dns cert_gen --domains "DNS NAMES"
                    --root-cert-path "PATH1"
                    --root-key-path "PATH2"
                    --cert-path "PATH3"
@@ -9,7 +8,6 @@ tcctl dns cert_gen --dns-name "FILE NAME"
 
 Require:
 
---dns-name              "name of the custom certificate"
 --domains               "custom domain names - 'example.com,*.example.com'"
 --root-cert-path        "path to root crt file"
 --root-key-path         "path to root key file"
