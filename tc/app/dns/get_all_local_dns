@@ -5,13 +5,7 @@
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/dns/functions"
 
-dns_name=
-domains=
-root_cert_path=
-root_key_path=
 cert_path=
-key_path=
-csr_path=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -25,9 +19,9 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-if [ -f "$root_cert_path" ]; then
-  _cert_gen "$dns_name" "$domains" "$root_cert_path" "$root_key_path" "$cert_path" "$key_path" "$csr_path"
+if [ -f "$cert_path" ]; then
+  _get_all_local_dns "$cert_path"
 else
-  __MSG="File $root_cert_path doesn't exists"
+  __MSG="$cert_path doesn't exists"
   _message "$__MSG" "error"
 fi

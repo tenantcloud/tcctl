@@ -20,12 +20,28 @@ function _replace_string() {
   if ! grep -q "$__replace_string" "$__file_to_edit"; then
     __output=$(eval "$__command")
     _error_code=$?
-    __MSG="Command: replace $1 in $3 file"
+    __MSG="Command: replace $__find_string in $__file_to_edit file"
     __MSG+="$__output"
   fi
   if [[ "$_error_code" -eq "0" ]]; then
     _message "String $1 was replacing in $3 file"
   else
+    _message "$__MSG" "error" "$_error_code"
+    exit 1
+  fi
+}
+
+function _replace_symbol() {
+  __find_symbol=$1
+  __replace_symbol=$2
+  __string_to_edit=$3
+  __command="echo $__string_to_edit | $(_get_sed_symbol) 's/$__replace_symbol/$__find_symbol/g'"
+  __output=$(eval "$__command")
+  _error_code=$?
+  __MSG="Command: symbol $__find_symbol replace in $__string_to_edit"
+  __MSG+="$__output"
+  echo "$__output"
+  if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
     exit 1
   fi
@@ -40,11 +56,11 @@ function _append_string_after() {
   if ! grep -q "$__replace_string" "$__file_to_edit"; then
     __output=$( eval "$__command" )
     _error_code=$?
-    __MSG="Command: replace $1 in $3 file"
+    __MSG="Command: replace $__find_string in $__file_to_edit file"
     __MSG+="$__output"
   fi
   if [[ "$_error_code" -eq "0" ]]; then
-    _message "String $1 was replacing in $3 file"
+    _message "String $__find_string was replacing in $__file_to_edit file"
   else
     _message "$__MSG" "error" "$_error_code"
     exit 1
@@ -59,12 +75,8 @@ function _replace_string_with_escapes() {
   __command+="'s+$__find_string+$__replace_string+' $__file_to_edit"
   __output=$(eval "$__command")
   _error_code=$?
-  __MSG="Command: replace $1 in $3 file"
+  __MSG="Command: replace $__find_string in $__file_to_edit file"
   __MSG+="$__output"
-  if [[ "$_error_code" -ne "0" ]]; then
-    echo "Error -" "$__command"
-    exit 1
-  fi
   if [[ "$_error_code" -eq "0" ]]; then
     _message "String $1 was replacing in $3 file"
   else
@@ -80,10 +92,10 @@ function _delete_string() {
   __command+="'/$__delete_string/d' $__file_to_edit"
   __output=$(eval "$__command")
   _error_code=$?
-  __MSG="Command: String $1 was deleting in $3 file"
+  __MSG="Command:  delete $__delete_string in $__file_to_edit file"
   __MSG+="$__output"
   if [[ "$_error_code" -eq "0" ]]; then
-    _message "String $1 was replacing in $3 file"
+    _message "String $__delete_string was deleting in $__file_to_edit file"
   else
     _message "$__MSG" "error" "$_error_code"
     exit 1
@@ -97,11 +109,11 @@ function _insert_string() {
   if ! grep "$__insert_string" "$__file_to_edit"; then
     __output=$(eval "$__command")
     _error_code=$?
-    __MSG="Command: Insert $1 in $2 file"
+    __MSG="Command: Insert $__insert_string in $__file_to_edit file"
     __MSG+="$__output"
   fi
   if [[ "$_error_code" -eq "0" ]]; then
-    _message "String $1 was inserting in $2 file"
+    _message "String $__insert_string was inserting in $__file_to_edit file"
   else
     _message "$__MSG" "error" "$_error_code"
     exit 1
@@ -116,11 +128,9 @@ function _append_string_yaml() {
   yq e '${__yaml_path} += env(__dns_name)' -i ${__file_name}"
   __output=$(eval "$__command")
   _error_code=$?
-  __MSG="Command: Insert $2 in $3 file"
+  __MSG="Command: Insert $__yaml_value in $__file_name file"
   __MSG+="$__output"
-  if [[ "$_error_code" -eq "0" ]]; then
-    _message "String $2 was inserting in $3 file"
-  else
+  if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
     exit 1
   fi
@@ -134,6 +144,8 @@ function _check_string_yaml() {
   yq eval '${__yaml_path}| select(. == env(__dns_name))' ${__file_name}"
   __output=$(eval "$__command")
   _error_code=$?
+  __MSG="Command: check $__yaml_value in $__file_name file"
+  __MSG+="$__output"
   echo "$__output"
   if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
@@ -149,5 +161,16 @@ function _get_sed() {
     __output=$(command -v "sed")
   fi
   __output+=" -i "
+  echo "$__output"
+}
+
+function _get_sed_symbol() {
+  __OS=$(uname -s)
+  if [[ $__OS == "Darwin" ]]; then
+    __output=$(command -v "gsed")
+  else
+    __output=$(command -v "sed")
+  fi
+  __output+=" -e "
   echo "$__output"
 }
