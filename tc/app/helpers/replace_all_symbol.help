@@ -1,5 +1,5 @@
 
-tcctl helpers replace_symbol --find-symbol "SYMBOL1" --replace-symbol "SYMBOL2" --string-to-edit "STRING"
+tcctl helpers replace_all_symbol --find-symbol "SYMBOL1" --replace-symbol "SYMBOL2" --string-to-edit "STRING"
 
 Require:
 

@@ -16,7 +16,7 @@ function _replace_string() {
   __replace_string=$2
   __file_to_edit=$3
   __command=$(_get_sed)
-  __command+="'s/$__find_string/$__replace_string/g' $__file_to_edit"
+  __command+=" -i 's/$__find_string/$__replace_string/g' $__file_to_edit"
   if ! grep -q "$__replace_string" "$__file_to_edit"; then
     __output=$(eval "$__command")
     _error_code=$?
@@ -31,7 +31,7 @@ function _replace_string() {
   fi
 }
 
-function _replace_symbol() {
+function _replace_all_symbol() {
   __find_symbol=$1
   __replace_symbol=$2
   __string_to_edit=$3
@@ -52,7 +52,7 @@ function _append_string_after() {
   __replace_string=$2
   __file_to_edit=$3
   __command=$(_get_sed)
-  __command+="'/$__find_string/a$__replace_string' $__file_to_edit"
+  __command+=" -i '/$__find_string/a$__replace_string' $__file_to_edit"
   if ! grep -q "$__replace_string" "$__file_to_edit"; then
     __output=$( eval "$__command" )
     _error_code=$?
@@ -72,7 +72,7 @@ function _replace_string_with_escapes() {
   __replace_string=$2
   __file_to_edit=$3
   __command=$(_get_sed)
-  __command+="'s+$__find_string+$__replace_string+' $__file_to_edit"
+  __command+=" -i 's+$__find_string+$__replace_string+' $__file_to_edit"
   __output=$(eval "$__command")
   _error_code=$?
   __MSG="Command: replace $__find_string in $__file_to_edit file"
@@ -89,7 +89,7 @@ function _delete_string() {
   __delete_string=$1
   __file_to_edit=$2
   __command=$(_get_sed)
-  __command+="'/$__delete_string/d' $__file_to_edit"
+  __command+=" -i '/$__delete_string/d' $__file_to_edit"
   __output=$(eval "$__command")
   _error_code=$?
   __MSG="Command:  delete $__delete_string in $__file_to_edit file"
@@ -160,17 +160,5 @@ function _get_sed() {
   else
     __output=$(command -v "sed")
   fi
-  __output+=" -i "
-  echo "$__output"
-}
-
-function _get_sed_symbol() {
-  __OS=$(uname -s)
-  if [[ $__OS == "Darwin" ]]; then
-    __output=$(command -v "gsed")
-  else
-    __output=$(command -v "sed")
-  fi
-  __output+=" -e "
   echo "$__output"
 }

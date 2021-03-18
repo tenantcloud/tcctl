@@ -21,4 +21,4 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-_replace_symbol "$find_symbol" "$replace_symbol" "$string_to_edit"
+_replace_all_symbol "$find_symbol" "$replace_symbol" "$string_to_edit"

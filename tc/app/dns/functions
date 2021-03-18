@@ -22,7 +22,7 @@ function _cert_gen() {
   __cert_path=$4
   __key_path=$5
   __csr_path=$6
-  if ping -c 2 8.8.8.8 > /dev/null 2>&1; then
+  if _check_net; then
     git -C /tmp clone https://github.com/devilbox/cert-gen.git
   else
     __MSG="Check your internet connection"
