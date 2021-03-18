@@ -47,7 +47,7 @@ function _cert_gen() {
     _message "Generate certificate for ${__dns_names} is successfully"
   else
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -62,7 +62,7 @@ function _cert_trust() {
     _message "Root certificate successfully trusted"
   else
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -78,6 +78,6 @@ function _get_all_local_dns() {
   __MSG+="$__command"
   if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }

@@ -27,7 +27,7 @@ function _replace_string() {
     _message "String $1 was replacing in $3 file"
   else
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -35,7 +35,7 @@ function _replace_symbol() {
   __find_symbol=$1
   __replace_symbol=$2
   __string_to_edit=$3
-  __command="echo $__string_to_edit | $(_get_sed_symbol) 's/$__replace_symbol/$__find_symbol/g'"
+  __command="echo ${__string_to_edit/$__find_symbol/$__replace_symbol}"
   __output=$(eval "$__command")
   _error_code=$?
   __MSG="Command: symbol $__find_symbol replace in $__string_to_edit"
@@ -43,7 +43,7 @@ function _replace_symbol() {
   echo "$__output"
   if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -63,7 +63,7 @@ function _append_string_after() {
     _message "String $__find_string was replacing in $__file_to_edit file"
   else
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -81,7 +81,7 @@ function _replace_string_with_escapes() {
     _message "String $1 was replacing in $3 file"
   else
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -98,7 +98,7 @@ function _delete_string() {
     _message "String $__delete_string was deleting in $__file_to_edit file"
   else
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -116,7 +116,7 @@ function _insert_string() {
     _message "String $__insert_string was inserting in $__file_to_edit file"
   else
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -132,7 +132,7 @@ function _append_string_yaml() {
   __MSG+="$__output"
   if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
@@ -149,7 +149,7 @@ function _check_string_yaml() {
   echo "$__output"
   if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
-    exit 1
+    exit "$_error_code"
   fi
 }
 
