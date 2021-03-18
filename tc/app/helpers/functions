@@ -35,7 +35,7 @@ function _replace_symbol() {
   __find_symbol=$1
   __replace_symbol=$2
   __string_to_edit=$3
-  __command="echo ${__string_to_edit/$__find_symbol/$__replace_symbol}"
+  __command="echo ${__string_to_edit//$__find_symbol/$__replace_symbol}"
   __output=$(eval "$__command")
   _error_code=$?
   __MSG="Command: symbol $__find_symbol replace in $__string_to_edit"
