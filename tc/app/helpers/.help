@@ -1,7 +1,23 @@
 The helper functions and commands for all projects
 
-tcctl helpers run_migrate_and_during_deploy
-tcctl helpers check_deployment_type
-tcctl helpers file_md5_sum
-tcctl helpers update_project
+tcctl helpers append_string_after
 tcctl helpers check_bin_file
+tcctl helpers check_deployment_type
+tcctl helpers run_migrate_and_during_deploy
+tcctl helpers comment_string
+tcctl helpers create_dir_along_path
+tcctl helpers delete_string
+tcctl helpers file_md5_sum
+tcctl helpers get_date
+tcctl helpers get_os
+tcctl helpers get_project_name
+tcctl helpers get_project_path
+tcctl helpers get_repo_name
+tcctl helpers insert_string
+tcctl helpers replace_string
+tcctl helpers replace_string_with_escapes
+tcctl helpers replace_symbol
+tcctl helpers run_migrate_and_during_deploy
+tcctl helpers uncomment_string
+tcctl helpers update_project
+tcctl helpers update_project_promo

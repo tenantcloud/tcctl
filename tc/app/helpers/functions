@@ -10,3 +10,155 @@ function _check_bin_file() {
     _message "$__MSG" "error" "$_error_code"
   fi
 }
+
+function _replace_string() {
+  __find_string=$1
+  __replace_string=$2
+  __file_to_edit=$3
+  __command=$(_get_sed)
+  __command+=" -i 's/$__find_string/$__replace_string/g' $__file_to_edit"
+  if ! grep -q "$__replace_string" "$__file_to_edit"; then
+    __output=$(eval "$__command")
+    _error_code=$?
+    __MSG="Command: replace $__find_string in $__file_to_edit file"
+    __MSG+="$__output"
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $1 was replacing in $3 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _replace_all_symbol() {
+  __find_symbol=$1
+  __replace_symbol=$2
+  __string_to_edit=$3
+  __command="echo ${__string_to_edit//$__find_symbol/$__replace_symbol}"
+  __output=$(eval "$__command")
+  _error_code=$?
+  __MSG="Command: symbol $__find_symbol replace in $__string_to_edit"
+  __MSG+="$__output"
+  echo "$__output"
+  if [[ "$_error_code" -gt "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _append_string_after() {
+  __find_string=$1
+  __replace_string=$2
+  __file_to_edit=$3
+  __command=$(_get_sed)
+  __command+=" -i '/$__find_string/a$__replace_string' $__file_to_edit"
+  if ! grep -q "$__replace_string" "$__file_to_edit"; then
+    __output=$( eval "$__command" )
+    _error_code=$?
+    __MSG="Command: replace $__find_string in $__file_to_edit file"
+    __MSG+="$__output"
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $__find_string was replacing in $__file_to_edit file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _replace_string_with_escapes() {
+  __find_string=$1
+  __replace_string=$2
+  __file_to_edit=$3
+  __command=$(_get_sed)
+  __command+=" -i 's+$__find_string+$__replace_string+' $__file_to_edit"
+  __output=$(eval "$__command")
+  _error_code=$?
+  __MSG="Command: replace $__find_string in $__file_to_edit file"
+  __MSG+="$__output"
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $1 was replacing in $3 file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _delete_string() {
+  __delete_string=$1
+  __file_to_edit=$2
+  __command=$(_get_sed)
+  __command+=" -i '/$__delete_string/d' $__file_to_edit"
+  __output=$(eval "$__command")
+  _error_code=$?
+  __MSG="Command:  delete $__delete_string in $__file_to_edit file"
+  __MSG+="$__output"
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $__delete_string was deleting in $__file_to_edit file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _insert_string() {
+  __insert_string=$1
+  __file_to_edit=$2
+  __command="echo $__insert_string | sudo tee -a $__file_to_edit"
+  if ! grep "$__insert_string" "$__file_to_edit"; then
+    __output=$(eval "$__command")
+    _error_code=$?
+    __MSG="Command: Insert $__insert_string in $__file_to_edit file"
+    __MSG+="$__output"
+  fi
+  if [[ "$_error_code" -eq "0" ]]; then
+    _message "String $__insert_string was inserting in $__file_to_edit file"
+  else
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _append_string_yaml() {
+  __yaml_path=$1
+  __yaml_value=$2
+  __file_name=$3
+  __command="__dns_name=$__yaml_value \
+  yq e '${__yaml_path} += env(__dns_name)' -i ${__file_name}"
+  __output=$(eval "$__command")
+  _error_code=$?
+  __MSG="Command: Insert $__yaml_value in $__file_name file"
+  __MSG+="$__output"
+  if [[ "$_error_code" -gt "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _check_string_yaml() {
+  __yaml_path=$1
+  __yaml_value=$2
+  __file_name=$3
+  __command="__dns_name=${__yaml_value} \
+  yq eval '${__yaml_path}| select(. == env(__dns_name))' ${__file_name}"
+  __output=$(eval "$__command")
+  _error_code=$?
+  __MSG="Command: check $__yaml_value in $__file_name file"
+  __MSG+="$__output"
+  echo "$__output"
+  if [[ "$_error_code" -gt "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+    exit "$_error_code"
+  fi
+}
+
+function _get_sed() {
+  __OS=$(uname -s)
+  if [[ $__OS == "Darwin" ]]; then
+    __output=$(command -v "gsed")
+  else
+    __output=$(command -v "sed")
+  fi
+  echo "$__output"
+}

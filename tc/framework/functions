@@ -61,32 +61,10 @@ function _get_date() {
   date +%s
 }
 
-function replace_string() {
-  __OS=$(_get_os)
-  __find_string=$1
-  __replace_string=$2
-  __file_to_edit=$3
-  if [[ $__OS == "Darwin" ]]; then
-    __command="gsed "
+function _check_net() {
+  if ping -c 2 8.8.8.8 > /dev/null 2>&1; then
+    return 0
   else
-    __command="sed "
+    return 1
   fi
-  __command+="-i "
-  __command+="'s/$__find_string/$__replace_string/g' $__file_to_edit"
-  eval "$__command"
-}
-
-function replace_string_with_escapes() {
-  __OS=$(_get_os)
-  __find_string=$1
-  __replace_string=$2
-  __file_to_edit=$3
-  if [[ $__OS == "Darwin" ]]; then
-    __command="gsed "
-  else
-    __command="sed "
-  fi
-  __command+="-i "
-  __command+="'s+$__find_string+$__replace_string+' $__file_to_edit"
-  eval "$__command"
 }
