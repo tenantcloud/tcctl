@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+current_version=
+site_url=
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+function get_site_version {
+  site_version=$( curl -s "https://${site_url}/api_config" | jq -r ".data.app_version" )
+  _error_code=$?
+  __MSG="We can't get site version"
+  if [[ "$_error_code" -ne "0" ]]; then
+    _message "$__MSG" "error" "$_error_code"
+  fi
+  echo "$site_version"
+}
+
+function compare_application_version_difference {
+  site_version=$( get_site_version )
+  if [[ "$current_version" == "$site_version" ]]; then
+    echo "true"
+  else
+    echo "false"
+  fi
+}
+
+if [[ -z "$site_url" ]]; then
+  echo "error: parametr --site-url is required"
+  exit 1
+fi
+
+echo ""
+
+while [ "$(compare_application_version_difference)" == "false" ]; do
+  sleep 1
+  echo -n "."
+done
+
+echo "New site version $( get_site_version ) is live"
