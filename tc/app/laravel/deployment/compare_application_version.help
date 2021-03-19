@@ -2,6 +2,8 @@
 tcctl laravel deployment compare_application_version --current-version "v1.1.1" \
   --site-url "home.example.tenants.cloud"
 
-where:
-  --current-version   - (optional variable) current application version for compare
-  --site-url          - (required variable) url for compare site version
+Require:
+  --site-url          "url for compare site version"
+Optional:
+  --current-version   "current application version for compare"
+
