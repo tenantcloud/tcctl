@@ -18,6 +18,7 @@ tcctl helpers replace_string
 tcctl helpers replace_string_with_escapes
 tcctl helpers replace_symbol
 tcctl helpers run_migrate_and_during_deploy
+tcctl helpers set_dir_permission
 tcctl helpers uncomment_string
 tcctl helpers update_project
 tcctl helpers update_project_promo

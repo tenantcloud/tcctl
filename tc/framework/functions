@@ -68,3 +68,16 @@ function _check_net() {
     return 1
   fi
 }
+
+function _set_dir_permission() {
+  __OS=$(_get_os)
+  __dir_path=$1
+  __permission=$2
+  if [[ $__OS == "Linux" ]]; then
+    __command="sudo "
+  else
+    __command=
+  fi
+  __command+="chmod -R $__permission $__dir_path"
+  eval "$__command"
+}

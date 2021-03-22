@@ -1,0 +1,7 @@
+
+tcctl helpers set_dir_permission --dir-path "PATH" --permission "PERM"
+
+Require:
+
+--dir-path           "path to the folder to change permission"
+--permission         "the permissions that we set on the folder "
