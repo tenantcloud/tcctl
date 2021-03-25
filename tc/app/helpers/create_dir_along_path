@@ -22,16 +22,19 @@ done
 function _create_dir_along_path() {
   __along_path=$1
   __dir_name=$2
-  if [ ! -d "$__along_path"/"$__dir_name" ]; then
+  if [ -d "$__along_path" ]; then
     mkdir "$__along_path"/"$__dir_name"
     _error_code=$?
-  __MSG="Command: create $__dir_name dir along $__along_path path"
-  __MSG+="$__output"
+    __MSG="Create $__dir_name dir along $__along_path path"
+    __MSG+="$__output"
     if [ "$_error_code" -eq "0" ]; then
       _message "$__MSG"
     else
       _message "$__MSG" "error" "$_error_code"
     fi
+  else
+    __MSG="$__along_path path doesn't exist"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
