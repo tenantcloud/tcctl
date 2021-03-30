@@ -27,8 +27,11 @@ function _vault_diff() {
   __output=$(diff -y --suppress-common-lines "$env_1" "$env_2")
   _error_code=$?
   __MSG="Output the difference between two files"
-  if [ "$_error_code" -eq "0" ] | [ "$_error_code" -eq "1" ]; then
+  if  [ "$_error_code" -eq "1" ]; then
+    _message "$__MSG"
     echo "$__output" | column -t
+  elif [ "$_error_code" -eq "0" ]; then
+    _message "$__MSG"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
