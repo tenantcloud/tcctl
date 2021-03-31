@@ -4,46 +4,38 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
+along_path=
+dir_name=
 
-case $key in
-    --along_path)
-    ALONG_PATH="$2"
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
     shift 2
-    ;;
-    --dir_name)
-    DIR_NAME="$2"
-    shift 2
-    ;;
-    *)
-    ;;
-esac
+  else
+    set "${__key}"
+    shift
+  fi
 done
 
 function _create_dir_along_path() {
   __along_path=$1
   __dir_name=$2
-  if [ ! -d "$__along_path"/"$__dir_name" ]; then
-    mkdir "$_along_path"/"$__dir_name"
+  if [ -d "$__along_path" ]; then
+    mkdir "$__along_path"/"$__dir_name"
     _error_code=$?
-  __MSG="Command: tcctl helpers create $__dir_name along path $_along_path"
-  __MSG+="$__output"
+    __MSG="Create $__dir_name dir along $__along_path path"
+    __MSG+="$__output"
     if [ "$_error_code" -eq "0" ]; then
       _message "$__MSG"
     else
       _message "$__MSG" "error" "$_error_code"
     fi
+  else
+    __MSG="$__along_path path doesn't exist"
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-if [ -z "$ALONG_PATH" ]; then
-  __MSG="Command: tcctl helpers create_dir_along_path missed --along_path"
-  _message "$__MSG" "error" "$_error_code"
-elif [ -z "$DIR_NAME" ]; then
-   __MSG="Command: tcctl helpers create_dir_along_path missed --dir_name"
-  _message "$__MSG" "error" "$_error_code"
-else
-  _create_dir_along_path "$ALONG_PATH" "$DIR_NAME"
-fi
+_create_dir_along_path "$along_path" "$dir_name"
