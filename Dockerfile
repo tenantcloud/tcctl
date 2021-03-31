@@ -1,6 +1,6 @@
 FROM tenantcloud/docker-pipeline
 
-LABEL Manitainer="Igor Bronovskyi https://github.com/BrunIF"
+LABEL Maintainer="Igor Bronovskyi https://github.com/BrunIF"
 
 COPY . /cli
 
