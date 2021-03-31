@@ -35,7 +35,7 @@ function _vault_config() {
   VAULT_NAME=$2
   VAULT_PASSWORD=$3
   if grep -q "export VAULT_ADDR=" "$VAULT_CONFIG_FILE"; then
-    replace_string_with_escapes \
+    _replace_string_with_escapes \
     "^export VAULT_ADDR=.*" \
     "export VAULT_ADDR=$VAULT_ADDR" \
     $VAULT_CONFIG_FILE
@@ -43,7 +43,7 @@ function _vault_config() {
     echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
   fi
   if grep -q "export VAULT_NAME=" "$VAULT_CONFIG_FILE"; then
-    replace_string_with_escapes \
+    _replace_string_with_escapes \
     "^export VAULT_NAME=.*" \
     "export VAULT_NAME=$VAULT_NAME" \
     $VAULT_CONFIG_FILE
@@ -51,7 +51,7 @@ function _vault_config() {
     echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
   fi
   if grep -q "export VAULT_PASSWORD="  "$VAULT_CONFIG_FILE"; then
-    replace_string_with_escapes \
+    _replace_string_with_escapes \
     "^export VAULT_PASSWORD=.*" \
     "export VAULT_PASSWORD=$VAULT_PASSWORD" \
     $VAULT_CONFIG_FILE
