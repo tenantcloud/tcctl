@@ -58,7 +58,7 @@ bcl create vault put
 You can create alias in your `.zshrc` or `.bashrc` and run from a Docker container
 
 ```bash
-alias tcctl="docker run --rm -it tenantcloud/tcctl"
+alias tcctl="docker run --rm -it -v $HOME:/root tenantcloud/tcctl"
 ```
 
 Get latest version on TCCtl run command
