@@ -32,7 +32,9 @@ bcl package install
 
 ```bash
 tcctl
-tcctl run command_name
+tcctl laravel
+tcctl run {command_name}
+...
 ```
 
 ## Create new functions
@@ -48,8 +50,19 @@ To create multiple sub-command:
 ```bash
 bcl create vault get
 bcl create vault put
-bcl create vault get-token
-bcl create vault init
-bcl create vault validate-path
-bcl create vault diff
+...
+```
+
+## Docker
+
+You can create alias in your `.zshrc` or `.bashrc` and run from a Docker container
+
+```bash
+alias tcctl="docker run --rm -it tenantcloud/tcctl"
+```
+
+Get latest version on TCCtl run command
+
+```bash
+docker pull tenantcloud/tcctl
 ```
