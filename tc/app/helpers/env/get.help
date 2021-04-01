@@ -1,7 +1,7 @@
 
-tcctl helpers env get --key "KEY" --env "ENV"
+tcctl helpers env get --key "KEY" --file "FILE"
 
 Require:
 
---key                   "value key"
---env                   "env file"
+--key                   "key name"
+--file                  "file name"
