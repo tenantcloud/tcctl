@@ -1,10 +1,7 @@
-The command which compares the keys between the server and the project
 
-for example:
+tcctl vault diff --env-1 "ENV1" --env-2 "ENV2"
 
-tcctl vault diff --env-1 .env --env-2 .env-tmp
+Require:
 
-where:
-
-.env                    - project file in which we work
-.env-tmp                - temporary file from the current project branch which is saved at the vault server
+--env-1                 "first env file"
+--env-2                 "second env file"
