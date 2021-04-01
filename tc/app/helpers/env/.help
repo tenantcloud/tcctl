@@ -1,4 +1,7 @@
 The helper functions and commands for all projects
 
 tcctl helpers env get
-
+tcctl helpers env set
+tcctl helpers env update_repository_version
+tcctl helpers env update_version_from_git
+tcctl helpers env update_version_increment

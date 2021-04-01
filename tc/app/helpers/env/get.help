@@ -1,4 +1,7 @@
-tcctl helpers env get --key APP_ENV --env .env
 
-APP_ENV - The variable whose value you want to get
-.env - The name of the file in which to search for the variable
+tcctl helpers env get --key "KEY" --env "ENV"
+
+Require:
+
+--key                   "value key"
+--env                   "env file"

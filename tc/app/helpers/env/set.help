@@ -1,0 +1,8 @@
+
+tcctl helpers env set --key "KEY" --key-value "VALUE" --env "ENV"
+
+Require:
+
+--key                   "value key"
+--key-value             "value to set"
+--env                   "env file"
