@@ -40,6 +40,10 @@ function _get_value_from_env() {
   fi
 }
 
+if [[ -n "$env" ]]; then
+  file=$env
+fi
+
 if [ -f "$file" ]; then
   _get_value_from_env "$key" "$file"
 else
