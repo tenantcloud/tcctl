@@ -41,7 +41,7 @@ function _get_value_from_env() {
 }
 
 if [[ -n "$env" ]]; then
-  file=$env
+  file="${env}"
 fi
 
 if [ -f "$file" ]; then
