@@ -9,3 +9,4 @@ where:
 --team-name          - Appcenter team profile name
 --app-name           - Appcenter space name
 --host-name          - Link name
+--token              - Access token for AppCenter
