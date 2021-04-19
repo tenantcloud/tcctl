@@ -13,3 +13,4 @@ where:
 --app-name           - Appcenter space name
 --host-name          - Link name
 --mobile-files-path  - Path to mobile files which will be upload on Appcenter
+--token              - Access token for Appcenter

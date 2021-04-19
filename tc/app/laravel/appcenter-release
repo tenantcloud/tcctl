@@ -7,6 +7,7 @@ team_name=
 app_name=
 host_name=
 mobile_files_path=
+token=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -21,7 +22,7 @@ while echo "$1" | grep -q ^--; do
 done
 
 if [ -n "$host_name" ]; then
-  __output="$( appcenter codepush release -a "$team_name"/"$app_name" -c "$mobile_files_path" -t '*' -d "$host_name" )"
+  __output="$( appcenter codepush release -a "$team_name"/"$app_name" -c "$mobile_files_path" -t "*" -d "$host_name" --token "$token" )"
   _error_code=$?
   __MSG="Command: appcenter codepush deployment clear"
   __MSG+="$__output"
