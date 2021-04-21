@@ -1,5 +1,13 @@
 The commands with which we can run deployment checks, migrate and update tasks
 
-tcctl laravel deployment finish_all_queues
 tcctl laravel deployment changed_frontend_files
+tcctl laravel deployment compare_application_version
+tcctl laravel deployment create_symlink
+tcctl laravel deployment finish_all_queues
+tcctl laravel deployment get_branch_name
+tcctl laravel deployment get_commits_summary
 tcctl laravel deployment get_source_branch
+tcctl laravel deployment get_tag_version
+tcctl laravel deployment queue_work
+tcctl laravel deployment run_maintenance_mode
+tcctl laravel deployment run_site_state

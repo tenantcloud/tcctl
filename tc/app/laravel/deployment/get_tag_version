@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/laravel/functions"
+
+set -o pipefail
+
+__output=$(git log -1 | sed -n 2p | awk '{ print $3 }')
+_error_code=$?
+if [ "$_error_code" -eq "0" ]; then
+  __pr_commit="$__output"
+else
+  __MSG="Error getting the last merges"
+  _message "$__MSG" "error" "$_error_code"
+fi
+
+__git_version=$(git remote -v | tail -n 1 | awk '{ print $2 }' | cut -f1 -d:)
+
+if [[ "$__git_version" == 'git@bitbucket.org' ]]; then
+  __output=$(git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $4 }')
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    __pr_branch="$__output"
+    export __pr_branch
+  else
+    __MSG="Error getting the merges bitbucket branch"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+else
+  __output=$(git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $7 }' | cut -f2 -d/)
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    __pr_branch="$__output"
+    export __pr_branch
+  else
+    __MSG="Error getting the merges github branch"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+fi
+
+[[ -n "$__source_branch_name" ]] || __source_branch_name="$__pr_branch"
+
+_get_start_tag
+
+if [[ "$__source_branch_name" =~ ^feature.* ]]; then
+  __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2+1 }')
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    __MSG="Error increasing tag if the branch name contains feature"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+elif [[ "$__source_branch_name" =~ ^release.* ]]; then
+  __output=$(git describe --abbrev=0 --tags | awk -F "." '{ print $1 }' | awk -F "v" '{ print "v" $2 + 1 ".0" }')
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    __MSG="Error increasing tag if the branch name contains release"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+elif [[ "$__source_branch_name" =~ ^mandatory.* ]]; then
+  __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2 "." $3+1 }')
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    __MSG="Error increasing tag if the branch name contains mandatory"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+else
+  __output=$(git describe --abbrev=0 --tags)
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    __MSG="Error get tag from other different branch"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+fi
