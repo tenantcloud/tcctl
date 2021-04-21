@@ -19,22 +19,16 @@ else
 fi
 
 if [[ "$__git_repo_version" == 'git@bitbucket.org' ]]; then
-  __output=$(git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $4 }')
+  __output=$(git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color 2>/dev/null | tail -n 1 | awk '{ print $4 }')
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     __pr_branch="$__output"
-  else
-    __MSG="Error getting the merges bitbucket branch"
-    _message "$__MSG" "error" "$_error_code"
   fi
 else
-  __output=$(git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $7 }' | cut -f2 -d/)
+  __output=$(git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color 2>/dev/null | tail -n 1 | awk '{ print $7 }' | cut -f2 -d/)
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     __pr_branch="$__output"
-  else
-    __MSG="Error getting the merges github branch"
-    _message "$__MSG" "error" "$_error_code"
   fi
 fi
 
