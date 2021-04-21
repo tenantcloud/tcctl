@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 # shellcheck disable=SC1090
+
 source "$CLI_DIR/tc/framework/functions"
 
 team_name=

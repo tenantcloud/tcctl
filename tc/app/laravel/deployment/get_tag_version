@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090,SC1091
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/laravel/functions"
 
 set -o pipefail
+
+__git_repo_version=$(git remote -v | tail -n 1 | awk '{ print $2 }' | cut -f1 -d:)
 
 __output=$(git log -1 | sed -n 2p | awk '{ print $3 }')
 _error_code=$?
@@ -16,14 +18,11 @@ else
   _message "$__MSG" "error" "$_error_code"
 fi
 
-__git_version=$(git remote -v | tail -n 1 | awk '{ print $2 }' | cut -f1 -d:)
-
-if [[ "$__git_version" == 'git@bitbucket.org' ]]; then
+if [[ "$__git_repo_version" == 'git@bitbucket.org' ]]; then
   __output=$(git log "${__pr_commit}"..HEAD --ancestry-path --merges --oneline --color | tail -n 1 | awk '{ print $4 }')
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     __pr_branch="$__output"
-    export __pr_branch
   else
     __MSG="Error getting the merges bitbucket branch"
     _message "$__MSG" "error" "$_error_code"
@@ -33,7 +32,6 @@ else
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     __pr_branch="$__output"
-    export __pr_branch
   else
     __MSG="Error getting the merges github branch"
     _message "$__MSG" "error" "$_error_code"
