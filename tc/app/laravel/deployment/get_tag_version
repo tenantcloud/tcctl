@@ -63,8 +63,17 @@ elif [[ "$__source_branch_name" =~ ^mandatory.* ]]; then
     __MSG="Error increasing tag if the branch name contains mandatory"
     _message "$__MSG" "error" "$_error_code"
   fi
-else
+elif [[ "$__source_branch_name" =~ ^nodeploy.* ]]; then
   __output=$(git describe --abbrev=0 --tags)
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "$__output"
+  else
+    __MSG="Error increasing tag if the branch name contains nodeploy"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+else
+  __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2 "." $3+1 }')
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     echo "$__output"
