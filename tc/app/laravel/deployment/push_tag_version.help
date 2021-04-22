@@ -1,0 +1,6 @@
+
+tcctl laravel deployment push_tag_version --tag "TAG VERSION"
+
+Require:
+
+--tag                   "tag version to push"
