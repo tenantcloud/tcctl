@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091
+
+# shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
@@ -54,10 +55,11 @@ function _vault_config() {
     _replace_string_with_escapes \
     "^export VAULT_PASSWORD=.*" \
     "export VAULT_PASSWORD=$VAULT_PASSWORD" \
-    $VAULT_CONFIG_FILE
+    "$VAULT_CONFIG_FILE"
   else
     echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
   fi
+  # shellcheck source=/dev/null
   source $VAULT_CONFIG_FILE
   _error_code=$?
   __MSG="Command: tcctl vault config"
