@@ -34,51 +34,53 @@ fi
 
 [[ -n "$__source_branch_name" ]] || __source_branch_name="$__pr_branch"
 
-_get_start_tag
-
-if [[ "$__source_branch_name" =~ ^feature.* ]]; then
-  __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2+1 }')
-  _error_code=$?
-  if [ "$_error_code" -eq "0" ]; then
-    echo "$__output"
+if [[ $(_get_start_tag) == 'True' ]]; then
+  if [[ "$__source_branch_name" =~ ^feature.* ]]; then
+    __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2+1 }')
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      echo "$__output"
+    else
+      __MSG="Error increasing tag if the branch name contains feature"
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  elif [[ "$__source_branch_name" =~ ^release.* ]]; then
+    __output=$(git describe --abbrev=0 --tags | awk -F "." '{ print $1 }' | awk -F "v" '{ print "v" $2 + 1 ".0" }')
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      echo "$__output"
+    else
+      __MSG="Error increasing tag if the branch name contains release"
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  elif [[ "$__source_branch_name" =~ ^mandatory.* ]]; then
+    __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2 "." $3+1 }')
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      echo "$__output"
+    else
+      __MSG="Error increasing tag if the branch name contains mandatory"
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  elif [[ "$__source_branch_name" =~ ^nodeploy.* ]]; then
+    __output=$(git describe --abbrev=0 --tags)
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      echo "$__output"
+    else
+      __MSG="Error increasing tag if the branch name contains nodeploy"
+      _message "$__MSG" "error" "$_error_code"
+    fi
   else
-    __MSG="Error increasing tag if the branch name contains feature"
-    _message "$__MSG" "error" "$_error_code"
-  fi
-elif [[ "$__source_branch_name" =~ ^release.* ]]; then
-  __output=$(git describe --abbrev=0 --tags | awk -F "." '{ print $1 }' | awk -F "v" '{ print "v" $2 + 1 ".0" }')
-  _error_code=$?
-  if [ "$_error_code" -eq "0" ]; then
-    echo "$__output"
-  else
-    __MSG="Error increasing tag if the branch name contains release"
-    _message "$__MSG" "error" "$_error_code"
-  fi
-elif [[ "$__source_branch_name" =~ ^mandatory.* ]]; then
-  __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2 "." $3+1 }')
-  _error_code=$?
-  if [ "$_error_code" -eq "0" ]; then
-    echo "$__output"
-  else
-    __MSG="Error increasing tag if the branch name contains mandatory"
-    _message "$__MSG" "error" "$_error_code"
-  fi
-elif [[ "$__source_branch_name" =~ ^nodeploy.* ]]; then
-  __output=$(git describe --abbrev=0 --tags)
-  _error_code=$?
-  if [ "$_error_code" -eq "0" ]; then
-    echo "$__output"
-  else
-    __MSG="Error increasing tag if the branch name contains nodeploy"
-    _message "$__MSG" "error" "$_error_code"
+    __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2 "." $3+1 }')
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      echo "$__output"
+    else
+      __MSG="Error get tag from other different branch"
+      _message "$__MSG" "error" "$_error_code"
+    fi
   fi
 else
-  __output=$(git describe --abbrev=0 --tags | awk -F '.' '{ print $1 "." $2 "." $3+1 }')
-  _error_code=$?
-  if [ "$_error_code" -eq "0" ]; then
-    echo "$__output"
-  else
-    __MSG="Error get tag from other different branch"
-    _message "$__MSG" "error" "$_error_code"
-  fi
+  echo "1.0.0"
 fi

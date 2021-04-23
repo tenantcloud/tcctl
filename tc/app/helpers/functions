@@ -166,8 +166,9 @@ function _get_sed() {
 function _get_start_tag() {
   git describe --abbrev=0 --tags > /dev/null 2>&1
   _error_code=$?
-  if [ "$_error_code" -gt "0" ]; then
-    echo "1.0.0"
-    exit 1
+  if [ "$_error_code" -eq "0" ]; then
+    echo True
+  else
+    echo False
   fi
 }
