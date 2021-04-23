@@ -7,8 +7,6 @@ tcctl laravel deployment finish_all_queues
 tcctl laravel deployment get_branch_name
 tcctl laravel deployment get_commits_summary
 tcctl laravel deployment get_source_branch
-tcctl laravel deployment get_tag_version
-tcctl laravel deployment push_tag_version
 tcctl laravel deployment queue_work
 tcctl laravel deployment run_maintenance_mode
 tcctl laravel deployment run_site_state

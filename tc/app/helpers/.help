@@ -8,6 +8,8 @@ tcctl helpers comment_string
 tcctl helpers create_dir_along_path
 tcctl helpers delete_string
 tcctl helpers file_md5_sum
+tcctl helpers generate_increment_version
+tcctl helpers push_new_version
 tcctl helpers get_date
 tcctl helpers get_os
 tcctl helpers get_project_name

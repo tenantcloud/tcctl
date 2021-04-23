@@ -162,3 +162,12 @@ function _get_sed() {
   fi
   echo "$__output"
 }
+
+function _get_start_tag() {
+  git describe --abbrev=0 --tags > /dev/null 2>&1
+  _error_code=$?
+  if [ "$_error_code" -gt "0" ]; then
+    echo "1.0.0"
+    exit 1
+  fi
+}
