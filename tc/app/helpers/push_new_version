@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1090
+# shellcheck disable=SC1090,SC1083
 
 source "$CLI_DIR/tc/framework/functions"
 
@@ -18,25 +18,7 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-__output=$(git add .)
-_error_code=$?
-__MSG="Added new files"
-if [ "$_error_code" -eq "0" ]; then
-  echo "$__MSG"
-else
-  _message "$__MSG" "error" "$_error_code"
-fi
-
-__output=$(git commit -am "release: Release ${tag}")
-_error_code=$?
-__MSG="Commit files. Release ${tag}"
-if [ "$_error_code" -eq "0" ]; then
-  _message "$__MSG"
-else
-  _message "$__MSG" "error" "$_error_code"
-fi
-
-__output=$(git tag -a "${tag}" -m "Release ${tag}")
+git tag -a "${tag}" -m "Release ${tag}"
 _error_code=$?
 __MSG="Create new tag: ${tag}"
 if [ "$_error_code" -eq "0" ]; then
@@ -44,17 +26,7 @@ if [ "$_error_code" -eq "0" ]; then
 else
   _message "$__MSG" "error" "$_error_code"
 fi
-
-__output=$(git remote get-url --push origin)
-_error_code=$?
-__MSG="Push code to remote repository ${__output}"
-if [ "$_error_code" -eq "0" ]; then
-  _message "$__MSG"
-else
-  _message "$__MSG" "error" "$_error_code"
-fi
-
-__output=$(git push origin "${tag}")
+git push origin "${tag}"
 _error_code=$?
 __MSG="Tag ${tag} pushed to remote"
 if [ "$_error_code" -eq "0" ]; then

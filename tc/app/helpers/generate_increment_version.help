@@ -1,2 +1,2 @@
 
-tcctl laravel deployment generate_increment_version
+tcctl helpers generate_increment_version
