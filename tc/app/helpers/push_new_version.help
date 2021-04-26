@@ -1,5 +1,5 @@
 
-tcctl laravel deployment push_new_version --tag "TAG VERSION"
+tcctl helpers push_new_version --tag "TAG VERSION"
 
 Require:
 
