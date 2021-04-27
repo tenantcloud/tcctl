@@ -25,10 +25,8 @@ function _vault_check_path() {
   VAULT_TOKEN=$(_vault_get_token)
   export VAULT_TOKEN
   __secret_path="$1"
-  __output=$( vault kv get "$__secret_path" 2>&1 )
+  vault kv get "$__secret_path" 2>&1
   _error_code=$?
-  __MSG="Command: tcctl vault path $@ "
-  __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     echo "true"
   else

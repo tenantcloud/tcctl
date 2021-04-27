@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2196,SC2046,SC2124,SC2034,SC1091
+# shellcheck disable=SC2196,SC2046,SC2124,SC2034,SC1091,SC2119
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
@@ -30,13 +30,12 @@ function _vault_put() {
   export VAULT_TOKEN
   __secret_path=$1
   __env=$2
-  __output=$( vault kv put "$__secret_path" $(egrep -v '^#' "$__env") 2>&1 )
+  __output=$(vault kv put "$__secret_path" $(egrep -v '^#' "$__env") 2>&1)
   _error_code=$?
-  __MSG="Command: tcctl vault put $@ "
-  __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
-    _vault_kv_put=$( echo "$__output" | xargs )
+    _vault_kv_put=$(echo "$__output" | xargs)
   else
+    __MSG="Put to $__secret_path error"
     _message "$__MSG" "error" "$_error_code"
   fi
 }
