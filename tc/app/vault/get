@@ -26,7 +26,7 @@ done
 
 function _vault_get() {
   _check_bin_file vault
-  VAULT_TOKEN=$(tcctl vault token)
+  VAULT_TOKEN=$(_vault_get_token)
   export VAULT_TOKEN
   __secret_path=$1
   __env=$2

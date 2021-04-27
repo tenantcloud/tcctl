@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2124,SC1091
 # shellcheck source=/dev/null
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 # Function return vault server address
 function _vault_get_addr() {
@@ -22,5 +26,21 @@ function _vault_kv_list() {
     echo "true"
   else
     echo "false"
+  fi
+}
+
+function _vault_get_token()  {
+  _check_bin_file vault
+  VAULT_CONFIG_FILE=~/.vault-configuration
+  source $VAULT_CONFIG_FILE
+  __output=$( vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD" )
+  _error_code=$?
+  __MSG="Command: tcctl vault token $@ "
+  __MSG+="$__output"
+  if [ "$_error_code" -eq "0" ]; then
+    VAULT_TOKEN=$( echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p )
+    echo "$VAULT_TOKEN"
+  else
+    _message "$__MSG" "error" "$_error_code"
   fi
 }
