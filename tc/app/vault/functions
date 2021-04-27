@@ -18,10 +18,8 @@ export VAULT_ADDR
 
 function _vault_kv_list() {
   __secret_path="$1"
-  __output=$( vault kv list "$__secret_path" 2>&1 )
+  __output=$(vault kv list "$__secret_path" 2>&1)
   _error_code=$?
-  __MSG="Command: tcctl vault kv list $__secret_path"
-  __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     echo "true"
   else
@@ -33,14 +31,13 @@ function _vault_get_token()  {
   _check_bin_file vault
   VAULT_CONFIG_FILE=~/.vault-configuration
   source $VAULT_CONFIG_FILE
-  __output=$( vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD" )
+  __output=$(vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD")
   _error_code=$?
-  __MSG="Command: tcctl vault token $@ "
-  __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     VAULT_TOKEN=$( echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p )
     echo "$VAULT_TOKEN"
   else
+    __MSG="Error while creating vault token"
     _message "$__MSG" "error" "$_error_code"
   fi
 }
