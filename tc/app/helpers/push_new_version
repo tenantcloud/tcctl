@@ -18,7 +18,7 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-git tag "${tag}"
+git tag -a "${tag}" -m "Release ${tag}"
 _error_code=$?
 __MSG="Create new tag: ${tag}"
 if [ "$_error_code" -eq "0" ]; then
