@@ -1,4 +1,7 @@
 
-Get the keys from the vault server
+tcctl vault get --secret-path "PATH" --env "FILE"
 
-    tcctl vault get --secret-path projects_name/APP_ENV --env .env
+Require:
+
+--secret-path           "secret file path"
+--env                   "file name"

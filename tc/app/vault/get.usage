@@ -1,4 +1,1 @@
-[--secret-path] [--env]
-
-  --secret-path - secret file path (require)
-  --env - file name from the vault server (require)
+Get the keys from the vault server
