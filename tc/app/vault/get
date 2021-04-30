@@ -26,19 +26,13 @@ function _vault_get() {
   VAULT_TOKEN=$(tcctl vault token)
   export VAULT_TOKEN
   __secret_path=$1
-  __env=$2
-  __project_dir=$(_get_project_path)
+  __local_path=$2
   __output=$(vault kv get "$__secret_path" 2>&1)
   _error_code=$?
-  __MSG="Get ${__env} keys from ${__secret_path} - "
+  __MSG="Get keys from ${__secret_path} - "
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
-    vault kv get "$__secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > /tmp/"$__env"
-    if [[ -s /tmp/"$__env" ]]; then
-      mv /tmp/"$__env" "$__project_dir"/"$__env"
-    else
-      rm -rf /tmp/"$__env"
-    fi
+    vault kv get "$__secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$__local_path"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
