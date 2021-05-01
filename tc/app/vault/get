@@ -6,22 +6,19 @@ source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
+secret_path=
+env=
 
-case $key in
-    --secret-path)
-    SECRET_PATH="$2"
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
     shift 2
-    ;;
-    --env)
-    ENV="$2"
-    shift 2
-    ;;
-    *)
-    ;;
-esac
+  else
+    set "${__key}"
+    shift
+  fi
 done
 
 function _vault_get() {
@@ -29,24 +26,16 @@ function _vault_get() {
   VAULT_TOKEN=$(_vault_get_token)
   export VAULT_TOKEN
   __secret_path=$1
-  __env=$2
-  __output=$( vault kv get "$__secret_path" 2>&1 )
+  __local_path=$2
+  __output=$(vault kv get "$__secret_path" 2>&1)
   _error_code=$?
-  __MSG="Command: tcctl vault get $@ "
+  __MSG="Get keys from ${__secret_path} - "
   __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
-    vault kv get "$__secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$__env"
+    vault kv get "$__secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$__local_path"
   else
     _message "$__MSG" "error" "$_error_code"
   fi
 }
 
-if [ -z "$SECRET_PATH" ]; then
-  __MSG="Command: tcctl vault get missed --secret-path"
-  _message "$__MSG" "error" "$_error_code"
-elif [ -z "$ENV" ]; then
-  __MSG="Command: tcctl vault get missed --env"
-  _message "$__MSG" "error" "$_error_code"
-else
-  _vault_get "$SECRET_PATH" "$ENV"
-fi
+_vault_get "$secret_path" "$env"
