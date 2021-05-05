@@ -13,9 +13,6 @@ function _vault_get_addr() {
   echo "$VAULT_ADDR"
 }
 
-VAULT_ADDR="$(_vault_get_addr)"
-export VAULT_ADDR
-
 function _vault_kv_list() {
   __secret_path="$1"
   __output=$(vault kv list "$__secret_path" 2>&1)
@@ -27,17 +24,47 @@ function _vault_kv_list() {
   fi
 }
 
-function _vault_get_token()  {
+function _vault_authorization()  {
   _check_bin_file vault
-  VAULT_CONFIG_FILE=~/.vault-configuration
-  source $VAULT_CONFIG_FILE
-  __output=$(vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD")
-  _error_code=$?
-  if [ "$_error_code" -eq "0" ]; then
-    VAULT_TOKEN=$( echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p )
-    echo "$VAULT_TOKEN"
+  __auth_type=$1
+  if [[ "$__auth_type" = "userpass" ]]; then
+    __vault_name=$2
+    __vault_password=$3
+    export VAULT_ADDR=$4
+    __output=$(vault login -method=userpass username="$__vault_name" password="$__vault_password")
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      VAULT_TOKEN=$(echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p)
+      export VAULT_TOKEN
+    else
+      __MSG="Error while creating vault token"
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  elif [[ "$__auth_type" = "token" ]]; then
+    __vault_token=$2
+    export VAULT_ADDR=$3
+    __output=$(vault login token="$__vault_token")
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      VAULT_TOKEN=$(echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p)
+      export VAULT_TOKEN
+    else
+      __MSG="Error while creating vault token"
+      _message "$__MSG" "error" "$_error_code"
+    fi
   else
-    __MSG="Error while creating vault token"
-    _message "$__MSG" "error" "$_error_code"
+    VAULT_CONFIG_FILE=~/.vault-configuration
+    source $VAULT_CONFIG_FILE
+    VAULT_ADDR="$(_vault_get_addr)"
+    export VAULT_ADDR
+    __output=$(vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD")
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      VAULT_TOKEN=$(echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p)
+      export VAULT_TOKEN
+    else
+      __MSG="Error while creating vault token"
+      _message "$__MSG" "error" "$_error_code"
+    fi
   fi
 }

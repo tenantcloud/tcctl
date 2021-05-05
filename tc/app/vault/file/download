@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091,SC2119
+# shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
@@ -8,45 +8,42 @@ source "$CLI_DIR/tc/app/helpers/functions"
 
 set -o pipefail
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
+auth_type=
+secret_path=
+file=
+vault_token=
+vault_name=
+vault_pass=
+vault_address=
 
-case $key in
-    --secret-path)
-    SECRET_PATH="$2"
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
     shift 2
-    ;;
-    --file)
-    FILE="$2"
-    shift 2
-    ;;
-    *)
-    ;;
-esac
+  else
+    set "${__key}"
+    shift
+  fi
 done
 
-function _vault_download() {
-  _check_bin_file vault
-  VAULT_TOKEN=$(_vault_get_token)
-  export VAULT_TOKEN
-  __secret_path=$1
-  __file=$2
-  rm -rf "$__file"
-  if [ "$__secret_path" ] ; then
-    __output=$( vault read "$__secret_path" -format=json | jq -r .data.key >> "$__file" )
-    _error_code=$?
-    __MSG="Command: tcctl vault download $__file from vault server "
-    __MSG+="$__output"
-    if [ "$_error_code" -eq "0" ]; then
-      echo "Success! Data downloaded: $__secret_path -> $__file"
-    fi
-  fi
-}
-
-if [ -z "$FILE" ]; then
-  __MSG="Command: tcctl vault file download missed --file"
-  _message "$__MSG" "error" "$_error_code"
+_check_bin_file vault
+if [[ "$auth_type" = "userpass" ]]; then
+  _vault_authorization "$auth_type" "$vault_name" "$vault_pass" "$vault_address"
+elif [[ "$auth_type" = "token" ]]; then
+  _vault_authorization "$auth_type" "$vault_token" "$vault_address"
 else
-  _vault_download "$SECRET_PATH" "$FILE"
+  _vault_authorization
+fi
+rm -rf "$file"
+if [ "$secret_path" ] ; then
+  vault read "$secret_path" -format=json | jq -r .data.key >> "$file"
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "Downloading $file from $secret_path is successfully"
+  else
+    __MSG="Error while downloading $file from $secret_path"
+    _message "$__MSG" "error" "$_error_code"
+  fi
 fi

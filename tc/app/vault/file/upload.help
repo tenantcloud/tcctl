@@ -1,4 +1,37 @@
 
-Upload the file to vault server
+tcctl vault file upload --secret-path "PATH" --file "FILE"
 
-    tcctl vault file upload --secret-path "path" --file filename
+tcctl vault file upload --auth-type token \
+                        --vault-token "VAULT_TOKEN" \
+                        --vault-address "VAULT_ADDR" \
+                        --secret-path "PATH" \
+                        --env "FILE"
+
+tcctl vault file upload --auth-type userpass \
+                        --vault-name "VAULT_NAME" \
+                        --vault-pass "VAULT_PASSWORD" \
+                        --vault-address "VAULT_ADDR" \
+                        --secret-path "PATH" \
+                        --env "FILE"
+
+Optional:
+
+--auth-type             "type for authentication"
+                        available type:
+                        -   token
+                        -   userpass
+--vault-token           "token from vault server"
+--vault-name            "users name on the vault server"
+--vault-password        "users password on the vault server"
+--vault-addr            "the vault server address"
+
+Require:
+
+--secret-path           "secret file path"
+--file                  "file name"
+
+If you do not use both types (token or userpass) you must configure authorization with the command:
+
+tcctl vault config --vault-addr "VAULT_ADDR" \
+                   --vault-name "VAULT_NAME" \
+                   --vault-password "VAULT_PASSWORD"

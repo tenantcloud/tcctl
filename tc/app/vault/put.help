@@ -1,12 +1,37 @@
-The command which put the keys to the vault server
 
-for example:
+tcctl vault put --secret-path "PATH" --env "FILE"
 
-tcctl vault put --secret-path projects_name/dev/projects_brahch --env .env - for use by developers
+tcctl vault put --auth-type token \
+                --vault-token "VAULT_TOKEN" \
+                --vault-address "VAULT_ADDR" \
+                --secret-path "PATH" \
+                --env "FILE"
 
-tcctl vault put --secret-path projects_name/APP_ENV --env .env - for use by servers
+tcctl vault put --auth-type userpass \
+                --vault-name "VAULT_NAME" \
+                --vault-pass "VAULT_PASSWORD" \
+                --vault-address "VAULT_ADDR" \
+                --secret-path "PATH" \
+                --env "FILE"
 
-projects_name           - project name in git repository
-projects_brahch         - current project branch
-APP_ENV                 - the value of the variable from the .env project file
-.env                    - project file in which we work
+Optional:
+
+--auth-type             "type for authentication"
+                        available type:
+                        -   token
+                        -   userpass
+--vault-token           "token from vault server"
+--vault-name            "users name on the vault server"
+--vault-password        "users password on the vault server"
+--vault-addr            "the vault server address"
+
+Require:
+
+--secret-path           "secret file path"
+--env                   "file name"
+
+If you do not use both types (token or userpass) you must configure authorization with the command:
+
+tcctl vault config --vault-addr "VAULT_ADDR" \
+                   --vault-name "VAULT_NAME" \
+                   --vault-password "VAULT_PASSWORD"

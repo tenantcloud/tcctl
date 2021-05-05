@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091,SC2119
+# shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/app/vault/functions"
 
-_vault_get_token
+_vault_authorization

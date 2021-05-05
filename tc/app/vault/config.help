@@ -1,4 +1,10 @@
 
-Configures user permissions and the vault server address
+tcctl vault config --vault-addr "VAULT_ADDR" \
+                   --vault-name "VAULT_NAME" \
+                   --vault-password "VAULT_PASSWORD"
 
-    tcctl vault config --vault-addr http://127.0.0.1:8200 --vault-name "username" --vault-password "userpassword"
+Require:
+
+--vault-addr            "the vault server address"
+--vault-name            "users name on the vault server"
+--vault-password        "users password on the vault server"

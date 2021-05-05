@@ -6,77 +6,60 @@ source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
 VAULT_CONFIG_FILE=~/.vault-configuration
-VAULT_ADDR="${VAULT_ADDR:-http://127.0.0.1:8200}"
+vault_addr="${vault_addr:-http://127.0.0.1:8200}"
+vault_name=
+vault_password=
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
-
-case $key in
-    --vault-addr)
-    VAULT_ADDR="$2"
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
     shift 2
-    ;;
-    --vault-name)
-    VAULT_NAME="$2"
-    shift 2
-    ;;
-    --vault-password)
-    VAULT_PASSWORD="$2"
-    shift 2
-    ;;
-    *)
-    ;;
-esac
+  else
+    set "${__key}"
+    shift
+  fi
 done
 
 function _vault_config() {
   _check_bin_file vault
-  VAULT_ADDR=$1
-  VAULT_NAME=$2
-  VAULT_PASSWORD=$3
-  if grep -q "export VAULT_ADDR=" "$VAULT_CONFIG_FILE"; then
+  __vault_addr=$1
+  __vault_name=$2
+  __vault_password=$3
+  if grep -q "export VAULT_ADDR=" "$VAULT_CONFIG_FILE" > /dev/null 2>&1; then
     _replace_string_with_escapes \
     "^export VAULT_ADDR=.*" \
-    "export VAULT_ADDR=$VAULT_ADDR" \
+    "export VAULT_ADDR=$__vault_addr" \
     $VAULT_CONFIG_FILE
   else
-    echo 'export VAULT_ADDR='"$VAULT_ADDR" >> $VAULT_CONFIG_FILE
+    echo 'export VAULT_ADDR='"$__vault_addr" >> $VAULT_CONFIG_FILE
   fi
-  if grep -q "export VAULT_NAME=" "$VAULT_CONFIG_FILE"; then
+  if grep -q "export VAULT_NAME=" "$VAULT_CONFIG_FILE" > /dev/null 2>&1; then
     _replace_string_with_escapes \
     "^export VAULT_NAME=.*" \
-    "export VAULT_NAME=$VAULT_NAME" \
+    "export VAULT_NAME=$__vault_name" \
     $VAULT_CONFIG_FILE
   else
-    echo 'export VAULT_NAME='"$VAULT_NAME" >> $VAULT_CONFIG_FILE
+    echo 'export VAULT_NAME='"$__vault_name" >> $VAULT_CONFIG_FILE
   fi
-  if grep -q "export VAULT_PASSWORD="  "$VAULT_CONFIG_FILE"; then
+  if grep -q "export VAULT_PASSWORD=" "$VAULT_CONFIG_FILE" > /dev/null 2>&1; then
     _replace_string_with_escapes \
     "^export VAULT_PASSWORD=.*" \
-    "export VAULT_PASSWORD=$VAULT_PASSWORD" \
+    "export VAULT_PASSWORD=$__vault_password" \
     "$VAULT_CONFIG_FILE"
   else
-    echo 'export VAULT_PASSWORD='"$VAULT_PASSWORD" >> $VAULT_CONFIG_FILE
+    echo 'export VAULT_PASSWORD='"$__vault_password" >> $VAULT_CONFIG_FILE
   fi
   # shellcheck source=/dev/null
   source $VAULT_CONFIG_FILE
   _error_code=$?
-  __MSG="Command: tcctl vault config"
-  if [[ "$_error_code" -eq "0" ]]; then
-    _message "$__MSG"
-  else
+  if [[ "$_error_code" -gt "0" ]]; then
+    __MSG="Error while configure vault credentials to $VAULT_CONFIG_FILE"
     _message "$__MSG" "error" "$_error_code"
+  else
+    _message "Add vault credentials to $VAULT_CONFIG_FILE is successfully"
   fi
-  echo "Add vault credentials to profile is successfully"
 }
 
-if [ -z "$VAULT_NAME" ]; then
-  __MSG="Command: tcctl vault config missed --vault-name"
-  _message "$__MSG" "error" "$_error_code"
-elif [ -z "$VAULT_PASSWORD" ]; then
-  __MSG="Command: tcctl vault config missed --vault-password"
-  _message "$__MSG" "error" "$_error_code"
-else
-  _vault_config "$VAULT_ADDR" "$VAULT_NAME" "$VAULT_PASSWORD"
-fi
+_vault_config "$vault_addr" "$vault_name" "$vault_password"
