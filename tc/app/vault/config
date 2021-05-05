@@ -6,9 +6,12 @@ source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
 VAULT_CONFIG_FILE=~/.vault-configuration
-vault_addr="${vault_addr:-http://127.0.0.1:8200}"
+vault_addr=
 vault_name=
 vault_password=
+addr="${vault_addr:-http://127.0.0.1:8200}"
+name=
+pass=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -22,11 +25,23 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
+if [[ -n "$vault_addr" ]]; then
+  addr=$vault_addr
+fi
+
+if [[ -n "$vault_name" ]]; then
+  name=$vault_name
+fi
+
+if [[ -n "$vault_password" ]]; then
+  pass=$vault_password
+fi
+
 function _vault_config() {
   _check_bin_file vault
   __vault_addr=$1
   __vault_name=$2
-  __vault_password=$3
+  __vault_pass=$3
   if grep -q "export VAULT_ADDR=" "$VAULT_CONFIG_FILE" > /dev/null 2>&1; then
     _replace_string_with_escapes \
     "^export VAULT_ADDR=.*" \
@@ -46,10 +61,10 @@ function _vault_config() {
   if grep -q "export VAULT_PASSWORD=" "$VAULT_CONFIG_FILE" > /dev/null 2>&1; then
     _replace_string_with_escapes \
     "^export VAULT_PASSWORD=.*" \
-    "export VAULT_PASSWORD=$__vault_password" \
+    "export VAULT_PASSWORD=$__vault_pass" \
     "$VAULT_CONFIG_FILE"
   else
-    echo 'export VAULT_PASSWORD='"$__vault_password" >> $VAULT_CONFIG_FILE
+    echo 'export VAULT_PASSWORD='"$__vault_pass" >> $VAULT_CONFIG_FILE
   fi
   # shellcheck source=/dev/null
   source $VAULT_CONFIG_FILE
@@ -62,4 +77,4 @@ function _vault_config() {
   fi
 }
 
-_vault_config "$vault_addr" "$vault_name" "$vault_password"
+_vault_config "$addr" "$name" "$pass"

@@ -30,7 +30,7 @@ function _vault_authorization()  {
   if [[ "$__auth_type" = "userpass" ]]; then
     __vault_name=$2
     __vault_password=$3
-    export VAULT_ADDR=$4
+    export VAULT_ADDR=$5
     __output=$(vault login -method=userpass username="$__vault_name" password="$__vault_password")
     _error_code=$?
     if [ "$_error_code" -eq "0" ]; then
@@ -41,8 +41,8 @@ function _vault_authorization()  {
       _message "$__MSG" "error" "$_error_code"
     fi
   elif [[ "$__auth_type" = "token" ]]; then
-    __vault_token=$2
-    export VAULT_ADDR=$3
+    __vault_token=$4
+    export VAULT_ADDR=$5
     __output=$(vault login token="$__vault_token")
     _error_code=$?
     if [ "$_error_code" -eq "0" ]; then

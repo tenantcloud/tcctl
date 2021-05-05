@@ -9,10 +9,11 @@ source "$CLI_DIR/tc/app/helpers/functions"
 auth_type=
 secret_path=
 env=
-vault_token=
-vault_name=
-vault_pass=
-vault_address=
+file=
+token=
+name=
+pass=
+addr=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -26,18 +27,16 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-_check_bin_file vault
-if [[ "$auth_type" = "userpass" ]]; then
-  _vault_authorization "$auth_type" "$vault_name" "$vault_pass" "$vault_address"
-elif [[ "$auth_type" = "token" ]]; then
-  _vault_authorization "$auth_type" "$vault_token" "$vault_address"
-else
-  _vault_authorization
+if [[ -n "$env" ]]; then
+  file=$env
 fi
+
+_check_bin_file vault
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
 vault kv get "$secret_path" > /dev/null 2>&1
 _error_code=$?
 if [ "$_error_code" -eq "0" ]; then
-  vault kv get "$secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$env"
+  vault kv get "$secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$file"
 else
   __MSG="Get keys from ${secret_path} to ${env}"
   _message "$__MSG" "error" "$_error_code"

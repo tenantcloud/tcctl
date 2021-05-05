@@ -9,10 +9,11 @@ source "$CLI_DIR/tc/app/helpers/functions"
 auth_type=
 secret_path=
 env=
-vault_token=
-vault_name=
-vault_pass=
-vault_address=
+file=
+token=
+name=
+pass=
+addr=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -26,15 +27,13 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-_check_bin_file vault
-if [[ "$auth_type" = "userpass" ]]; then
-  _vault_authorization "$auth_type" "$vault_name" "$vault_pass" "$vault_address"
-elif [[ "$auth_type" = "token" ]]; then
-  _vault_authorization "$auth_type" "$vault_token" "$vault_address"
-else
-  _vault_authorization
+if [[ -n "$env" ]]; then
+  file=$env
 fi
-vault kv put "$secret_path" $(egrep -v '^#' "$env") > /dev/null 2>&1
+
+_check_bin_file vault
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
+vault kv put "$secret_path" $(egrep -v '^#' "$file") > /dev/null 2>&1
 _error_code=$?
 if [ "$_error_code" -gt "0" ]; then
   __MSG="Error while put to $secret_path"

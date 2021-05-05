@@ -11,10 +11,10 @@ set -o pipefail
 auth_type=
 secret_path=
 file=
-vault_token=
-vault_name=
-vault_pass=
-vault_address=
+token=
+name=
+pass=
+addr=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -29,13 +29,7 @@ while echo "$1" | grep -q ^--; do
 done
 
 _check_bin_file vault
-if [[ "$auth_type" = "userpass" ]]; then
-  _vault_authorization "$auth_type" "$vault_name" "$vault_pass" "$vault_address"
-elif [[ "$auth_type" = "token" ]]; then
-  _vault_authorization "$auth_type" "$vault_token" "$vault_address"
-else
-  _vault_authorization
-fi
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
 rm -rf "$file"
 if [ "$secret_path" ] ; then
   vault read "$secret_path" -format=json | jq -r .data.key >> "$file"

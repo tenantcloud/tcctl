@@ -1,18 +1,18 @@
 
-tcctl vault put --secret-path "PATH" --env "FILE"
+tcctl vault put --secret-path "PATH" --file "FILE"
 
 tcctl vault put --auth-type token \
-                --vault-token "VAULT_TOKEN" \
-                --vault-address "VAULT_ADDR" \
+                --token "VAULT_TOKEN" \
+                --addr "VAULT_ADDR" \
                 --secret-path "PATH" \
-                --env "FILE"
+                --file "FILE"
 
 tcctl vault put --auth-type userpass \
-                --vault-name "VAULT_NAME" \
-                --vault-pass "VAULT_PASSWORD" \
-                --vault-address "VAULT_ADDR" \
+                --name "VAULT_NAME" \
+                --pass "VAULT_PASSWORD" \
+                --addr "VAULT_ADDR" \
                 --secret-path "PATH" \
-                --env "FILE"
+                --file "FILE"
 
 Optional:
 
@@ -20,18 +20,18 @@ Optional:
                         available type:
                         -   token
                         -   userpass
---vault-token           "token from vault server"
---vault-name            "users name on the vault server"
---vault-password        "users password on the vault server"
---vault-addr            "the vault server address"
+--token                 "token from vault server"
+--name                  "users name on the vault server"
+--pass                  "users password on the vault server"
+--addr                  "the vault server address"
 
 Require:
 
 --secret-path           "secret file path"
---env                   "file name"
+--file                  "file name"
 
 If you do not use both types (token or userpass) you must configure authorization with the command:
 
-tcctl vault config --vault-addr "VAULT_ADDR" \
-                   --vault-name "VAULT_NAME" \
-                   --vault-password "VAULT_PASSWORD"
+tcctl vault config --addr "VAULT_ADDR" \
+                   --name "VAULT_NAME" \
+                   --pass "VAULT_PASSWORD"
