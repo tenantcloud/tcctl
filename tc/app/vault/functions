@@ -6,16 +6,9 @@
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
-# Function return vault server address
-function _vault_get_addr() {
-  VAULT_CONFIG_FILE=~/.vault-configuration
-  source "$VAULT_CONFIG_FILE"
-  echo "$VAULT_ADDR"
-}
-
 function _vault_kv_list() {
   __secret_path="$1"
-  __output=$(vault kv list "$__secret_path" 2>&1)
+  vault kv list "$__secret_path" > /dev/null 2>&1
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     echo "true"
@@ -27,43 +20,31 @@ function _vault_kv_list() {
 function _vault_authorization()  {
   _check_bin_file vault
   __auth_type=$1
+  __vault_name=$2
+  __vault_password=$3
+  __vault_token=$4
+  export VAULT_ADDR=$5
   if [[ "$__auth_type" = "userpass" ]]; then
-    __vault_name=$2
-    __vault_password=$3
-    export VAULT_ADDR=$5
-    __output=$(vault login -method=userpass username="$__vault_name" password="$__vault_password")
+    vault login -method=userpass username="$__vault_name" password="$__vault_password" > /dev/null 2>&1
     _error_code=$?
-    if [ "$_error_code" -eq "0" ]; then
-      VAULT_TOKEN=$(echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p)
-      export VAULT_TOKEN
-    else
-      __MSG="Error while creating vault token"
+    if [ "$_error_code" -gt "0" ]; then
+      __MSG="Userpass authorization error"
       _message "$__MSG" "error" "$_error_code"
     fi
   elif [[ "$__auth_type" = "token" ]]; then
-    __vault_token=$4
-    export VAULT_ADDR=$5
-    __output=$(vault login token="$__vault_token")
+    vault login token="$__vault_token" > /dev/null 2>&1
     _error_code=$?
-    if [ "$_error_code" -eq "0" ]; then
-      VAULT_TOKEN=$(echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p)
-      export VAULT_TOKEN
-    else
-      __MSG="Error while creating vault token"
+    if [ "$_error_code" -gt "0" ]; then
+      __MSG="Token authorization error"
       _message "$__MSG" "error" "$_error_code"
     fi
   else
     VAULT_CONFIG_FILE=~/.vault-configuration
     source $VAULT_CONFIG_FILE
-    VAULT_ADDR="$(_vault_get_addr)"
-    export VAULT_ADDR
-    __output=$(vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD")
+    vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD" > /dev/null 2>&1
     _error_code=$?
-    if [ "$_error_code" -eq "0" ]; then
-      VAULT_TOKEN=$(echo "$__output" | sed 1,6d | tr -s ' ' | cut -f 2 -d ' ' | sed -n 1p)
-      export VAULT_TOKEN
-    else
-      __MSG="Error while creating vault token"
+    if [ "$_error_code" -gt "0" ]; then
+      __MSG="Config file authorization error"
       _message "$__MSG" "error" "$_error_code"
     fi
   fi
