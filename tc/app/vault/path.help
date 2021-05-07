@@ -1,13 +1,37 @@
-A command that checks for the existence of a secret kv path on the vault server
 
-for example:
+tcctl vault path --secret-path "PATH"
 
-tcctl vault path --secret-path projects_name/dev/projects_brahch - for use by developers
+tcctl vault path \
+  --auth-type token \
+  --token "VAULT_TOKEN" \
+  --addr "VAULT_ADDR" \
+  --secret-path "PATH"
 
-tcctl vault path --secret-path projects_name/APP_ENV - for use by servers
+tcctl vault path \
+  --auth-type userpass \
+  --name "VAULT_NAME" \
+  --pass "VAULT_PASSWORD" \
+  --addr "VAULT_ADDR" \
+  --secret-path "PATH" \
 
-where:
+Optional:
 
-projects_name           - project name in git repository
-projects_brahch         - current project branch
-APP_ENV                 - the value of the variable from the .env project file
+--auth-type             "type for authentication"
+                        available type:
+                        -   token
+                        -   userpass
+--token                 "token from vault server"
+--name                  "users name on the vault server"
+--pass                  "users password on the vault server"
+--addr                  "the vault server address"
+
+Require:
+
+--secret-path           "secret file path"
+
+If you do not use both types (token or userpass) you must configure authorization with the command:
+
+tcctl vault config \
+  --addr "VAULT_ADDR" \
+  --name "VAULT_NAME" \
+  --pass "VAULT_PASSWORD"

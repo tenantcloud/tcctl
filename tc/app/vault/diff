@@ -7,6 +7,8 @@ source "$CLI_DIR/tc/app/helpers/functions"
 
 env_1=
 env_2=
+file_1=
+file_2=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -20,11 +22,19 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
+if [[ -n "$env_1" ]]; then
+  file_1=$env_1
+fi
+
+if [[ -n "$env_2" ]]; then
+  file_2=$env_2
+fi
+
 function _vault_diff() {
   _check_bin_file vault
-  env_1=$1
-  env_2=$2
-  __output=$(diff -y --suppress-common-lines "$env_1" "$env_2")
+  __file_1=$1
+  __file_2=$2
+  __output=$(diff -y --suppress-common-lines "$__file_1" "$__file_2")
   _error_code=$?
   __MSG="Output the difference between two files"
   if  [ "$_error_code" -eq "1" ]; then
@@ -37,4 +47,4 @@ function _vault_diff() {
   fi
 }
 
-_vault_diff "$env_1" "$env_2"
+_vault_diff "$file_1" "$file_2"

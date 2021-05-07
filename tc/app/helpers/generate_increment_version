@@ -82,5 +82,5 @@ if [[ $(_get_start_tag) == 'True' ]]; then
     fi
   fi
 else
-  echo "v1.0.0"
+  echo "v1.0"
 fi

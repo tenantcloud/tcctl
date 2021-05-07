@@ -1,51 +1,40 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2086,SC1091
+# shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
+auth_type=
+secret_path=
+file=
+token=
+name=
+pass=
+addr=
 
-case $key in
-    --secret-path)
-    SECRET_PATH="$2"
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
     shift 2
-    ;;
-    --file)
-    FILE="$2"
-    shift 2
-    ;;
-    *)
-    ;;
-esac
+  else
+    set "${__key}"
+    shift
+  fi
 done
 
-function _vault_upload() {
-  _check_bin_file vault
-  VAULT_TOKEN=$(tcctl vault token)
-  export VAULT_TOKEN
-  __secret_path=$1
-  __file=$2
-  if [ "$__secret_path" ] ; then
-    __output=$( vault write "$__secret_path" "key"=@"$__file" 2>&1 )
-    _error_code=$?
-    __MSG="Command: tcctl vault upload $__file to vault server "
-    __MSG+="$__output"
-    if [ "$_error_code" -eq "0" ]; then
-      echo "Success! Data written to: $__secret_path"
-    else
-      _message "$__MSG" "error" "$_error_code"
-    fi
+_check_bin_file vault
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
+if [ "$secret_path" ] ; then
+  vault write "$secret_path" "key"=@"$file" 2>&1
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "Uploading $file to $secret_path is successfully"
+  else
+    __MSG="Error while uploading $file to $secret_path"
+    _message "$__MSG" "error" "$_error_code"
   fi
-}
-
-if [ -z "$FILE" ]; then
-  __MSG="Command: tcctl vault file upload missed --file"
-  _message "$__MSG" "error" "$_error_code"
-else
-  _vault_upload "$SECRET_PATH" "$FILE"
 fi

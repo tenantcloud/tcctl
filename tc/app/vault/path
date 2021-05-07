@@ -1,44 +1,36 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2124,SC1091
+# shellcheck disable=SC1091,SC2119
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
-while [[ $# -gt 0 ]]
-do
-key="$1"
+auth_type=
+secret_path=
+token=
+name=
+pass=
+addr=
 
-case $key in
-    --secret-path)
-    SECRET_PATH="$2"
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
     shift 2
-    ;;
-    *)
-    ;;
-esac
+  else
+    set "${__key}"
+    shift
+  fi
 done
 
-function _vault_check_path() {
-  _check_bin_file vault
-  VAULT_TOKEN=$(tcctl vault token)
-  export VAULT_TOKEN
-  __secret_path="$1"
-  __output=$( vault kv get "$__secret_path" 2>&1 )
-  _error_code=$?
-  __MSG="Command: tcctl vault path $@ "
-  __MSG+="$__output"
-  if [ "$_error_code" -eq "0" ]; then
-    echo "true"
-  else
-    echo "false"
-  fi
-}
-
-if [ -z "$SECRET_PATH" ]; then
-  __MSG="Command: tcctl vault path missed --secret-path"
-  _message "$__MSG" "error" "$_error_code"
+_check_bin_file vault
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
+vault kv get "$secret_path" > /dev/null 2>&1
+_error_code=$?
+if [ "$_error_code" -eq "0" ]; then
+  echo "true"
 else
-  _vault_check_path "$SECRET_PATH"
+  echo "false"
 fi

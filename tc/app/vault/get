@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2124,SC1091
+# shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/vault/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
+auth_type=
 secret_path=
 env=
+file=
+token=
+name=
+pass=
+addr=
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -21,21 +27,17 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-function _vault_get() {
-  _check_bin_file vault
-  VAULT_TOKEN=$(tcctl vault token)
-  export VAULT_TOKEN
-  __secret_path=$1
-  __local_path=$2
-  __output=$(vault kv get "$__secret_path" 2>&1)
-  _error_code=$?
-  __MSG="Get keys from ${__secret_path} - "
-  __MSG+="$__output"
-  if [ "$_error_code" -eq "0" ]; then
-    vault kv get "$__secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$__local_path"
-  else
-    _message "$__MSG" "error" "$_error_code"
-  fi
-}
+if [[ -n "$env" ]]; then
+  file=$env
+fi
 
-_vault_get "$secret_path" "$env"
+_check_bin_file vault
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
+vault kv get "$secret_path" > /dev/null 2>&1
+_error_code=$?
+if [ "$_error_code" -eq "0" ]; then
+  vault kv get "$secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$file"
+else
+  __MSG="Get keys from ${secret_path} to ${env}"
+  _message "$__MSG" "error" "$_error_code"
+fi

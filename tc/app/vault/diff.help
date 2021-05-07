@@ -1,7 +1,7 @@
 
-tcctl vault diff --env-1 "ENV1" --env-2 "ENV2"
+tcctl vault diff --file-1 "FILE1" --file-2 "FILE2"
 
 Require:
 
---env-1                 "first env file"
---env-2                 "second env file"
+--file-1                 "first file"
+--file-2                 "second file"

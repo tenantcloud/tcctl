@@ -1,26 +1,51 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2124,SC1091
 # shellcheck source=/dev/null
 
-# Function return vault server address
-function _vault_get_addr() {
-  VAULT_CONFIG_FILE=~/.vault-configuration
-  source "$VAULT_CONFIG_FILE"
-  echo "$VAULT_ADDR"
-}
-
-VAULT_ADDR="$(_vault_get_addr)"
-export VAULT_ADDR
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
 
 function _vault_kv_list() {
   __secret_path="$1"
-  __output=$( vault kv list "$__secret_path" 2>&1 )
+  vault kv list "$__secret_path" > /dev/null 2>&1
   _error_code=$?
-  __MSG="Command: tcctl vault kv list $__secret_path"
-  __MSG+="$__output"
   if [ "$_error_code" -eq "0" ]; then
     echo "true"
   else
     echo "false"
+  fi
+}
+
+function _vault_authorization()  {
+  _check_bin_file vault
+  __auth_type=$1
+  __vault_name=$2
+  __vault_password=$3
+  __vault_token=$4
+  export VAULT_ADDR=$5
+  if [[ "$__auth_type" = "userpass" ]]; then
+    vault login -method=userpass username="$__vault_name" password="$__vault_password" > /dev/null 2>&1
+    _error_code=$?
+    if [ "$_error_code" -gt "0" ]; then
+      __MSG="Userpass authorization error"
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  elif [[ "$__auth_type" = "token" ]]; then
+    vault login token="$__vault_token" > /dev/null 2>&1
+    _error_code=$?
+    if [ "$_error_code" -gt "0" ]; then
+      __MSG="Token authorization error"
+      _message "$__MSG" "error" "$_error_code"
+    fi
+  else
+    VAULT_CONFIG_FILE=~/.vault-configuration
+    source $VAULT_CONFIG_FILE
+    vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD" > /dev/null 2>&1
+    _error_code=$?
+    if [ "$_error_code" -gt "0" ]; then
+      __MSG="Config file authorization error"
+      _message "$__MSG" "error" "$_error_code"
+    fi
   fi
 }
