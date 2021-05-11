@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1091,SC2034
+# shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/framework/functions"
 
@@ -21,7 +21,9 @@ done
 __output=$(curl -sL -w "%{http_code}\n" "$addr" -o /dev/null)
 _error_code=$?
 if [ "$_error_code" -eq "0" ]; then
-  echo "true"
+  if [[ "$__output" == "200" ]]; then
+    echo "true"
+  fi
 else
   echo "false"
 fi
