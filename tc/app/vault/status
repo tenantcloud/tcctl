@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1091,SC2034
+
+source "$CLI_DIR/tc/framework/functions"
+
+names=""
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+__output=$(curl -sL -w "%{http_code}\n" "$names" -o /dev/null)
+_error_code=$?
+if [ "$_error_code" -eq "0" ]; then
+  echo "true"
+else
+  echo "false"
+fi

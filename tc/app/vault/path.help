@@ -12,7 +12,7 @@ tcctl vault path \
   --name "VAULT_NAME" \
   --pass "VAULT_PASSWORD" \
   --addr "VAULT_ADDR" \
-  --secret-path "PATH" \
+  --secret-path "PATH"
 
 Optional:
 

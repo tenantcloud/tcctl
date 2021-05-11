@@ -1,0 +1,6 @@
+
+tcctl vault status --names "VAULT_ADDR"
+
+Require:
+
+--names                 "web server address"
