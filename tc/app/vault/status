@@ -4,7 +4,7 @@
 
 source "$CLI_DIR/tc/framework/functions"
 
-names=""
+addr=""
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
@@ -18,7 +18,7 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-__output=$(curl -sL -w "%{http_code}\n" "$names" -o /dev/null)
+__output=$(curl -sL -w "%{http_code}\n" "$addr" -o /dev/null)
 _error_code=$?
 if [ "$_error_code" -eq "0" ]; then
   echo "true"
