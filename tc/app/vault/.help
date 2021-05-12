@@ -1,11 +1,12 @@
 The commands with which we work with the vault server
 
 tcctl vault config
-tcctl vault token
-tcctl vault path
-tcctl vault get
-tcctl vault put
 tcctl vault diff
+tcctl vault get
+tcctl vault path
+tcctl vault put
+tcctl vault status
+tcctl vault token
 tcctl vault file upload
 tcctl vault file download
 tcctl vault secrets create

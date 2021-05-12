@@ -29,7 +29,7 @@ done
 _check_bin_file vault
 _vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
 if [ "$secret_path" ] ; then
-  vault write "$secret_path" "key"=@"$file" 2>&1
+  vault write "$secret_path" "key"=@"$file" > /dev/null 2>&1
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     echo "Uploading $file to $secret_path is successfully"
