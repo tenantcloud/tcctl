@@ -8,8 +8,7 @@ for __param in "$@"; do
   __parameters+="$__param "
 done
 
-exec 5>&1
-__output="$( $__parameters 2>&1 | tee /dev/fd/5; exit "${PIPESTATUS[0]}")"
+__output="$( $__parameters 2>&1 )"
 __error_code=$?
 __MSG="Command: cmd run $__parameters"
 __MSG+="$__output"
