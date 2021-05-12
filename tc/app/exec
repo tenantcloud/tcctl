@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# set -x
+
+# shellcheck disable=SC1091,SC2154
+source "$CLI_DIR/tc/framework/functions"
+
+set_value_in_variable "$@"
+
+echo "$text1 $text2"
