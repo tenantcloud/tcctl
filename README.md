@@ -1,3 +1,7 @@
+
+[![Build Status](https://github.com/tenantcloud/tcctl/workflows/Enlarge%20version/badge.svg)](https://github.com/tenantcloud/tcctl/workflows/Enlarge%20version/badge.svg)
+[![Stable Version](https://img.shields.io/github/v/tag/tenantcloud/tcctl)](https://img.shields.io/github/v/tag/tenantcloud/tcctl)
+
 # TenantCloud Control script
 
 ## Pre install
@@ -10,7 +14,7 @@ curl -L -s https://git.io/JU3Fy | bash
 
 ## Install
 
-Install TCCTL
+Install tcctl
 
 Create file `bcl.json` in a project folder
 
@@ -55,7 +59,7 @@ bcl create vault put
 
 ## Docker
 
-Get latest version on TCCtl run command
+Get latest version on tcctl run command
 
 ```bash
 docker pull tenantcloud/tcctl
