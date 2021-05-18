@@ -30,7 +30,7 @@ Optional:
 Require:
 
 --secret-path           "secret file path"
---file                  "file name"
+--file                  "file name (by default - .env)"
 
 If you do not use both types (token or userpass) you must configure authorization with the command:
 

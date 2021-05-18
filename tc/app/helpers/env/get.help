@@ -4,4 +4,4 @@ tcctl helpers env get --key "KEY" --file "FILE"
 Require:
 
 --key                   "key name"
---file                  "file name"
+--file                  "file name (by default - .env)"

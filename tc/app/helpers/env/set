@@ -7,7 +7,7 @@ source "$CLI_DIR/tc/app/helpers/functions"
 
 key=
 key_value=
-file=
+file=".env"
 
 while echo "$1" | grep -q ^--; do
   __key=${1//--/}
