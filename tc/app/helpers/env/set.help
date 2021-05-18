@@ -5,4 +5,4 @@ Require:
 
 --key                   "key name"
 --key-value             "key value"
---file                  "file name"
+--file                  "file name (by default - .env)"

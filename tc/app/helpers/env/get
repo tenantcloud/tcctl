@@ -6,7 +6,7 @@ source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/helpers/functions"
 
 key=
-file=
+file=".env"
 env=
 
 while echo "$1" | grep -q ^--; do

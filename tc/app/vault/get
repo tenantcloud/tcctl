@@ -9,7 +9,7 @@ source "$CLI_DIR/tc/app/helpers/functions"
 auth_type=
 secret_path=
 env=
-file=
+file=".env"
 token=
 name=
 pass=
