@@ -1,0 +1,17 @@
+
+tcctl laravel pull-request \
+  --bitbucket-username "NAME" \
+  --repo-slug "SLUG" \
+  --branch-from "BRANCH1" \
+  --branch-to "BRANCH2"
+  --bitbucket-client-id "ID" \
+  --bitbucket-client-secret "SECRET"
+
+Require:
+
+--bitbucket_username        "username"
+--repo-slug                 "repo name"
+--branch-from               "branch from"
+--branch-to                 "branch to"
+--bitbucket-client-id       "id"
+--bitbucket-client-secret   "secret"
