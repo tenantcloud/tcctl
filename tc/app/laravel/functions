@@ -17,7 +17,7 @@ function _get_bitbucket_access_token() {
   _error_code=$?
   if [ $_error_code -eq "0" ]; then
     __access_token=$(jq -r '.access_token' "$__token_file")
-    export __access_token
+    echo  "$__access_token"
     rm "$__token_file"
   else
     __MSG="Error getting bitbucket access token"
@@ -26,14 +26,14 @@ function _get_bitbucket_access_token() {
 }
 
 function _send_pull_request() {
+  __response_file=pr-$(date +'%Y-%m-%d_%H-%M-%S').json
   __site_version=$(grep "^APP_VERSION" .env | awk -F "=" '{ print $2 }')
   __bitbucket_username="$1"
   __repo_slug="$2"
   __branch_from="$3"
   __branch_to="$4"
-  __response_file="$5"
-  __bitbucket_client_id="$6"
-  __bitbucket_client_secret="$7"
+  __bitbucket_client_id="$5"
+  __bitbucket_client_secret="$6"
   __build_data=$(cat <<EOF
 {
     "title": "Automatic Pull Request. ${__repo_slug} [${__branch_from} -> ${__branch_to}] - ${__site_version}",
@@ -52,15 +52,16 @@ function _send_pull_request() {
 EOF
 )
 
-_get_bitbucket_access_token "$__bitbucket_client_id" "$__bitbucket_client_secret"
+__access_token="$(_get_bitbucket_access_token "$__bitbucket_client_id" "$__bitbucket_client_secret")"
 
-if [ -n "${__access_token}" ]; then
+if [ -n "$__access_token" ]; then
   __commit_api_link="https://api.bitbucket.org/2.0/repositories/${__bitbucket_username}/${__repo_slug}"
   curl -s -X POST \
 "${__commit_api_link}/pullrequests?access_token=${__access_token}" \
   -H "cache-control: no-cache" \
   -H "content-type: application/json" \
   -d "${__build_data}" > "${__response_file}"
+  _error_code=$?
   if [ $_error_code -eq "0" ]; then
     __pull_request_url=$(jq .links.html.href -r "${__response_file}")
     rm "${__response_file}"

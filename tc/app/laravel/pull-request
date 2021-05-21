@@ -9,7 +9,6 @@ bitbucket_username=
 repo_slug=
 branch_from=
 branch_to=
-response_file=pr-$(date +'%Y-%m-%d_%H-%M-%S').json
 bitbucket_client_id=
 bitbucket_client_secret=
 
@@ -29,6 +28,5 @@ _send_pull_request "$bitbucket_username" \
  "$repo_slug" \
  "$branch_from" \
  "$branch_to" \
- "$response_file" \
  "$bitbucket_client_id" \
  "$bitbucket_client_secret"
