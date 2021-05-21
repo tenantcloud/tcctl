@@ -1,0 +1,4 @@
+The functions and commands for create and restore snapshot for secrets engine for vault server
+
+tcctl vault snapshot create
+tcctl vault snapshot restore

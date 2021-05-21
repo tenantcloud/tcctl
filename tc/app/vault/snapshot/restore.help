@@ -1,0 +1,37 @@
+
+tcctl vault snapshot restore --file "FILE"
+
+tcctl vault snapshot restore \
+  --auth-type token \
+  --token "VAULT_TOKEN" \
+  --addr "VAULT_ADDR" \
+  --file "FILE"
+
+tcctl vault snapshot restore \
+  --auth-type userpass \
+  --name "VAULT_NAME" \
+  --pass "VAULT_PASSWORD" \
+  --addr "VAULT_ADDR" \
+  --file "FILE"
+
+Optional:
+
+--auth-type             "type for authentication"
+                        available type:
+                        -   token
+                        -   userpass
+--token                 "token from vault server"
+--name                  "users name on the vault server"
+--pass                  "users password on the vault server"
+--addr                  "the vault server address"
+
+Require:
+
+--file                  "name of snapshot file"
+
+If you do not use both types (token or userpass) you must configure authorization with the command:
+
+tcctl vault config \
+  --addr "VAULT_ADDR" \
+  --name "VAULT_NAME" \
+  --pass "VAULT_PASSWORD"
