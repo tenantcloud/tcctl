@@ -30,22 +30,22 @@ function _send_pull_request() {
   __site_version=$(grep "^APP_VERSION" .env | awk -F "=" '{ print $2 }')
   __bitbucket_username="$1"
   __repo_slug="$2"
-  __branch_from="$3"
-  __branch_to="$4"
+  __branch_source="$3"
+  __branch_destination="$4"
   __bitbucket_client_id="$5"
   __bitbucket_client_secret="$6"
   __build_data=$(cat <<EOF
 {
-    "title": "Automatic Pull Request. ${__repo_slug} [${__branch_from} -> ${__branch_to}] - ${__site_version}",
-    "description":  "Automatic build project ${__repo_slug}. Branch ${__branch_from} -> ${__branch_to}",
+    "title": "Automatic Pull Request. ${__repo_slug} [${__branch_source} -> ${__branch_destination}] - ${__site_version}",
+    "description":  "Automatic build project ${__repo_slug}. Branch ${__branch_source} -> ${__branch_destination}",
     "source": {
         "branch": {
-            "name": "${__branch_from}"
+            "name": "${__branch_source}"
         }
     },
     "destination": {
         "branch": {
-            "name": "${__branch_to}"
+            "name": "${__branch_destination}"
         }
     }
 }

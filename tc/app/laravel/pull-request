@@ -7,8 +7,8 @@ source "$CLI_DIR/tc/app/laravel/functions"
 
 bitbucket_username=
 repo_slug=
-branch_from=
-branch_to=
+branch_source=
+branch_destination=
 bitbucket_client_id=
 bitbucket_client_secret=
 
@@ -26,7 +26,7 @@ done
 
 _send_pull_request "$bitbucket_username" \
  "$repo_slug" \
- "$branch_from" \
- "$branch_to" \
+ "$branch_source" \
+ "$branch_destination" \
  "$bitbucket_client_id" \
  "$bitbucket_client_secret"
