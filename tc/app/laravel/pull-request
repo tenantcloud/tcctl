@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1091
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/laravel/functions"
+
+bitbucket_username=
+repo_slug=
+branch_source=
+branch_destination=
+bitbucket_client_id=
+bitbucket_client_secret=
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+_send_pull_request "$bitbucket_username" \
+ "$repo_slug" \
+ "$branch_source" \
+ "$branch_destination" \
+ "$bitbucket_client_id" \
+ "$bitbucket_client_secret"

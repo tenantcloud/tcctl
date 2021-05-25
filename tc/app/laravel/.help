@@ -1,0 +1,6 @@
+The laravel functions and commands for all projects
+
+tcctl laravel appcenter-deployment
+tcctl laravel appcenter-release
+tcctl laravel change_slave_hostname
+tcctl laravel pull-request
