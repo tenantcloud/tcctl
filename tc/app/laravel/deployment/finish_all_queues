@@ -51,12 +51,12 @@ function _finish_all_queues() {
       _message "$__MSG" "error" "$_error_code"
     fi
   done
-  php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
-  _error_code=$(( "$_error_code" + "$?" ))
-  __MSG="Error on queue state terminate when empty"
-  if [[ "$_error_code" -gt "0" ]]; then
-    _message "$__MSG" "error" "$_error_code"
-  fi
+#  php artisan tc:devops:queues_state --queue=deploy --terminate-when-empty=true
+#  _error_code=$(( "$_error_code" + "$?" ))
+#  __MSG="Error on queue state terminate when empty"
+#  if [[ "$_error_code" -gt "0" ]]; then
+#    _message "$__MSG" "error" "$_error_code"
+#  fi
   byobu kill-session -t "$__session_name"
   _error_code=$(( "$_error_code" + "$?" ))
   __MSG="Error while trying to kill byobu session"
