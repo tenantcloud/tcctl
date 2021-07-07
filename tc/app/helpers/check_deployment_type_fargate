@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC2063,SC1091
+
+source "$CLI_DIR/tc/framework/functions"
+
+function check_deployment_type_fargate() {
+  # TODO: Add Verification here
+  __output=$( php artisan tc:devops:migrations_state \
+                    --non-verbose )
+  _error_code=$?
+  __MSG="Command: tcctl helpers check migrations state "
+  __MSG+="$__output"
+  if [[ "$_error_code" -eq "0" ]]; then
+    __deploy_tasks="$__output"
+    if [[ $__deploy_tasks -gt "0" ]]; then
+      echo "true"
+    fi
+  else
+    _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+check_deployment_type_fargate
