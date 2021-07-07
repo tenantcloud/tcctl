@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1091
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/vault/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
+source "$CLI_DIR/tc/app/slack/functions"
+
+auth_type="userpass"
+secret_path=
+env=
+file=".env"
+token=
+name=
+pass=
+addr=
+slack_channel=
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+if [[ -n "$env" ]]; then
+  file=$env
+fi
+
+_check_bin_file vault
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
+_is_vault_server_active=$(_web_status_server "$addr")
+if [[ "$_is_vault_server_active" == "true" ]]; then
+  _is_vault_path_available=$(_is_vault_path_available "$secret_path")
+  if [[ "$_is_vault_path_available" == "true" ]]; then
+    vault kv get "$secret_path" > /dev/null 2>&1
+    _error_code=$?
+    if [ "$_error_code" -eq "0" ]; then
+      vault kv get "$secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$file"
+    else
+      __MSG="Get keys from ${secret_path} to ${file}"
+      _message "$__MSG" "error" "$_error_code"
+    fi
+    if [[ -s "$file" ]]; then
+      mv "$file" .env
+    else
+      rm -rf "$file"
+      MSG=":red_circle: The .env file was not copied - check the settings on $(hostname)"
+      slack_send_message \
+        --channel "$slack_channel" \
+        --color "#18db12" \
+        --message "$MSG"
+    fi
+  fi
+else
+  MSG=":red_circle: The $addr service is unavailable from $(hostname)"
+  slack_send_message \
+    --channel "$slack_channel" \
+    --color "#18db12" \
+    --message "$MSG"
+fi

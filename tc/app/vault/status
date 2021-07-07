@@ -3,6 +3,7 @@
 # shellcheck disable=SC1091
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/vault/functions"
 
 addr=""
 
@@ -18,12 +19,4 @@ while echo "$1" | grep -q ^--; do
   fi
 done
 
-__output=$(curl -sL -w "%{http_code}\n" "$addr" -o /dev/null)
-_error_code=$?
-if [ "$_error_code" -eq "0" ]; then
-  if [[ "$__output" == "200" ]]; then
-    echo "true"
-  fi
-else
-  echo "false"
-fi
+_web_status_server "$addr"

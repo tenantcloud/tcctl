@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1091,SC2046,SC2196
+
+source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/vault/functions"
+source "$CLI_DIR/tc/app/helpers/functions"
+source "$CLI_DIR/tc/app/slack/functions"
+
+auth_type="userpass"
+secret_path=
+env=
+file=".env"
+token=
+name=
+pass=
+addr=
+slack_channel=
+
+while echo "$1" | grep -q ^--; do
+  __key=${1//--/}
+  __key=${__key//-/_}
+  if [[ -n "$2" ]]; then
+    eval "${__key}"='$2'
+    shift 2
+  else
+    set "${__key}"
+    shift
+  fi
+done
+
+if [[ -n "$env" ]]; then
+  file=$env
+fi
+
+_check_bin_file vault
+_vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
+_is_vault_server_active=$(_web_status_server "$addr")
+if [[ "$_is_vault_server_active" == "true" ]]; then
+  vault kv put "$secret_path" $(egrep -v '^#' "$file") > /dev/null 2>&1
+  _error_code=$?
+  if [ "$_error_code" -gt "0" ]; then
+    __MSG="Error while put to $secret_path"
+    _message "$__MSG" "error" "$_error_code"
+  fi
+else
+  MSG=":red_circle: The $addr service is unavailable from $(hostname)"
+  slack_send_message \
+    --channel "$slack_channel" \
+    --color "#18db12" \
+    --message "$MSG"
+fi
