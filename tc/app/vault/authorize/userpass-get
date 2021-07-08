@@ -52,16 +52,10 @@ if [[ "$_is_vault_server_active" == "true" ]]; then
     else
       rm -rf "$file"
       MSG=":red_circle: The .env file was not copied - check the settings on $(hostname)"
-      slack_send_message \
-        --channel "$slack_channel" \
-        --color "#18db12" \
-        --message "$MSG"
+      slack_send_message "$MSG" "$slack_channel" "#18db12"
     fi
   fi
 else
   MSG=":red_circle: The $addr service is unavailable from $(hostname)"
-  slack_send_message \
-    --channel "$slack_channel" \
-    --color "#18db12" \
-    --message "$MSG"
+  slack_send_message "$MSG" "$slack_channel" "#18db12"
 fi
