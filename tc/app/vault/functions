@@ -49,3 +49,27 @@ function _vault_authorization()  {
     fi
   fi
 }
+
+function _web_status_server() {
+  __addr="$1"
+  __output=$(curl -sL -w "%{http_code}\n" "$__addr" -o /dev/null)
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    if [[ "$__output" == "200" ]]; then
+      echo "true"
+    fi
+  else
+    echo "false"
+  fi
+}
+
+function _is_vault_path_available() {
+  __secret_path="$1"
+  vault kv get "$__secret_path" > /dev/null 2>&1
+  _error_code=$?
+  if [ "$_error_code" -eq "0" ]; then
+    echo "true"
+  else
+    echo "false"
+  fi
+}

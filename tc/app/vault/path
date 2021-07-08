@@ -27,10 +27,4 @@ done
 
 _check_bin_file vault
 _vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
-vault kv get "$secret_path" > /dev/null 2>&1
-_error_code=$?
-if [ "$_error_code" -eq "0" ]; then
-  echo "true"
-else
-  echo "false"
-fi
+_is_vault_path_available "$secret_path"

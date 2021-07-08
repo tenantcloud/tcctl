@@ -1,0 +1,1 @@
+Full authorization (auth-type userpass) with a check for the availability of vault server and get keys from the one.
