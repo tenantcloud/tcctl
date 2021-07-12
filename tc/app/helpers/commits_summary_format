@@ -5,11 +5,9 @@
 source "$CLI_DIR/tc/framework/functions"
 
 function commits_summary_format() {
-  __command=$( grep -E -oh 'TC-[0-9]+' /tmp/commits_summary \
+  grep -E -oh 'TC-[0-9]+' /tmp/commits_summary \
     | sort -u \
-    | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}' )
-  __output=$( eval "$__slack_command" )
+    | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}'
 }
 
 commits_summary_format
-
