@@ -1,0 +1,5 @@
+The commands with which we attach Jira task's link for commits summary
+
+for example:
+
+tcctl helpers commits_summary_format
