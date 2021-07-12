@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2063,SC1091
+# shellcheck disable=SC2063,SC1091,SC2120,SC2086,2048
 
 source "$CLI_DIR/tc/framework/functions"
 
@@ -16,4 +16,3 @@ function commits_summary() {
 }
 
 commits_summary
-
