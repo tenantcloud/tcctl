@@ -1,13 +1,41 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2063,SC1091,SC2120,SC2086,2048
+# shellcheck disable=SC1090
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/slack/functions"
+
+CHANNEL="#devops-notifications"
+MESSAGE="Hostname: $(hostname)"
+FILE="/tmp/commits_summary"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --channel)
+    CHANNEL="$2"
+    shift 2
+    ;;
+    --file)
+    FILE="$2"
+    shift 2
+    ;;
+    --message)
+    MESSAGE="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function commits_summary() {
   __commits_summary=$( git log -1 --pretty=format:"%b"  $* )
-  echo $__commits_summary
   printf %s "$__commits_summary" > /tmp/commits_summary
 }
 
 commits_summary
+
+slack_file_upload "$CHANNEL" "$MESSAGE" "$FILE"
