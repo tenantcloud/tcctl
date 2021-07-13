@@ -1,8 +1,35 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2063,SC1091
+# shellcheck disable=SC1090,SC2034,SC1091
 
 source "$CLI_DIR/tc/framework/functions"
+source "$CLI_DIR/tc/app/slack/functions"
+
+CHANNEL="#devops-notifications"
+MESSAGE="Hostname: $(hostname)"
+FILE="/tmp/commits_summary"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --channel)
+    CHANNEL="$2"
+    shift 2
+    ;;
+    --file)
+    FILE="$2"
+    shift 2
+    ;;
+    --message)
+    MESSAGE="$2"
+    shift 2
+    ;;
+    *)
+    ;;
+esac
+done
 
 function commits_summary_format() {
   grep -E -oh 'TC-[0-9]+' /tmp/commits_summary \
@@ -11,3 +38,5 @@ function commits_summary_format() {
 }
 
 commits_summary_format
+
+slack_send_message "$MESSAGE" "$CHANNEL" "$COLOR"
