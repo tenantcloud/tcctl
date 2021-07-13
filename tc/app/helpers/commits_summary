@@ -6,13 +6,8 @@ source "$CLI_DIR/tc/framework/functions"
 
 function commits_summary() {
   __commits_summary=$( git log -1 --pretty=format:"%b"  $* )
-  __output=$( printf %s "$__commits_summary" > /tmp/commits_summary )
-  _error_code=$?
-  __MSG="Get commits summary"
-  __MSG+="$__output"
-  if [[ "$_error_code" -eq "0" ]]; then
-    _message "$__MSG"
-  fi
+  echo $__commits_summary
+  printf %s "$__commits_summary" > /tmp/commits_summary
 }
 
 commits_summary
