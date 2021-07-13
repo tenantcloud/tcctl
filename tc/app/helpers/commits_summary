@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC1090,SC1091,SC2120,SC2048,SC2086
+# shellcheck disable=SC1090,SC1091,SC2120,SC2048,SC2086,SC2034
 
 source "$CLI_DIR/tc/framework/functions"
 source "$CLI_DIR/tc/app/slack/functions"
