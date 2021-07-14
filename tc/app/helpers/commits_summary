@@ -1,4 +1,3 @@
-"cli/tc/app/helpers/commits_summary" 41L, 694C                                                                                                                                                                                            41,47         All
 #!/usr/bin/env bash
 
 # shellcheck disable=SC1090,SC1091,SC2120,SC2048,SC2086,SC2034
