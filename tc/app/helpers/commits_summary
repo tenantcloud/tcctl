@@ -8,6 +8,8 @@ source "$CLI_DIR/tc/app/slack/functions"
 CHANNEL="#devops-notifications"
 MESSAGE="Hostname: $(hostname)"
 FILE="/tmp/commits_summary"
+COLOR="#6dc56d"
+URL=""
 
 while [[ $# -gt 0 ]]
 do
@@ -26,6 +28,14 @@ case $key in
     MESSAGE="$2"
     shift 2
     ;;
+    --color)
+    COLOR="$2"
+    shift 2
+    ;;
+    --url)
+    URL="$2"
+    shift 2
+    ;;
     *)
     ;;
 esac
@@ -36,6 +46,18 @@ function commits_summary() {
   printf %s "$__commits_summary" > /tmp/commits_summary
 }
 
+function commits_summary_format() {
+  grep -E -oh 'TC-[0-9]+' /tmp/commits_summary \
+    | sort -u \
+    | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}'
+}
+
 commits_summary
 
 slack_file_upload "$CHANNEL" "$MESSAGE" "$FILE"
+
+commits_summary_format
+MESSAGE="The list of solved problems when deploying (:host: $URL ):\n"
+MESSAGE+="$(commits_summary_format)"
+
+slack_send_message "$MESSAGE" "$CHANNEL" "$COLOR" "$FILE" "$URL"
