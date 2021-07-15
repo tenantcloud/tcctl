@@ -1,0 +1,4 @@
+The functions and commands for full authorization with a check for the availability of vault server and get or put keys from to the one.
+
+tcctl vault authorize userpass-get
+tcctl vault authorize userpass-put

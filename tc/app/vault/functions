@@ -20,10 +20,26 @@ function _vault_kv_list() {
 function _vault_authorization()  {
   _check_bin_file vault
   __auth_type=$1
-  __vault_name=$2
-  __vault_password=$3
-  __vault_token=$4
-  export VAULT_ADDR=$5
+  if [[ $VAULT_NAME ]]; then
+    __vault_name=$VAULT_NAME
+  else
+    __vault_name=$2
+  fi
+  if [[ $VAULT_PASSWORD ]]; then
+    __vault_password=$VAULT_PASSWORD
+  else
+    __vault_password=$3
+  fi
+  if [[ $VAULT_TOKEN ]]; then
+    __vault_token=$VAULT_TOKEN
+  else
+    __vault_token=$4
+  fi
+  if [[ $VAULT_ADDR ]]; then
+    export VAULT_ADDR=$VAULT_ADDR
+  else
+    export VAULT_ADDR=$5
+  fi
   if [[ "$__auth_type" = "userpass" ]]; then
     vault login -method=userpass username="$__vault_name" password="$__vault_password" > /dev/null 2>&1
     _error_code=$?
@@ -40,11 +56,16 @@ function _vault_authorization()  {
     fi
   else
     VAULT_CONFIG_FILE=~/.vault-configuration
-    source $VAULT_CONFIG_FILE
-    vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD" > /dev/null 2>&1
-    _error_code=$?
-    if [ "$_error_code" -gt "0" ]; then
-      __MSG="Config file authorization error"
+    if [ -f "$VAULT_CONFIG_FILE" ]; then
+      source $VAULT_CONFIG_FILE
+      vault login -method=userpass username="$VAULT_NAME" password="$VAULT_PASSWORD" > /dev/null 2>&1
+      _error_code=$?
+      if [ "$_error_code" -gt "0" ]; then
+        __MSG="Config file authorization error"
+        _message "$__MSG" "error" "$_error_code"
+      fi
+    else
+      __MSG="$VAULT_CONFIG_FILE doesn't exists."
       _message "$__MSG" "error" "$_error_code"
     fi
   fi
