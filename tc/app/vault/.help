@@ -11,3 +11,7 @@ tcctl vault file upload
 tcctl vault file download
 tcctl vault secrets create
 tcctl vault secrets delete
+tcctl vault snapshot create
+tcctl vault snapshot restore
+tcctl vault authorize userpass-get
+tcctl vault authorize userpass-put
