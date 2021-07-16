@@ -22,6 +22,7 @@ function _vault_authorization()  {
   __auth_type=$1
   if [[ $VAULT_NAME ]]; then
     __vault_name=$VAULT_NAME
+    __auth_type="userpass"
   else
     __vault_name=$2
   fi
@@ -32,6 +33,7 @@ function _vault_authorization()  {
   fi
   if [[ $VAULT_TOKEN ]]; then
     __vault_token=$VAULT_TOKEN
+    __auth_type="token"
   else
     __vault_token=$4
   fi
