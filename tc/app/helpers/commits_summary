@@ -42,7 +42,8 @@ esac
 done
 
 function commits_summary() {
-  __commits_summary=$( git log -1 --pretty=format:"%b"  $* )
+  __latest_commit=$( git log -1 | sed -n '2p' | awk '{ print $2 }' )
+  __commits_summary=$( git log --pretty=format:"%s" --no-merges "$__latest_commit"...HEAD )
   printf %s "$__commits_summary" > /tmp/commits_summary
 }
 
