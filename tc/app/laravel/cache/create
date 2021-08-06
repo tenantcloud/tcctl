@@ -7,10 +7,10 @@ source "$CLI_DIR/tc/app/laravel/cache/functions"
 source "$CLI_DIR/tc/app/php/functions"
 
 run_programm_with_error_check "php artisan clear-compiled"
-_message "Reset OPCache"
-cachetool_run "opcache:reset"
 run_programm_with_error_check "php artisan config:cache"
 run_programm_with_error_check "php artisan route:cache"
 run_programm_with_error_check "php artisan event:cache"
 run_programm_with_error_check "php artisan view:cache"
+_message "Reset OPCache"
+cachetool_run "opcache:reset"
 restart_supervisorctl_horizon
