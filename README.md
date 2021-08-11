@@ -9,7 +9,7 @@
 Before install `tcctl` install BASH Cli ([BCL](https://github.com/BrunIF/bcl))
 
 ```bash
-curl -L -s https://git.io/JU3Fy | bash
+curl -L -s https://git.io/JGaJV | bash
 ```
 
 ## Install
