@@ -2,4 +2,4 @@ The commands with which we can run migration and during deploy command
 
 for example:
 
-tcctl helpers run_migrate_and_during_deploy
+tcctl helpers run_migrate
