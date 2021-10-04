@@ -41,7 +41,7 @@ function _run_migrations() {
      _options="$_options --only-after-deploy"
   fi
 
-  php artisan migrate --force $_options
+  php artisan migrate --force "$_options"
   _error_code="$?"
   __MSG="Error when run php artisan migrate --force $_options"
   if [[ "$_error_code" -gt "0" ]]; then
