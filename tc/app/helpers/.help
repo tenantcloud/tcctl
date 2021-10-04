@@ -3,7 +3,7 @@ The helper functions and commands for all projects
 tcctl helpers append_string_after
 tcctl helpers check_bin_file
 tcctl helpers check_deployment_type
-tcctl helpers run_migrate
+tcctl helpers run_migrations
 tcctl helpers run_during_deploy_commands
 tcctl helpers comment_string
 tcctl helpers create_dir_along_path
@@ -20,7 +20,7 @@ tcctl helpers insert_string
 tcctl helpers replace_string
 tcctl helpers replace_string_with_escapes
 tcctl helpers replace_symbol
-tcctl helpers run_migrate
+tcctl helpers run_migrations
 tcctl helpers run_during_deploy_commands
 tcctl helpers set_dir_permission
 tcctl helpers uncomment_string

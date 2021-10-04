@@ -28,7 +28,7 @@ case $key in
 esac
 done
 
-function _run_migrate() {
+function _run_migrations() {
   __only_during_deploy=$1
   __only_after_deploy=$2
   _options=""
@@ -49,4 +49,4 @@ function _run_migrate() {
   fi
 }
 
-_run_migrate "$ONLY_DURING_DEPLOY" "$ONLY_AFTER_DEPLOY"
+_run_migrations "$ONLY_DURING_DEPLOY" "$ONLY_AFTER_DEPLOY"
