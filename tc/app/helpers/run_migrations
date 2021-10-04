@@ -31,7 +31,7 @@ done
 function _run_migrations() {
   __only_during_deploy=$1
   __only_after_deploy=$2
-  _options=""
+  _options="--force"
 
   if [[ "$__only_during_deploy" -gt "0" ]]; then
      _options="$_options --only-during-deploy"
@@ -41,9 +41,9 @@ function _run_migrations() {
      _options="$_options --only-after-deploy"
   fi
 
-  php artisan migrate --force "$_options"
+  php artisan migrate "$_options"
   _error_code="$?"
-  __MSG="Error when run php artisan migrate --force $_options"
+  __MSG="Error when run php artisan migrate $_options"
   if [[ "$_error_code" -gt "0" ]]; then
    _message "$__MSG" "error" "$_error_code"
   fi
