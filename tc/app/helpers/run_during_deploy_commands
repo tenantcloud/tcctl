@@ -23,20 +23,16 @@ case $key in
     shift 2
     ;;
     *)
+    shift 1
     ;;
 esac
 done
 
-function _run_migrate_and_during_deploy() {
+function _run_during_deploy_commands() {
   __session_name="QUEUES"
   __parallel_process=$1
   __queue=$2
-  php artisan migrate --force
-  _error_code="$?"
-  __MSG="Error when run force migrate"
-  if [[ "$_error_code" -gt "0" ]]; then
-   _message "$__MSG" "error" "$_error_code"
-  fi
+
   if  [[ $(command -v byobu) ]]; then
     byobu -2 new-session -d -s $__session_name
     _error_code="$?"
@@ -73,7 +69,7 @@ function _run_migrate_and_during_deploy() {
   if [[ "$_error_code" -gt "0" ]]; then
     _message "$__MSG" "error" "$_error_code"
   fi
-  __MSG="Command: tcctl helpers run_migrate_and_during_deploy"
+  __MSG="Command: tcctl helpers run_during_deploy_commands"
   if [ "$_error_code" -eq "0" ]; then
     _message "$__MSG"
   else
@@ -82,11 +78,11 @@ function _run_migrate_and_during_deploy() {
 }
 
 if [ -z "$PARALLEL_PROCESS" ]; then
-  __MSG="Command: tcctl helpers run_migrate_and_during_deploy missed --parallel-process"
+  __MSG="Command: tcctl helpers run_during_deploy_commands missed --parallel-process"
   _message "$__MSG" "error" "$_error_code"
 elif [ -z "$QUEUE" ]; then
-  __MSG="Command: tcctl helpers run_migrate_and_during_deploy missed --queue"
+  __MSG="Command: tcctl helpers run_during_deploy_commands missed --queue"
   _message "$__MSG" "error" "$_error_code"
 else
-  _run_migrate_and_during_deploy "$PARALLEL_PROCESS" "$QUEUE"
+  _run_during_deploy_commands "$PARALLEL_PROCESS" "$QUEUE"
 fi

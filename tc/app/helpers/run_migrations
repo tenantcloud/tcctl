@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# shellcheck disable=SC1090
+
+source "$CLI_DIR/tc/framework/functions"
+
+set +e
+
+ONLY_DURING_DEPLOY="0"
+ONLY_AFTER_DEPLOY="0"
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    --only-during-deploy)
+    ONLY_DURING_DEPLOY="1"
+    shift 1
+    ;;
+    --only-after-deploy )
+    ONLY_AFTER_DEPLOY="1"
+    shift 1
+    ;;
+    *)
+    shift 1
+    ;;
+esac
+done
+
+function _run_migrations() {
+  __only_during_deploy=$1
+  __only_after_deploy=$2
+  _options="--force"
+
+  if [[ "$__only_during_deploy" -gt "0" ]]; then
+     _options="$_options --only-during-deploy"
+  fi
+
+  if [[ "$__only_after_deploy" -gt "0" ]]; then
+     _options="$_options --only-after-deploy"
+  fi
+
+  php artisan migrate "$_options"
+  _error_code="$?"
+  __MSG="Error when run php artisan migrate $_options"
+  if [[ "$_error_code" -gt "0" ]]; then
+   _message "$__MSG" "error" "$_error_code"
+  fi
+}
+
+_run_migrations "$ONLY_DURING_DEPLOY" "$ONLY_AFTER_DEPLOY"
