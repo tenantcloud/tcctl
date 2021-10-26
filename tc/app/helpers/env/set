@@ -40,13 +40,13 @@ function _set_value_to_env() {
 
 __check_key=$( grep "$key" "$file" | sed -r 's/=.+//' )
 
-if [ -z "$__check_key" ]; then
-  echo "$key"="$key_value" >> "$file"
-fi
-
 if [ -f "$file" ]; then
   _set_value_to_env "$key" "$key_value" "$file"
+  if [ -z "$__check_key" ]; then
+    echo "$key"="$key_value" >> "$file"
+  fi
 else
-  __MSG="File $file doesn't exists"
-  _message "$__MSG" "error"
+  echo "$file doesn't exist"
+  exit 1
 fi
+
