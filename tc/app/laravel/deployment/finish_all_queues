@@ -57,12 +57,13 @@ function _finish_all_queues() {
 #  if [[ "$_error_code" -gt "0" ]]; then
 #    _message "$__MSG" "error" "$_error_code"
 #  fi
-  byobu kill-session -t "$__session_name"
-  _error_code=$(( "$_error_code" + "$?" ))
-  __MSG="Error while trying to kill byobu session"
-  if [[ "$_error_code" -gt "0" ]]; then
-    _message "$__MSG" "error" "$_error_code"
-  fi
+# Temporary comment due to problem with kill running byobu session
+#  byobu kill-session -t "$__session_name"
+#  _error_code=$(( "$_error_code" + "$?" ))
+#  __MSG="Error while trying to kill byobu session"
+#  if [[ "$_error_code" -gt "0" ]]; then
+#    _message "$__MSG" "error" "$_error_code"
+#  fi
   __MSG="Command: tcctl laravel deployment finish_all_queues"
   if [ "$_error_code" -eq "0" ]; then
     _message "$__MSG"
