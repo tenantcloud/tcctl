@@ -30,9 +30,9 @@ done
 
 _check_bin_file vault
 _vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
-rm -rf "$file"
+#rm -rf "$file"
 if [ "$secret_path" ] ; then
-  vault read "$secret_path" -format=json | jq -r .data.key >> "$file"
+  vault read "$secret_path" -format=json | jq -r .data.key > "$file"
   _error_code=$?
   if [ "$_error_code" -eq "0" ]; then
     echo "Downloading $file from $secret_path is successfully"
