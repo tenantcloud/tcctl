@@ -48,7 +48,7 @@ function commits_summary() {
 }
 
 function commits_summary_format() {
-  grep -E -oh 'TC-[0-9]+' /tmp/commits_summary \
+  grep -E -oh '[A-Z]+\-[0-9]+' /tmp/commits_summary \
     | sort -u \
     | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}'
 }
