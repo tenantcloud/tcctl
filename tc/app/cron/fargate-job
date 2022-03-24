@@ -8,7 +8,7 @@ cron_file="/var/spool/cron/crontabs/root"
 state=
 
 function cron_enable {
-  sed -i -r '1s/#//' $cron_file
+  sed -i -r 's/#//g' $cron_file
   _error_code=$?
   __MSG="We are enable cronjobs"
   if [[ "$_error_code" -eq "0" ]]; then
@@ -19,18 +19,18 @@ function cron_enable {
 }
 
 function cron_disable {
-  __cron_state=$( grep "^#" $cron_file )
-  if [[ -n $__cron_state ]]; then
-    _message "Cronjobs already disabled"
+  __cron_state=$( grep -v "^#" -c $cron_file || true)
+  if [[ $__cron_state -ne "2" ]]; then
+    echo "Cronjobs already disabled"
   else
-    sed -i -r '1s/^/#/' $cron_file
+    sed -i -r 's/^*/#/g' $cron_file
     _error_code=$?
     __MSG="We are disable cronjobs"
   fi
   if [[ "$_error_code" -eq "0" ]]; then
-    _message "$__MSG"
+    echo "$__MSG"
   else
-    _message "$__MSG" "error" "$_error_code"
+    echo "$__MSG" "error" "$_error_code"
   fi
 }
 
