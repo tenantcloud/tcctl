@@ -10,6 +10,8 @@ MESSAGE="Hostname: $(hostname)"
 FILE="/tmp/commits_summary"
 COLOR="#6dc56d"
 URL=""
+TAG1=$( git log -1 | sed -n '2p' | awk '{ print $2 }' )
+TAG2="HEAD"
 
 while [[ $# -gt 0 ]]
 do
@@ -36,14 +38,23 @@ case $key in
     URL="$2"
     shift 2
     ;;
+    --tag1)
+    TAG1="$2"
+    shift 2
+    ;;
+    --tag2)
+    TAG2="$2"
+    shift 2
+    ;;
     *)
     ;;
 esac
 done
 
 function commits_summary() {
-  __latest_commit=$( git log -1 | sed -n '2p' | awk '{ print $2 }' )
-  __commits_summary=$( git log --pretty=format:"%s" --no-merges "$__latest_commit"...HEAD )
+  tag1="$1"
+  tag2="$2"
+  __commits_summary=$( git log --pretty=format:"%s" --no-merges "$tag1"..."$tag2" )
   printf %s "$__commits_summary" > /tmp/commits_summary
 }
 
@@ -53,7 +64,7 @@ function commits_summary_format() {
     | awk '{print "https://tenantcloud.atlassian.net/browse/" $1}'
 }
 
-commits_summary
+commits_summary "$TAG1" "$TAG2"
 
 slack_file_upload "$CHANNEL" "$MESSAGE" "$FILE"
 
