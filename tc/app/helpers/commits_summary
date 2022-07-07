@@ -55,7 +55,7 @@ function commits_summary() {
   tag1="$1"
   tag2="$2"
   __commits_summary=$( git log --pretty=format:"%s" --no-merges "$tag1"..."$tag2" )
-  printf %s "$__commits_summary" > /tmp/commits_summary
+  printf %s "$__commits_summary" | grep -v "Merge branch" > /tmp/commits_summary
 }
 
 function commits_summary_format() {
