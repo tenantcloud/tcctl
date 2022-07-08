@@ -10,7 +10,7 @@ MESSAGE="Hostname: $(hostname)"
 FILE="/tmp/commits_summary"
 COLOR="#6dc56d"
 URL=""
-TAG1=$( git log -1 | sed -n '2p' | awk '{ print $2 }' )
+TAG1="$CI_COMMIT_SHA"
 TAG2="HEAD"
 
 while [[ $# -gt 0 ]]
@@ -54,8 +54,13 @@ done
 function commits_summary() {
   tag1="$1"
   tag2="$2"
-  __commits_summary=$( git log --pretty=format:"%s" --no-merges "$tag1"..."$tag2" )
-  printf %s "$__commits_summary" | grep -v "Merge branch" > /tmp/commits_summary
+  echo "Commits summary between: $tag1 and $tag2"
+  __commits_summary=$( curl --silent \
+    --header "PRIVATE-TOKEN: $MR_GITLAB_TOKEN" "$GITLAB_API_URL/$CI_PROJECT_ID/repository/compare?from=$tag1&to=$tag2" \
+    | jq -r '.commits' \
+    | jq -r '.[].title' \
+    | grep -v "Merge branch" )
+  printf %s "$__commits_summary" > /tmp/commits_summary
 }
 
 function commits_summary_format() {
