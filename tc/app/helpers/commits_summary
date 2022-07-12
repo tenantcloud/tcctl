@@ -60,7 +60,7 @@ function commits_summary() {
     --header "PRIVATE-TOKEN: $MR_GITLAB_TOKEN" "$GITLAB_API_URL/$CI_PROJECT_ID/repository/compare?from=$tag1&to=$tag2" \
     | jq -r '.commits' \
     | jq -r '.[].title' \
-    | grep -v "Merge branch" )
+    | grep -Ev "Merge branch|Merge remote-tracking branch" )
   printf %s "$__commits_summary" > /tmp/commits_summary
 }
 
