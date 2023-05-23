@@ -10,7 +10,7 @@ function cachetool_run () {
     __error_code=$?
   else
     _message "Cachetool utilites not found" "warning"
-    exit $__error_code
+    exit "$__error_code"
   fi
 
   __command=$( sudo "$__cachetool_path" "$__parameters" )
