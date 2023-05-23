@@ -36,7 +36,7 @@ _vault_authorization "$auth_type" "$name" "$pass" "$token" "$addr"
 vault kv get "$secret_path" > /dev/null 2>&1
 _error_code=$?
 if [ "$_error_code" -eq "0" ]; then
-  vault kv get "$secret_path" | sed 's/\ \{1,\}/=/g'| sed 's:=n/a$:=:' | sed 1,11d > "$file"
+  vault kv get -format json -field=data "$secret_path" | jq -r 'to_entries | .[] | "\(.key | ascii_upcase)=\(.value)"' > "$file"
 else
   __MSG="Get keys from ${secret_path} to ${env}"
   _message "$__MSG" "error" "$_error_code"
